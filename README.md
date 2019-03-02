@@ -46,6 +46,8 @@ go get github.com/xssed/owlcache
 go build
 ```
 
+## 使用文档
+- http://owl.xsser.cc
 
 
 ## 开发计划
