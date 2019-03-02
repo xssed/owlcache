@@ -55,5 +55,5 @@ Version 0.2 实现集群数据共享
 
 ## 开发与讨论
 - 联系我:xsser@xsser.cc
-- 个人主页:[https://www.xsser.cc](https://www.xsser.cc)  
+- 个人主页:https://www.xsser.cc
 
