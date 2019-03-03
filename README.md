@@ -6,7 +6,7 @@
 
 OwlCache 是一款由Golang编写的轻量级、高性能、无中心分布式Key/Value内存缓存应用(一定场景下可以作为轻量型数据库来使用)。  
 
-[![IMI License](https://img.shields.io/github/license/xssed/owlcache.svg)](https://github.com/xssed/owlcache/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/xssed/owlcache.svg)](https://github.com/xssed/owlcache/blob/master/LICENSE)
 [![release](https://img.shields.io/github/release/xssed/owlcache.svg?style=popout-square)](https://github.com/xssed/owlcache/releases)
 
 
@@ -60,4 +60,7 @@ Version 0.2 实现集群数据共享
 ## 开发与讨论
 - 联系我:xsser@xsser.cc
 - 个人主页:https://www.xsser.cc
+
+## 开源协议
+- [![License](https://img.shields.io/github/license/xssed/owlcache.svg)](https://github.com/xssed/owlcache/blob/master/LICENSE)
 
