@@ -46,6 +46,34 @@ go get github.com/xssed/owlcache
 go build
 ```
 
+# 运行
+* 注意owlcache.conf文件要跟主程序同目录（下面有介绍动态的设置owlcache.conf文件路径参数）
+```shell
+owlcache
+```
+
+参数help
+* 运行时您可以查看使用帮助 
+* 注意运行时的配置参数要优先于*.conf文件里的配置参数
+
+```shell
+owlcache -help
+Welcome to use owlcache. Version:0.1  by:d4rkdu0
+Usage of owlcache:
+  -config string
+        Owlcache config file path.[demo:/var/home/owl.conf] (default "owlcache.conf")
+  -host string
+        binding local host ip adress. (default "127.0.0.1")
+  -log string
+        Owlcache log file path.[demo:/var/log/]
+```
+
+带配置参数运行的例子
+```shell
+owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/
+```
+
+
 ## 使用文档
 - http://owl.xsser.cc
 
