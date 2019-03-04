@@ -23,6 +23,14 @@ func LogInit() {
 func LogRegister(owlconfig *config.OwlConfig) {
 
 	logFilePath := owlconfig.Logfile
+
+	//日志存储目录校验
+	temp_last := logFilePath[len(logFilePath)-1:]
+	if temp_last != "/" {
+		logFilePath = logFilePath + "/"
+	}
+	//fmt.Println(logFilePath) //输出日志存放目录
+
 	formatLogFileName := "owlcache_" + time.Now().Format("20060102_150405") + ".log"
 	if logFilePath != "" {
 		os.MkdirAll(logFilePath, os.ModePerm)

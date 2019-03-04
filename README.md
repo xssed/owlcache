@@ -66,11 +66,13 @@ Usage of owlcache:
         binding local host ip adress. (default "127.0.0.1")
   -log string
         Owlcache log file path.[demo:/var/log/]
+  -pass string
+        Owlcache connection password. (default "shi!jie9he?ping6")
 ```
 
 带配置参数运行的例子
 ```shell
-owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/
+owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/ -pass 1245!df2A
 ```
 
 

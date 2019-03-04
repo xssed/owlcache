@@ -34,14 +34,15 @@ func NewDefaultOwlConfig() *OwlConfig {
 
 //缓存系统初始化加载配置
 func ConfigInit() {
-	//Owlcache启动时对接收参数初始化得到一个初始配置
-	OwlConfigModel = CmdParamInit()
 
 	//执行步骤信息
 	fmt.Println("owlcache  loading config...")
 
 	//读取配置文件获取一个最终的配置模型
 	var config = make(map[string]string)
+
+	//创建一个默认初始化配置模型
+	OwlConfigModel = NewDefaultOwlConfig()
 
 	config_file, err := os.Open(OwlConfigModel.Configfile) //打开配置文件
 	defer config_file.Close()
@@ -66,11 +67,13 @@ func ConfigInit() {
 		config[type_name] = type_value
 	}
 
-	//fmt.Println(OwlConfigModel)
-	//fmt.Println(config)
+	//fmt.Println(OwlConfigModel) //打印出默认配置信息
+	//fmt.Println(config)         //打印出*.conf中的配置信息
 	//将文本配置绑定到全局配置
 	ConfigBind(config, OwlConfigModel)
-	//fmt.Println(OwlConfigModel)
+	//最后检查参数
+	OwlConfigModel = CmdParamInit(OwlConfigModel)
+	//fmt.Println(OwlConfigModel) //打印出最终赋值后的配置信息
 
 }
 
