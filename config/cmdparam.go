@@ -6,14 +6,15 @@ import (
 )
 
 //Owlcache启动时对接收参数初始化
-func CmdParamInit() *OwlConfig {
+func CmdParamInit(param *OwlConfig) *OwlConfig {
 
 	//创建一个默认配置模型
-	var OwlConfigBase *OwlConfig
-	OwlConfigBase = NewDefaultOwlConfig()
+	//	var OwlConfigBase *OwlConfig
+	//	OwlConfigBase = NewDefaultOwlConfig()
 
 	//将Owlcache启动时接收到的参数进行解析绑定
-	cmdConfig := CmdParamExe(OwlConfigBase)
+	//cmdConfig := CmdParamExe(OwlConfigBase)
+	cmdConfig := CmdParamExe(param)
 
 	//执行步骤信息
 	fmt.Println("owlcache  starting... ")
@@ -26,7 +27,8 @@ func CmdParamInit() *OwlConfig {
 func CmdParamExe(param *OwlConfig) *OwlConfig {
 	host := flag.String("host", param.Host, "binding local host ip adress.")
 	configPath := flag.String("config", param.Configfile, "Owlcache config file path.[demo:/var/home/owl.conf]")
-	logPath := flag.String("log", "", "Owlcache log file path.[demo:/var/log/]") //Owlcache auto generation
+	logPath := flag.String("log", param.Logfile, "Owlcache log file path.[demo:/var/log/]") //Owlcache auto generation
+	pass := flag.String("pass", param.Pass, "Owlcache Http connection password.")
 	flag.Parse()
 
 	if len(*host) > 0 {
@@ -37,6 +39,9 @@ func CmdParamExe(param *OwlConfig) *OwlConfig {
 	}
 	if len(*logPath) > 0 {
 		param.Logfile = *logPath
+	}
+	if len(*pass) > 0 {
+		param.Pass = *pass
 	}
 
 	return param
