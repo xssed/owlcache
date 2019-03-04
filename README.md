@@ -6,6 +6,10 @@
 
 Owlcache 是一款由Golang编写的轻量级、高性能、无中心分布式Key/Value内存缓存应用(一定场景下可以作为轻量型数据库来使用)。  
 
+[![golang version][golang-image]][golang-url]
+[golang-image]: https://img.shields.io/badge/golang-%3E=_1.9-green.svg?style=flat-square
+[golang-url]: https://golang.org/dl/
+
 [![License](https://img.shields.io/github/license/xssed/owlcache.svg)](https://github.com/xssed/owlcache/blob/master/LICENSE)
 [![release](https://img.shields.io/github/release/xssed/owlcache.svg?style=popout-square)](https://github.com/xssed/owlcache/releases)
 
