@@ -36,5 +36,5 @@ func Exe(w http.ResponseWriter, r *http.Request) {
 }
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to use owlcache.") //输出到客户端的信息
+	fmt.Fprintf(w, "Welcome to use Owlcache.") //输出到客户端的信息
 }
