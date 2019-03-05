@@ -30,7 +30,7 @@ func (baseCache *BaseCache) Expire(key interface{}, lifeTime time.Duration) bool
 	v, ok := baseCache.KvStoreItems.Load(key)
 	//如果存在
 	if ok {
-		kvstore := &KvStore{v.(*KvStore).Key, v.(*KvStore).Value, lifeTime, v.(*KvStore).CreateTime}
+		kvstore := &KvStore{v.(*KvStore).Key, v.(*KvStore).Value, lifeTime, time.Now()} //v.(*KvStore).CreateTime 最早设计时想了很久。还是根据更新过期时间为起始时间计算过期吧
 		baseCache.KvStoreItems.Store(key, kvstore)
 		return true
 	}
