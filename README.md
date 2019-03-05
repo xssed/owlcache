@@ -79,8 +79,8 @@ Usage of owlcache:
 owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/ -pass 1245!df2A
 ```
 
-## 简单使用示例
-# 获取Key值
+# 简单使用示例
+## 获取Key值
 * TCP
 命令: `get <key>`
 ~~~shell
@@ -91,10 +91,10 @@ get hello
 注意:HTTP获取数据不用密码验证，只有其他更改数据的操作需要验证身份。
 
 
-|   请求参数 |   参数值  |
-| --- | --- | --- |
-|   cmd  |   get | 
-|   key  |   key名称  |  
+|请求参数        | 参数值          | 
+| ------------- |:-------------: |
+| cmd           |  get           | 
+| key           |  key名称        | 
 
 ~~~shell
 http://127.0.0.1:7721/data/?cmd=get&key=hello
