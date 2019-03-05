@@ -90,10 +90,12 @@ get hello
 * HTTP
 注意:HTTP获取数据不用密码验证，只有其他更改数据的操作需要验证身份。
 
+
 |   请求参数 |   参数值  |
 | --- | --- | --- |
 |   cmd  |   get | 
 |   key  |   key名称  |  
+
 ~~~shell
 http://127.0.0.1:7721/data/?cmd=get&key=hello
 ~~~
