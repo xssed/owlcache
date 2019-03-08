@@ -81,5 +81,100 @@
 //slice的插入速度:1.9442905s
 //list的插入速度:2.0326ms
 //list的优势在快速的插入数据
-//====================================================================
+//======================================================================
+package owlgroup
 
+//切片list结构
+type Servergroup struct {
+	list []interface{}
+}
+
+//创建一个空list结构
+func NewServergroup() *Servergroup {
+	value := &Servergroup{}
+	return value
+}
+
+//将对象添加到列表末尾
+func (servergroup *Servergroup) Add(val interface{}) {
+	servergroup.list = append(servergroup.list, val)
+}
+
+//在指定索引处向列表中插入元素,i从0起始
+func (servergroup *Servergroup) AddAt(i int32, val interface{}) {
+	servergroup.list = append(servergroup.list, 0)
+	copy(servergroup.list[i+1:], servergroup.list[i:])
+	servergroup.list[i] = val
+}
+
+//删除列表指定索引处的元素,i从0起始
+func (servergroup *Servergroup) RemoveAt(i int32) {
+	servergroup.list = append(servergroup.list[:i], servergroup.list[i+1:]...)
+}
+
+//删除列表中的最前的一个元素
+func (servergroup *Servergroup) RemoveFirst() {
+	servergroup.list = servergroup.list[1:]
+}
+
+//删除列表中的最后的一个元素
+func (servergroup *Servergroup) RemoveLast() {
+	servergroup.list = servergroup.list[:len(servergroup.list)-1]
+}
+
+//删除列表中的所有元素
+func (servergroup *Servergroup) Clear() {
+	servergroup.list = make([]interface{}, 0)
+}
+
+//按索引获取元素
+func (servergroup *Servergroup) GetAt(i int32) interface{} {
+	return servergroup.list[i]
+}
+
+//按范围获取元素
+func (servergroup *Servergroup) GetRange(begin int32, end int32) []interface{} {
+	return servergroup.list[begin : end+1]
+}
+
+//获取列表中的第一个元素
+func (servergroup *Servergroup) GetFirst() interface{} {
+	return servergroup.list[0]
+}
+
+//获取列表中的最后一个元素
+func (servergroup *Servergroup) GetLast() interface{} {
+	return servergroup.list[len(servergroup.list)-1]
+}
+
+//统计列表中有多少个数据
+func (servergroup *Servergroup) Count() int {
+	return len(servergroup.list)
+}
+
+//获取列表中的所有值
+func (servergroup *Servergroup) Values() []interface{} {
+	return servergroup.list
+}
+
+//确定元素是否在列表中
+func (servergroup *Servergroup) Exists(find interface{}) bool {
+	for _, value := range servergroup.list {
+		if value == find {
+			return true
+		}
+	}
+	return false
+}
+
+//返回切片字符串列表
+func (servergroup *Servergroup) ToSliceString() []string {
+	strList := make([]string, len(servergroup.list))
+	for k := range servergroup.list {
+		val, ok := servergroup.list[k].(string)
+		if ok {
+			strList[k] = val
+		}
+	}
+	return strList
+}

@@ -1,0 +1,39 @@
+package main
+
+import (
+	"fmt"
+
+	"github.com/xssed/owlcache/owlgroup"
+)
+
+var servergroup *owlgroup.Servergroup
+
+func main() {
+
+	servergroup = owlgroup.NewServergroup()
+	servergroup.Add("192.168.1.1")
+	servergroup.Add("192.168.1.2")
+	servergroup.Add("192.168.1.3")
+	servergroup.Add("192.168.1.4")
+	servergroup.Add("192.168.1.5")
+	servergroup.AddAt(2, "192.168.1.6")
+	servergroup.AddAt(2, "192.168.1.7")
+	//	fmt.Println(servergroup.ToSliceString())
+	//	servergroup.RemoveFirst()
+	//	fmt.Println(servergroup.ToSliceString())
+	//	servergroup.RemoveLast()
+	//	fmt.Println(servergroup.ToSliceString())
+	//	servergroup.RemoveAt(1)
+	//	fmt.Println(servergroup.ToSliceString())
+	//	servergroup.Clear()
+	fmt.Println(servergroup.ToSliceString())
+	fmt.Println(servergroup.GetFirst())
+	fmt.Println(servergroup.GetLast())
+	fmt.Println(servergroup.GetAt(2))
+	fmt.Println(servergroup.GetRange(2, 3))
+	fmt.Println(servergroup.Count())
+	fmt.Println(servergroup.Values())
+
+	fmt.Println(servergroup.Exists("192.168.1.10"))
+
+}
