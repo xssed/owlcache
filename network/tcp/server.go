@@ -16,8 +16,8 @@ type server struct {
 func (s *server) Listen() {
 	listener, err := net.Listen("tcp", s.address)
 	if err != nil {
-		log.Fatal("Error starting TCP server.")
 		fmt.Println("Error starting TCP server.")
+		log.Fatal("Error starting TCP server.")
 	}
 
 	defer listener.Close()
