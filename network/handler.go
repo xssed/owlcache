@@ -82,6 +82,44 @@ func (owlhandler *OwlHandler) HTTPHandle(w http.ResponseWriter, r *http.Request)
 
 }
 
+//http执行数据操作
+func (owlhandler *OwlHandler) HTTPGroupDataHandle(w http.ResponseWriter, r *http.Request) {
+
+	req := owlhandler.owlrequest
+
+	command := CommandType(req.Cmd)
+
+	switch command {
+	case GET:
+		owlhandler.Get()
+	case EXIST:
+		owlhandler.Exists()
+	case SET:
+		if !owlhandler.CheckAuth(r) {
+			owlhandler.Transmit(NOT_PASS)
+			break
+		}
+		owlhandler.Set()
+	case EXPIRE:
+		if !owlhandler.CheckAuth(r) {
+			owlhandler.Transmit(NOT_PASS)
+			break
+		}
+		owlhandler.Expire()
+	case DELETE:
+		if !owlhandler.CheckAuth(r) {
+			owlhandler.Transmit(NOT_PASS)
+			break
+		}
+		owlhandler.Delete()
+	case PASS:
+		owlhandler.Pass(r)
+	default:
+		owlhandler.Transmit(UNKNOWN_COMMAND)
+	}
+
+}
+
 //解析response
 func (owlhandler *OwlHandler) Transmit(resstatus ResStatus) {
 

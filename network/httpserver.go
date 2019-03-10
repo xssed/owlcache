@@ -28,6 +28,7 @@ func stratHTTP() {
 
 }
 
+//单机数据执行信息
 func Exe(w http.ResponseWriter, r *http.Request) {
 
 	owlhandler := NewOwlHandler()
@@ -38,11 +39,12 @@ func Exe(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//群组数据执行信息
 func GroupExe(w http.ResponseWriter, r *http.Request) {
 
 	owlhandler := NewOwlHandler()
 	owlhandler.owlrequest.HTTPReceive(w, r)
-	owlhandler.HTTPHandle(w, r) //执行数据
+	owlhandler.HTTPGroupDataHandle(w, r) //执行数据
 	resstr := owlhandler.owlresponse.ConvertToString()
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
