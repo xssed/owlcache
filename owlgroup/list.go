@@ -157,7 +157,7 @@ func (servergroup *Servergroup) Values() []interface{} {
 	return servergroup.list
 }
 
-//确定元素是否在列表中
+//确定元素是否在列表中,只对切片中的值是字符串的有效
 func (servergroup *Servergroup) Exists(find interface{}) bool {
 	for _, value := range servergroup.list {
 		if value == find {
@@ -167,7 +167,7 @@ func (servergroup *Servergroup) Exists(find interface{}) bool {
 	return false
 }
 
-//返回切片字符串列表
+//返回切片字符串列表,只对切片中的值是字符串的有效
 func (servergroup *Servergroup) ToSliceString() []string {
 	strList := make([]string, len(servergroup.list))
 	for k := range servergroup.list {
