@@ -20,7 +20,7 @@ func main() {
 	//使用多核cpu
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	//欢迎信息
-	fmt.Println("Welcome to use Owlcache. Version:" + VERSION + "  by:d4rkdu0 ")
+	fmt.Println("Welcome to use Owlcache. Version:" + VERSION + "\nIf you have any questions,Please contact us: xsser@xsser.cc ")
 	//初始化配置
 	owlconfig.ConfigInit()
 	//初始化日志记录
