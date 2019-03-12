@@ -1,4 +1,4 @@
-package owlgroup
+package network
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 
 type OwlServerGroupResponse struct {
 	//请求命令
-	Cmd CommandType
+	Cmd GroupCommandType
 	//返回状态
 	Status ResStatus
 	//返回结果

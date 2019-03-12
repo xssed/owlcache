@@ -1,4 +1,4 @@
-package owlgroup
+package network
 
 import (
 	//"bufio"
@@ -12,7 +12,7 @@ import (
 
 type OwlServerGroupRequest struct {
 	//请求命令
-	Cmd CommandType
+	Cmd GroupCommandType
 	//地址字符串
 	Address string
 	//链接密码
@@ -43,7 +43,7 @@ func (req *OwlServerGroupRequest) HTTPReceive(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	req.Cmd = CommandType(r.FormValue("cmd"))
+	req.Cmd = GroupCommandType(r.FormValue("cmd"))
 	req.Address = r.FormValue("address")
 	req.Pass = r.FormValue("pass")
 	req.Token = r.FormValue("token")

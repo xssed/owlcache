@@ -82,7 +82,7 @@
 //list的插入速度:2.0326ms
 //list的优势在快速的插入数据
 //======================================================================
-package owlgroup
+package group
 
 //切片list结构
 type Servergroup struct {
