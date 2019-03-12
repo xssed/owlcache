@@ -13,6 +13,8 @@ type OwlServerGroupResponse struct {
 	Results string
 	//address
 	Address string
+	//返回内容
+	Data interface{}
 }
 
 //将数据转换成json

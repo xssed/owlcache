@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	owlconfig "github.com/xssed/owlcache/config"
-	//owlhttp "github.com/xssed/owlcache/network/httpserver"
+	owlsystem "github.com/xssed/owlcache/system"
 )
 
 func stratHTTP() {
@@ -55,14 +55,15 @@ func GroupExe(w http.ResponseWriter, r *http.Request) {
 //设置服务器集群
 func ServerGroup(w http.ResponseWriter, r *http.Request) {
 
-	owlhandler := NewOwlServerGroupHandler()
-	//owlhandler.owlrequest.HTTPReceive(w, r)
-	owlhandler.HTTPServerGroupHandle(w, r) //执行数据
-	//	resstr := owlhandler.owlresponse.ConvertToString()
-	//	fmt.Fprintf(w, resstr) //输出到客户端的信息
+	owlservergrouphandler := NewOwlServerGroupHandler()
+	owlservergrouphandler.owlservergrouprequest.HTTPReceive(w, r)
+	owlservergrouphandler.HTTPServerGroupHandle(w, r) //执行数据
+	resstr := owlservergrouphandler.owlserveggroupresponse.ConvertToString()
+	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
 }
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to use Owlcache.") //输出到客户端的信息
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprintf(w, "<style type='text/css'>*{ padding: 0; margin: 0; } div{ padding: 4px 48px;} a{color:#2E5CD5;cursor: pointer;text-decoration: none} a:hover{text-decoration:underline; } body{ background: #fff; font-family: 'Century Gothic','Microsoft yahei'; color: #333;font-size:18px;} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.6em; font-size: 42px }</style><div style='padding: 24px 48px;'><h1>:)</h1><p>Welcome to use Owlcache. Version:"+owlsystem.VERSION+"<br/><span style='font-size:25px'>If you have any questions,Please contact us: <a href=\"mailto:xsser@xsser.cc\">xsser@xsser.cc</a></span></p><div>")
 }

@@ -25,7 +25,7 @@ func BaseCacheDBInit() {
 	BaseCacheDB.LoadFromFile("./owlcache.db")
 
 	//身份认证缓存,所有身份认证都在这里有效期30分钟
-	//存储内容: key tonken  value "uuid"
+	//存储内容: key:tonken  value:"uuid"
 	BaseAuth = cache.NewCache("Auth")
 
 	//初始化服务器集群信息存储列表

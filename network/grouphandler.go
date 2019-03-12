@@ -5,7 +5,7 @@ import (
 	//"time"
 	//owlconfig "github.com/xssed/owlcache/config"
 	//"github.com/xssed/owlcache/network"
-	//tools "github.com/xssed/owlcache/tools"
+	tools "github.com/xssed/owlcache/tools"
 )
 
 //一个请求只产生一个 OwlServerGroupHandler
@@ -21,28 +21,28 @@ func NewOwlServerGroupHandler() *OwlServerGroupHandler {
 //http服务器组执行数据操作
 func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerGroupHandle(w http.ResponseWriter, r *http.Request) {
 
-	//	req := owlservergrouphandler.owlservergrouprequest
+	req := owlservergrouphandler.owlservergrouprequest
 
-	//	//验证身份
-	//	if !owlservergrouphandler.CheckAuth(r) {
-	//		owlservergrouphandler.Transmit(NOT_PASS)
-	//		return
-	//	}
+	//验证身份
+	if !owlservergrouphandler.CheckAuth(r) {
+		owlservergrouphandler.Transmit(NOT_PASS)
+		return
+	}
 
-	//	command := CommandType(req.Cmd)
+	command := GroupCommandType(req.Cmd)
 
-	//	switch command {
-	//	case ADD:
-	//		//owlservergrouphandler.Get()
-	//	case DELETE:
-	//		//owlservergrouphandler.Exists()
-	//	case GetAll:
-
-	//	case Get:
-
-	//	default:
-	//		owlservergrouphandler.Transmit(UNKNOWN_COMMAND)
-	//	}
+	switch command {
+	case GroupADD:
+		owlservergrouphandler.Add()
+	case GroupDELETE:
+		owlservergrouphandler.Delete()
+	case GroupGetAll:
+		owlservergrouphandler.GetAll()
+	case GroupGet:
+		owlservergrouphandler.Get()
+	default:
+		owlservergrouphandler.Transmit(UNKNOWN_COMMAND)
+	}
 
 }
 
@@ -75,79 +75,82 @@ func (owlservergrouphandler *OwlServerGroupHandler) Transmit(resstatus ResStatus
 //验证权限
 func (owlservergrouphandler *OwlServerGroupHandler) CheckAuth(r *http.Request) bool {
 
-	//	token := owlservergrouphandler.owlservergrouprequest.Token
-	//	ip := tools.RemoteAddr2IPAddr(r.RemoteAddr)
-	//	v, found := owlnetwork.BaseAuth.Get(token)
-	//	if found == true {
-	//		if v == ip {
-	//			return true
-	//		}
-	//		return false
-	//	}
+	token := owlservergrouphandler.owlservergrouprequest.Token
+	ip := tools.RemoteAddr2IPAddr(r.RemoteAddr)
+	v, found := BaseAuth.Get(token)
+	if found == true {
+		if v == ip {
+			return true
+		}
+		return false
+	}
 	return false
 
 }
 
-//func (owlservergrouphandler *OwlServerGroupHandler) Set() {
-//	ok := network.ServerGroupList.
-//	if ok {
-//		owlhandler.Transmit(SUCCESS)
-//	} else {
-//		owlhandler.Transmit(ERROR)
-//	}
-//}
+//添加一个服务器信息
+func (owlservergrouphandler *OwlServerGroupHandler) Add() {
+	ok := ServerGroupList.Add(owlservergrouphandler.owlservergrouprequest)
+	if ok {
+		owlservergrouphandler.Transmit(SUCCESS)
+	} else {
+		owlservergrouphandler.Transmit(ERROR)
+	}
+}
 
-//func (owlhandler *OwlHandler) Expire() {
-//	ok := BaseCacheDB.Expire(owlhandler.owlrequest.Key, owlhandler.owlrequest.Expires)
-//	if ok {
-//		owlhandler.Transmit(SUCCESS)
-//	} else {
-//		owlhandler.Transmit(ERROR)
-//	}
-//}
+//内部查找一个服务器信息
+func (owlservergrouphandler *OwlServerGroupHandler) find(address string) (int32, bool) {
+	var resat int32 = 0
+	resbool := false
+	list := ServerGroupList.Values()
+	for k, _ := range list {
+		val, ok := list[k].(OwlServerGroupRequest)
+		if ok {
+			if val.Address == address {
+				resat = int32(k)
+				resbool = true
+			}
+		}
+	}
+	return resat, resbool
+}
 
-//func (owlhandler *OwlHandler) Get() {
-//	if v, found := BaseCacheDB.Get(owlhandler.owlrequest.Key); found {
-//		owlhandler.Transmit(SUCCESS)
-//		owlhandler.owlresponse.Data = v
-//	} else {
-//		owlhandler.Transmit(NOT_FOUND)
-//	}
-//}
+//删除一个服务器信息
+func (owlservergrouphandler *OwlServerGroupHandler) Delete() {
+	at, exits := owlservergrouphandler.find(owlservergrouphandler.owlservergrouprequest.Address)
+	if exits {
+		res := ServerGroupList.RemoveAt(int32(at))
+		if res {
+			owlservergrouphandler.Transmit(SUCCESS)
+		}
+		owlservergrouphandler.Transmit(ERROR)
+	} else {
+		//不存在
+		owlservergrouphandler.Transmit(NOT_FOUND)
+	}
+}
 
-//func (owlhandler *OwlHandler) Delete() {
-//	ok := BaseCacheDB.Delete(owlhandler.owlrequest.Key)
-//	if ok {
-//		owlhandler.Transmit(SUCCESS)
-//	} else {
-//		owlhandler.Transmit(ERROR)
-//	}
-//}
+//获取所有服务器列表信息
+func (owlservergrouphandler *OwlServerGroupHandler) GetAll() {
+	list := ServerGroupList.Values()
+	owlservergrouphandler.owlserveggroupresponse.Data = list
+	owlservergrouphandler.Transmit(SUCCESS)
+}
 
-//func (owlhandler *OwlHandler) Exists() {
-//	ok := BaseCacheDB.Exists(owlhandler.owlrequest.Key)
-//	if ok {
-//		owlhandler.Transmit(SUCCESS)
-//	} else {
-//		owlhandler.Transmit(NOT_FOUND)
-//	}
-//}
+//获取一个服务器信息
+func (owlservergrouphandler *OwlServerGroupHandler) Get() {
 
-////PASS命令验证密码
-//func (owlhandler *OwlHandler) Pass(r *http.Request) {
+	at, exits := owlservergrouphandler.find(owlservergrouphandler.owlservergrouprequest.Address)
+	if exits {
+		res, ok := ServerGroupList.GetAt(int32(at))
+		if ok {
+			owlservergrouphandler.owlserveggroupresponse.Data = res
+			owlservergrouphandler.Transmit(SUCCESS)
+		}
+		owlservergrouphandler.Transmit(ERROR)
+	} else {
+		//不存在
+		owlservergrouphandler.Transmit(NOT_FOUND)
+	}
 
-//	if owlconfig.OwlConfigModel.Pass == owlhandler.owlrequest.Pass {
-//		//token=md5(ip+uuid)
-//		uuid := tools.GetUUIDString()
-//		ip := tools.RemoteAddr2IPAddr(r.RemoteAddr)
-//		token := tools.GetMd5String(ip + uuid)
-//		expiration, _ := time.ParseDuration("1800s")
-//		BaseAuth.Set(token, ip, expiration) //30分钟过期
-//		//在返回值中添加UUID返回
-//		owlhandler.owlresponse.Data = token
-//		owlhandler.Transmit(SUCCESS)
-//	} else {
-//		owlhandler.Transmit(ERROR)
-//	}
-
-//}
+}

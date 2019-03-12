@@ -10,17 +10,14 @@ import (
 	owljob "github.com/xssed/owlcache/job"
 	owllog "github.com/xssed/owlcache/log"
 	owlnetwork "github.com/xssed/owlcache/network"
-)
-
-const (
-	VERSION string = "0.1"
+	owlsystem "github.com/xssed/owlcache/system"
 )
 
 func main() {
 	//使用多核cpu
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	//欢迎信息
-	fmt.Println("Welcome to use Owlcache. Version:" + VERSION + "\nIf you have any questions,Please contact us: xsser@xsser.cc ")
+	fmt.Println("Welcome to use Owlcache. Version:" + owlsystem.VERSION + "\nIf you have any questions,Please contact us: xsser@xsser.cc ")
 	//初始化配置
 	owlconfig.ConfigInit()
 	//初始化日志记录

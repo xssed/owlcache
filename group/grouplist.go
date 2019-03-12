@@ -84,6 +84,10 @@
 //======================================================================
 package group
 
+import (
+	"log"
+)
+
 //切片list结构
 type Servergroup struct {
 	list []interface{}
@@ -96,55 +100,131 @@ func NewServergroup() *Servergroup {
 }
 
 //将对象添加到列表末尾
-func (servergroup *Servergroup) Add(val interface{}) {
+func (servergroup *Servergroup) Add(val interface{}) bool {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->Add Error:", r)
+			ret = false
+		}
+	}()
 	servergroup.list = append(servergroup.list, val)
+	return ret
 }
 
 //在指定索引处向列表中插入元素,i从0起始
-func (servergroup *Servergroup) AddAt(i int32, val interface{}) {
+func (servergroup *Servergroup) AddAt(i int32, val interface{}) bool {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->AddAt Error:", r)
+			ret = false
+		}
+	}()
 	servergroup.list = append(servergroup.list, 0)
 	copy(servergroup.list[i+1:], servergroup.list[i:])
 	servergroup.list[i] = val
+	return ret
 }
 
 //删除列表指定索引处的元素,i从0起始
-func (servergroup *Servergroup) RemoveAt(i int32) {
+func (servergroup *Servergroup) RemoveAt(i int32) bool {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->RemoveAt Error:", r)
+			ret = false
+		}
+	}()
 	servergroup.list = append(servergroup.list[:i], servergroup.list[i+1:]...)
+	return ret
 }
 
 //删除列表中的最前的一个元素
-func (servergroup *Servergroup) RemoveFirst() {
+func (servergroup *Servergroup) RemoveFirst() bool {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->RemoveFirst Error:", r)
+			ret = false
+		}
+	}()
 	servergroup.list = servergroup.list[1:]
+	return ret
 }
 
 //删除列表中的最后的一个元素
-func (servergroup *Servergroup) RemoveLast() {
+func (servergroup *Servergroup) RemoveLast() bool {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->RemoveLast Error:", r)
+			ret = false
+		}
+	}()
 	servergroup.list = servergroup.list[:len(servergroup.list)-1]
+	return ret
 }
 
 //删除列表中的所有元素
-func (servergroup *Servergroup) Clear() {
+func (servergroup *Servergroup) Clear() bool {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->Clear Error:", r)
+			ret = false
+		}
+	}()
 	servergroup.list = make([]interface{}, 0)
+	return ret
 }
 
 //按索引获取元素
-func (servergroup *Servergroup) GetAt(i int32) interface{} {
-	return servergroup.list[i]
+func (servergroup *Servergroup) GetAt(i int32) (interface{}, bool) {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->GetAt Error:", r)
+			ret = false
+		}
+	}()
+	return servergroup.list[i], ret
 }
 
 //按范围获取元素
-func (servergroup *Servergroup) GetRange(begin int32, end int32) []interface{} {
-	return servergroup.list[begin : end+1]
+func (servergroup *Servergroup) GetRange(begin int32, end int32) ([]interface{}, bool) {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->GetRange Error:", r)
+			ret = false
+		}
+	}()
+	return servergroup.list[begin : end+1], ret
 }
 
 //获取列表中的第一个元素
-func (servergroup *Servergroup) GetFirst() interface{} {
-	return servergroup.list[0]
+func (servergroup *Servergroup) GetFirst() (interface{}, bool) {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->GetFirst Error:", r)
+			ret = false
+		}
+	}()
+	return servergroup.list[0], ret
 }
 
 //获取列表中的最后一个元素
-func (servergroup *Servergroup) GetLast() interface{} {
-	return servergroup.list[len(servergroup.list)-1]
+func (servergroup *Servergroup) GetLast() (interface{}, bool) {
+	ret := true
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("Servergroup-->GetLast Error:", r)
+			ret = false
+		}
+	}()
+	return servergroup.list[len(servergroup.list)-1], ret
 }
 
 //统计列表中有多少个数据
