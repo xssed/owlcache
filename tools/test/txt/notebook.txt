@@ -1,0 +1,12 @@
+[group]
+
+http://127.0.0.1:7721/server_group/?cmd=add&address=http://182.168.1.3&pass=shi!jie9he?ping6&token=3d7222dbd2e488edb2b680e795631ea1
+
+http://127.0.0.1:7721/server_group/?cmd=delete&address=http://182.168.1.3&token=3d7222dbd2e488edb2b680e795631ea1
+
+http://127.0.0.1:7721/server_group/?cmd=getall&token=3d7222dbd2e488edb2b680e795631ea1
+
+http://127.0.0.1:7721/server_group/?cmd=get&address=http://182.168.1.1&token=3d7222dbd2e488edb2b680e795631ea1
+
+
+

@@ -5,6 +5,8 @@ import (
 	//"time"
 	//owlconfig "github.com/xssed/owlcache/config"
 	//"github.com/xssed/owlcache/network"
+	//"fmt"
+
 	tools "github.com/xssed/owlcache/tools"
 )
 
@@ -21,13 +23,13 @@ func NewOwlServerGroupHandler() *OwlServerGroupHandler {
 //http服务器组执行数据操作
 func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerGroupHandle(w http.ResponseWriter, r *http.Request) {
 
-	req := owlservergrouphandler.owlservergrouprequest
-
 	//验证身份
 	if !owlservergrouphandler.CheckAuth(r) {
 		owlservergrouphandler.Transmit(NOT_PASS)
 		return
 	}
+
+	req := owlservergrouphandler.owlservergrouprequest
 
 	command := GroupCommandType(req.Cmd)
 
@@ -90,12 +92,36 @@ func (owlservergrouphandler *OwlServerGroupHandler) CheckAuth(r *http.Request) b
 
 //添加一个服务器信息
 func (owlservergrouphandler *OwlServerGroupHandler) Add() {
-	ok := ServerGroupList.Add(owlservergrouphandler.owlservergrouprequest)
-	if ok {
-		owlservergrouphandler.Transmit(SUCCESS)
+
+	//数据清理
+	owlservergrouphandler.owlservergrouprequest.Cmd = ""
+
+	at, exits := owlservergrouphandler.find(owlservergrouphandler.owlservergrouprequest.Address)
+	//存在
+	if exits {
+		//		res := ServerGroupList.RemoveAt(int32(at))
+		//		if res {
+		//			owlservergrouphandler.Transmit(SUCCESS)
+		//		} else {
+		//			owlservergrouphandler.Transmit(ERROR)
+		//		}
+		ServerGroupList.RemoveAt(int32(at))                                                 //先删除
+		ok := ServerGroupList.AddAt(int32(at), owlservergrouphandler.owlservergrouprequest) //后增加
+		if ok {
+			owlservergrouphandler.Transmit(SUCCESS)
+		} else {
+			owlservergrouphandler.Transmit(ERROR)
+		}
 	} else {
-		owlservergrouphandler.Transmit(ERROR)
+		//不存在
+		ok := ServerGroupList.Add(owlservergrouphandler.owlservergrouprequest)
+		if ok {
+			owlservergrouphandler.Transmit(SUCCESS)
+		} else {
+			owlservergrouphandler.Transmit(ERROR)
+		}
 	}
+
 }
 
 //内部查找一个服务器信息
@@ -104,7 +130,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) find(address string) (int32,
 	resbool := false
 	list := ServerGroupList.Values()
 	for k, _ := range list {
-		val, ok := list[k].(OwlServerGroupRequest)
+		val, ok := list[k].(*OwlServerGroupRequest)
 		if ok {
 			if val.Address == address {
 				resat = int32(k)
@@ -122,8 +148,9 @@ func (owlservergrouphandler *OwlServerGroupHandler) Delete() {
 		res := ServerGroupList.RemoveAt(int32(at))
 		if res {
 			owlservergrouphandler.Transmit(SUCCESS)
+		} else {
+			owlservergrouphandler.Transmit(ERROR)
 		}
-		owlservergrouphandler.Transmit(ERROR)
 	} else {
 		//不存在
 		owlservergrouphandler.Transmit(NOT_FOUND)
@@ -146,8 +173,9 @@ func (owlservergrouphandler *OwlServerGroupHandler) Get() {
 		if ok {
 			owlservergrouphandler.owlserveggroupresponse.Data = res
 			owlservergrouphandler.Transmit(SUCCESS)
+		} else {
+			owlservergrouphandler.Transmit(ERROR)
 		}
-		owlservergrouphandler.Transmit(ERROR)
 	} else {
 		//不存在
 		owlservergrouphandler.Transmit(NOT_FOUND)
