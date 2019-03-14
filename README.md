@@ -29,6 +29,7 @@
 ## 设计初衷
 
 可以轻松构建一个高效的数据共享与缓存服务集群(偏WEB方向)。Owl是猫头鹰的意思🦉。
+![Image text](https://github.com/xssed/owlcache/blob/master/assets/group.gif?raw=true)
 
 ## 使用文档
 - 📝http://owl.xsser.cc
