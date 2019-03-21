@@ -1,3 +1,5 @@
+//关于这个包我不是很满意。。。。因为是Owl集群的工作模式是server to server
+//想提升效率又怕用net包自己写client后面维护成本高 以后官方包http2 client完善再说
 package httpclient
 
 import (
@@ -18,21 +20,28 @@ const (
 	RequestTimeout     int = 5
 )
 
+//var OwlTransport *http.Transport
+
+func NewOwlTransport() *http.Transport {
+	OwlTransport := &http.Transport{
+		MaxIdleConnsPerHost: MaxIdleConnections,
+	}
+	return OwlTransport
+}
+
 type OwlHttp struct {
 	Request *http.Request
 	Client  *http.Client
-	Query   url.Values //QueryString
-	Param   url.Values //PostFromParams
+	Query   url.Values //QueryString。url.Values结构是map[string][]string非并发安全，已经采坑。
+	Param   url.Values //PostFromParams。url.Values结构是map[string][]string非并发安全，已经采坑。
 }
 
 //创建HttpClient实体
-func NewOwlHttpClient() *OwlHttp {
+func NewOwlHttpClient(OwlTransport *http.Transport) *OwlHttp {
 
 	client := &http.Client{
-		Transport: &http.Transport{
-			MaxIdleConnsPerHost: MaxIdleConnections,
-		},
-		Timeout: time.Duration(RequestTimeout) * time.Second,
+		Transport: OwlTransport,
+		Timeout:   time.Duration(RequestTimeout) * time.Second,
 	}
 
 	return &OwlHttp{Client: client, Query: url.Values{}, Param: url.Values{}}
@@ -66,8 +75,8 @@ func (h *OwlHttp) AddCookie(key, value string) {
 }
 
 //设置Request的User-Agent
-func (h *OwlHttp) UserAgent(UA string) {
-	h.Request.Header.Set("User-Agent", UA)
+func (h *OwlHttp) UserAgent(useragent string) {
+	h.Request.Header.Set("User-Agent", useragent)
 }
 
 //设置Request的header的Host
