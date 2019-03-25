@@ -32,8 +32,8 @@ func NewOwlTransport() *http.Transport {
 type OwlHttp struct {
 	Request *http.Request
 	Client  *http.Client
-	Query   url.Values //QueryString。url.Values结构是map[string][]string非并发安全，已经采坑。
-	Param   url.Values //PostFromParams。url.Values结构是map[string][]string非并发安全，已经采坑。
+	Query   url.Values //QueryString。url.Values结构是map[string][]string非并发安全
+	Param   url.Values //PostFromParams。url.Values结构是map[string][]string非并发安全
 }
 
 //创建HttpClient实体
