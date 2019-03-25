@@ -12,23 +12,25 @@ var OwlConfigModel *OwlConfig
 
 //配置文件模型
 type OwlConfig struct {
-	Configfile string
-	Logfile    string
-	Pass       string
-	Host       string
-	Tcpport    string
-	Httpport   string
+	Configfile               string //配置文件路径
+	Logfile                  string //日志文件路径
+	Pass                     string //owlcache密钥
+	Host                     string //主机地址
+	Tcpport                  string //Tcp监听端口
+	Httpport                 string //Http监听端口
+	HttpClientRequestTimeout string //集群互相通信时的请求超时时间
 }
 
 //创建一个默认配置文件的实体
 func NewDefaultOwlConfig() *OwlConfig {
 	return &OwlConfig{
-		Configfile: "owlcache.conf",
-		Logfile:    "",
-		Pass:       "shi!jie9he?ping6",
-		Host:       "127.0.0.1",
-		Tcpport:    "7720",
-		Httpport:   "7721",
+		Configfile:               "owlcache.conf",
+		Logfile:                  "",
+		Pass:                     "shi!jie9he?ping6",
+		Host:                     "127.0.0.1",
+		Tcpport:                  "7720",
+		Httpport:                 "7721",
+		HttpClientRequestTimeout: "3",
 	}
 }
 
@@ -96,5 +98,8 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	if len(config["Logfile"]) > 3 {
 		//!!!如果在命令行中启动服务时指定了Logfile值，而配置文件这里没有注释掉则会以配置文件为准
 		param.Logfile = config["Logfile"]
+	}
+	if len(config["HttpClientRequestTimeout"]) >= 1 {
+		param.HttpClientRequestTimeout = config["HttpClientRequestTimeout"]
 	}
 }
