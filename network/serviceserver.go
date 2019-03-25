@@ -5,6 +5,7 @@ import (
 
 	"github.com/xssed/owlcache/cache"
 	"github.com/xssed/owlcache/group"
+	"github.com/xssed/owlcache/network/httpclient"
 )
 
 //创建一个全局的缓存DB
@@ -15,6 +16,9 @@ var BaseAuth *cache.BaseCache
 
 //创建一个全局的服务器集群信息存储列表
 var ServerGroupList *group.Servergroup
+
+//创建一个全局的HttpClient客户端
+var HttpClient *httpclient.OwlClient
 
 func BaseCacheDBInit() {
 	//执行步骤信息
@@ -30,6 +34,9 @@ func BaseCacheDBInit() {
 
 	//初始化服务器集群信息存储列表
 	ServerGroupList = group.NewServergroup()
+
+	//初始化HttpClient客户端
+	HttpClient = httpclient.NewOwlClient()
 
 	fmt.Println("owlcache  TCPServer running...")
 	go stratTCP()
