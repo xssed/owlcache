@@ -1,3 +1,5 @@
-*.js linguist-language=GO
-*.css linguist-language=GO
-*.html linguist-language=GO
+*.js linguist-language=Go
+*.css linguist-language=Go
+*.html linguist-language=Go
+*.go linguist-language=Go
+*.conf linguist-language=Go
