@@ -8,6 +8,7 @@ import (
 	"time"
 
 	owlconfig "github.com/xssed/owlcache/config"
+	owlnetwork "github.com/xssed/owlcache/network"
 )
 
 //定义HTTP客户端结构
@@ -33,13 +34,14 @@ func NewOwlClient() *OwlClient {
 	return owlhttpclient
 }
 
-//发送GET请求
-func (c *OwlClient) Get(address string, value string) {
+//登录获取Token
+func (c *OwlClient) GetToken(address, cmd, pass string) {
 	owlclient := NewOwlHttpClient(c.OwlTransport)
 	fmt.Println(owlclient)
-	owlclient.Get("httpbin.org/get")
+	owlclient.Get(address)
 	owlclient.SetTimeout(*c.HCRequestTimeout * time.Second)
-	owlclient.Query.Add("key", "value")
+	owlclient.Query.Add("cmd", cmd)
+	owlclient.Query.Add("pass", pass)
 	res, err := owlclient.Do()
 	if err != nil {
 		fmt.Println(err)
@@ -47,6 +49,8 @@ func (c *OwlClient) Get(address string, value string) {
 	}
 	fmt.Println(res.StatusCode)
 	fmt.Println(res.String())
+
+	owlnetwork.PASS
 
 	owlclient.Claer()
 }

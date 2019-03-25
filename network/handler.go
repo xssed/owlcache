@@ -91,6 +91,7 @@ func (owlhandler *OwlHandler) HTTPGroupDataHandle(w http.ResponseWriter, r *http
 
 	switch command {
 	case GET:
+		//HttpClient
 		owlhandler.Get()
 	case EXIST:
 		owlhandler.Exists()

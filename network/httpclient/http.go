@@ -17,7 +17,7 @@ import (
 
 const (
 	MaxIdleConnections int = 20
-	RequestTimeout     int = 5
+	RequestTimeout     int = 3
 )
 
 //var OwlTransport *http.Transport
