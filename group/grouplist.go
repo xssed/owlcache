@@ -85,7 +85,16 @@
 package group
 
 import (
+	//"encoding/gob"
+	//"fmt"
+	"io/ioutil"
 	"log"
+
+	//"os"
+	"encoding/json"
+	"sync"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 //切片list结构
@@ -257,4 +266,76 @@ func (servergroup *Servergroup) ToSliceString() []string {
 		}
 	}
 	return strList
+}
+
+//从文件中读取序列化的数据
+func (servergroup *Servergroup) LoadFromFile(filename string) error {
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		log.Println(err)
+	}
+
+	//	str := string(b)
+	//	fmt.Println(str)
+
+	var list []interface{}
+	if err2 := json.Unmarshal(b, &list); err2 != nil {
+		log.Fatalf("JSON unmarshling failed: %s", err2)
+	}
+
+	newlist := NewServergroup()
+
+	for k := range list {
+
+		var servergrouprequest OwlServerGroupRequest
+		//将 map 转换为指定的结构体
+		if err3 := mapstructure.Decode(list[k], &servergrouprequest); err3 != nil {
+			log.Println(err3)
+		}
+
+		newlist.Add(servergrouprequest)
+
+	}
+
+	//重新装载数据
+	servergroup.list = newlist.list
+
+	return err
+}
+
+//将内存数据保存到文件
+func (servergroup *Servergroup) SaveToFile(filename string) error {
+
+	var mu sync.RWMutex
+	mu.RLock()
+	defer func() {
+		mu.RUnlock()
+		//		if x := recover(); x != nil {
+		//			err = fmt.Errorf("Error: Save " + filename)
+		//		}
+	}()
+
+	data, marshal_err := json.Marshal(servergroup.Values())
+	if marshal_err != nil {
+		log.Fatalf("Json marshaling failed：%s\n", marshal_err)
+	}
+	//fmt.Printf("%s\n", data)
+	err := ioutil.WriteFile(filename, data, 0777)
+	if err != nil {
+		log.Fatalf("ioutil WriteFile failed：%s\n", err)
+	}
+
+	return err
+}
+
+//这个地方算是重复定义 network包下
+type OwlServerGroupRequest struct {
+	//请求命令
+	Cmd string
+	//地址字符串
+	Address string
+	//链接密码
+	Pass string
+	//token
+	Token string
 }

@@ -17,7 +17,7 @@ func JobInit() {
 	ClearExpireData()
 }
 
-//数据备份
+// K/V数据备份
 func DataBackup() {
 
 	ticker := time.NewTicker(time.Minute * 1)

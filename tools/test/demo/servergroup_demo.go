@@ -22,12 +22,12 @@ var servergroup *group.Servergroup
 func main() {
 
 	servergroup = group.NewServergroup()
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.1", "1111111111111", ""})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.2", "1111111111111", ""})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.3", "1111111111111", ""})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.4", "1111111111111", ""})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.5", "1111111111111", ""})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.6", "1111111111111", ""})
+	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.1", "1111111111111", "111"})
+	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.2", "1111111111111", "222"})
+	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.3", "1111111111111", "333"})
+	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.4", "1111111111111", "444"})
+	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.5", "1111111111111", "555"})
+	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.6", "1111111111111", "666"})
 	servergroup.AddAt(2, OwlServerGroupRequest{"", "http://192.168.0.7", "1111111111111", ""})
 	//	fmt.Println(servergroup.AddAt(2, OwlServerGroupRequest{"", "http://192.168.0.8", "1111111111111", ""}))
 	//	fmt.Println(servergroup.AddAt(222, OwlServerGroupRequest{"", "http://192.168.0.8", "1111111111111", ""}))
@@ -53,15 +53,22 @@ func main() {
 	for k := range list {
 		val, ok := list[k].(OwlServerGroupRequest)
 		if ok {
-			if val.Address == "http://192.168.0.14" {
+			if val.Address == "http://192.168.0.2" {
 				resat = k
 				resbool = true
 			}
 		}
 	}
-	fmt.Println(resat)
-	fmt.Println(resbool)
+	fmt.Println(resat)   //位置
+	fmt.Println(resbool) //存在与否
 
+	fmt.Println(servergroup.Values())
+
+	servergroup.SaveToFile("./servergroup.db")
+	servergroup.Clear() //Clear()清空
+	fmt.Println(servergroup.Values())
+	servergroup.LoadFromFile("./servergroup.db")
+	fmt.Println(servergroup.Values())
 	//fmt.Println(servergroup.Exists("192.168.1.10"))
 
 }
