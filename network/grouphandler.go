@@ -21,6 +21,34 @@ func NewOwlServerGroupHandler() *OwlServerGroupHandler {
 }
 
 //http服务器组执行数据操作
+func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerHandle(w http.ResponseWriter, r *http.Request) {
+
+	//验证身份
+	if !owlservergrouphandler.CheckAuth(r) {
+		owlservergrouphandler.Transmit(NOT_PASS)
+		return
+	}
+
+	req := owlservergrouphandler.owlservergrouprequest
+
+	command := GroupCommandType(req.Cmd)
+
+	switch command {
+	case GroupADD:
+		owlservergrouphandler.Add()
+	case GroupDELETE:
+		owlservergrouphandler.Delete()
+	case GroupGetAll:
+		owlservergrouphandler.GetAll()
+	case GroupGet:
+		owlservergrouphandler.Get()
+	default:
+		owlservergrouphandler.Transmit(UNKNOWN_COMMAND)
+	}
+
+}
+
+//http服务器组执行数据操作,集群
 func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerGroupHandle(w http.ResponseWriter, r *http.Request) {
 
 	//验证身份

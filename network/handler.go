@@ -121,36 +121,6 @@ func (owlhandler *OwlHandler) HTTPGroupDataHandle(w http.ResponseWriter, r *http
 
 }
 
-//http服务器组执行数据操作
-func (owlhandler *OwlHandler) HTTPServerGroupHandle(w http.ResponseWriter, r *http.Request) {
-
-	req := owlhandler.owlrequest
-
-	command := GroupCommandType(req.Cmd)
-
-	switch command {
-	case GroupADD:
-		owlhandler.Get()
-	case GroupDELETE:
-		owlhandler.Exists()
-	case GroupGetAll:
-		if !owlhandler.CheckAuth(r) {
-			owlhandler.Transmit(NOT_PASS)
-			break
-		}
-		owlhandler.Set()
-	case GroupGet:
-		if !owlhandler.CheckAuth(r) {
-			owlhandler.Transmit(NOT_PASS)
-			break
-		}
-		owlhandler.Expire()
-	default:
-		owlhandler.Transmit(UNKNOWN_COMMAND)
-	}
-
-}
-
 //解析response
 func (owlhandler *OwlHandler) Transmit(resstatus ResStatus) {
 

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	owlconfig "github.com/xssed/owlcache/config"
-	owlnetwork "github.com/xssed/owlcache/network"
+	//owlnetwork "github.com/xssed/owlcache/network"
 )
 
 //定义HTTP客户端结构
@@ -50,7 +50,7 @@ func (c *OwlClient) GetToken(address, cmd, pass string) {
 	fmt.Println(res.StatusCode)
 	fmt.Println(res.String())
 
-	owlnetwork.PASS
+	//owlnetwork.PASS
 
 	owlclient.Claer()
 }
