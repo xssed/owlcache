@@ -52,7 +52,7 @@ func ClearExpireData() {
 //服务器集群信息数据定期备份
 func ServerListBackup() {
 
-	ticker := time.NewTicker(time.Minute * 1)
+	ticker := time.NewTicker(time.Second * 15)
 	go func() {
 		for _ = range ticker.C {
 			//fmt.Printf("ticked at %v", time.Now())
