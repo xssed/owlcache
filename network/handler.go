@@ -200,8 +200,8 @@ func (owlhandler *OwlHandler) Pass(r *http.Request) {
 		uuid := tools.GetUUIDString()
 		ip := tools.RemoteAddr2IPAddr(r.RemoteAddr)
 		token := tools.GetMd5String(ip + uuid)
-		expiration, _ := time.ParseDuration("1800s")
-		BaseAuth.Set(token, ip, expiration) //30分钟过期
+		expiration, _ := time.ParseDuration("3600s")
+		BaseAuth.Set(token, ip, expiration) //60分钟过期
 		//在返回值中添加UUID返回
 		owlhandler.owlresponse.Data = token
 		owlhandler.Transmit(SUCCESS)

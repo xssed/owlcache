@@ -22,7 +22,7 @@ func main() {
 	owlconfig.ConfigInit()
 	//初始化日志记录
 	owllog.LogInit()
-	//初始化数据库服务
+	//初始化数据库服务,核心组件
 	owlnetwork.BaseCacheDBInit()
 	//定时任务服务
 	owljob.JobInit()

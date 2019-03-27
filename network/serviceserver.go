@@ -21,16 +21,22 @@ var ServerGroupList *group.Servergroup
 var HttpClient *httpclient.OwlClient
 
 func BaseCacheDBInit() {
+
 	//执行步骤信息
 	fmt.Println("owlcache  database running...")
-	BaseCacheDB = cache.NewCache("owlcache") //创建DB
 
-	//加载之前缓存本地的数据
+	//创建DB
+	BaseCacheDB = cache.NewCache("owlcache")
+
+	//加载之前缓存本地的DB数据
 	BaseCacheDB.LoadFromFile("./owlcache.db")
 
-	//身份认证缓存,所有身份认证都在这里有效期30分钟
+	//身份认证数据,所有客户端身份认证都在这里有效期60分钟
 	//存储内容: key:tonken  value:"uuid"
 	BaseAuth = cache.NewCache("Auth")
+
+	//加载之前缓存本地的DB数据
+	BaseAuth.LoadFromFile("./auth.db")
 
 	//初始化服务器集群信息存储列表
 	ServerGroupList = group.NewServergroup()
@@ -41,8 +47,12 @@ func BaseCacheDBInit() {
 	//初始化HttpClient客户端
 	HttpClient = httpclient.NewOwlClient()
 
+	//启动tcp服务
 	fmt.Println("owlcache  tcp server running...")
 	go stratTCP()
+
+	//启动http服务
 	fmt.Println("owlcache  http server running...")
 	go stratHTTP()
+
 }
