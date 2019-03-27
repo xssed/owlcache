@@ -34,7 +34,7 @@ func (s *server) Listen() {
 }
 
 func New(address string) *server {
-	log.Println("Creating server with address", address)
+	log.Println("Creating TCP server with address", address)
 	server := &server{
 		address: address,
 	}

@@ -29,7 +29,6 @@ func stratHTTP() {
 		fmt.Println("Error starting HTTP server.")
 		log.Fatal("ListenAndServe: ", err)
 	}
-
 }
 
 //单机数据执行信息

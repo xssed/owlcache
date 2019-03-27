@@ -22,7 +22,7 @@ var HttpClient *httpclient.OwlClient
 
 func BaseCacheDBInit() {
 	//执行步骤信息
-	fmt.Println("owlcache  DB running...")
+	fmt.Println("owlcache  database running...")
 	BaseCacheDB = cache.NewCache("owlcache") //创建DB
 
 	//加载之前缓存本地的数据
@@ -35,11 +35,14 @@ func BaseCacheDBInit() {
 	//初始化服务器集群信息存储列表
 	ServerGroupList = group.NewServergroup()
 
+	//加载之前缓存本地的服务器集群信息
+	ServerGroupList.LoadFromFile("./servergroup.db")
+
 	//初始化HttpClient客户端
 	HttpClient = httpclient.NewOwlClient()
 
-	fmt.Println("owlcache  TCPServer running...")
+	fmt.Println("owlcache  tcp server running...")
 	go stratTCP()
-	fmt.Println("owlcache  HTTPServer running...")
+	fmt.Println("owlcache  http server running...")
 	go stratHTTP()
 }
