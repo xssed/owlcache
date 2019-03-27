@@ -55,6 +55,14 @@ func LogRegister(owlconfig *config.OwlConfig) {
 
 }
 
+func Fatal(v ...interface{}) {
+	log.Fatal(v)
+}
+
+func Println(v ...interface{}) {
+	log.Println(v)
+}
+
 func Debug(str string) {
 	log.Print("debug: " + str)
 }
