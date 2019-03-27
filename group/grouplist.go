@@ -328,15 +328,3 @@ func (servergroup *Servergroup) SaveToFile(filename string) error {
 
 	return err
 }
-
-//这个地方算是重复定义 network包下
-type OwlServerGroupRequest struct {
-	//请求命令
-	Cmd string
-	//地址字符串
-	Address string
-	//链接密码
-	Pass string
-	//token
-	Token string
-}
