@@ -273,6 +273,7 @@ func (servergroup *Servergroup) LoadFromFile(filename string) error {
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Println(err)
+		return err
 	}
 
 	//	str := string(b)
