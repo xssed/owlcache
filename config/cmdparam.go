@@ -17,7 +17,7 @@ func CmdParamInit(param *OwlConfig) *OwlConfig {
 	cmdConfig := CmdParamExe(param)
 
 	//执行步骤信息
-	fmt.Println("owlcache  starting... ")
+	fmt.Println("owlcache  paraminit running... ")
 
 	return cmdConfig
 
