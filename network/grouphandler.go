@@ -1,23 +1,22 @@
 package network
 
 import (
-	"net/http"
-	//"time"
-	//owlconfig "github.com/xssed/owlcache/config"
-	//"github.com/xssed/owlcache/network"
 	//"fmt"
+	"log"
+	"net/http"
 
+	"github.com/xssed/owlcache/group"
 	tools "github.com/xssed/owlcache/tools"
 )
 
 //一个请求只产生一个 OwlServerGroupHandler
 type OwlServerGroupHandler struct {
-	owlservergrouprequest  *OwlServerGroupRequest
-	owlserveggroupresponse *OwlServerGroupResponse
+	owlservergrouprequest  *group.OwlServerGroupRequest
+	owlserveggroupresponse *group.OwlServerGroupResponse
 }
 
 func NewOwlServerGroupHandler() *OwlServerGroupHandler {
-	return &OwlServerGroupHandler{&OwlServerGroupRequest{}, &OwlServerGroupResponse{}}
+	return &OwlServerGroupHandler{&group.OwlServerGroupRequest{}, &group.OwlServerGroupResponse{}}
 }
 
 //http服务器组执行数据操作
@@ -25,25 +24,25 @@ func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerHandle(w http.Resp
 
 	//验证身份
 	if !owlservergrouphandler.CheckAuth(r) {
-		owlservergrouphandler.Transmit(NOT_PASS)
+		owlservergrouphandler.Transmit(group.NOT_PASS)
 		return
 	}
 
 	req := owlservergrouphandler.owlservergrouprequest
 
-	command := GroupCommandType(req.Cmd)
+	command := group.GroupCommandType(req.Cmd)
 
 	switch command {
-	case GroupADD:
+	case group.GroupADD:
 		owlservergrouphandler.Add()
-	case GroupDELETE:
+	case group.GroupDELETE:
 		owlservergrouphandler.Delete()
-	case GroupGetAll:
+	case group.GroupGetAll:
 		owlservergrouphandler.GetAll()
-	case GroupGet:
+	case group.GroupGet:
 		owlservergrouphandler.Get()
 	default:
-		owlservergrouphandler.Transmit(UNKNOWN_COMMAND)
+		owlservergrouphandler.Transmit(group.UNKNOWN_COMMAND)
 	}
 
 }
@@ -53,48 +52,48 @@ func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerGroupHandle(w http
 
 	//验证身份
 	if !owlservergrouphandler.CheckAuth(r) {
-		owlservergrouphandler.Transmit(NOT_PASS)
+		owlservergrouphandler.Transmit(group.NOT_PASS)
 		return
 	}
 
 	req := owlservergrouphandler.owlservergrouprequest
 
-	command := GroupCommandType(req.Cmd)
+	command := group.GroupCommandType(req.Cmd)
 
 	switch command {
-	case GroupADD:
+	case group.GroupADD:
 		owlservergrouphandler.Add()
-	case GroupDELETE:
+	case group.GroupDELETE:
 		owlservergrouphandler.Delete()
-	case GroupGetAll:
+	case group.GroupGetAll:
 		owlservergrouphandler.GetAll()
-	case GroupGet:
+	case group.GroupGet:
 		owlservergrouphandler.Get()
 	default:
-		owlservergrouphandler.Transmit(UNKNOWN_COMMAND)
+		owlservergrouphandler.Transmit(group.UNKNOWN_COMMAND)
 	}
 
 }
 
 //解析response
-func (owlservergrouphandler *OwlServerGroupHandler) Transmit(resstatus ResStatus) {
+func (owlservergrouphandler *OwlServerGroupHandler) Transmit(resstatus group.ResStatus) {
 
 	switch resstatus {
-	case SUCCESS:
-		owlservergrouphandler.owlserveggroupresponse.Status = SUCCESS
-		owlservergrouphandler.owlserveggroupresponse.Results = ResStatusToString(SUCCESS)
-	case ERROR:
-		owlservergrouphandler.owlserveggroupresponse.Status = ERROR
-		owlservergrouphandler.owlserveggroupresponse.Results = ResStatusToString(ERROR)
-	case NOT_FOUND:
-		owlservergrouphandler.owlserveggroupresponse.Status = NOT_FOUND
-		owlservergrouphandler.owlserveggroupresponse.Results = ResStatusToString(NOT_FOUND)
-	case UNKNOWN_COMMAND:
-		owlservergrouphandler.owlserveggroupresponse.Status = UNKNOWN_COMMAND
-		owlservergrouphandler.owlserveggroupresponse.Results = ResStatusToString(UNKNOWN_COMMAND)
-	case NOT_PASS:
-		owlservergrouphandler.owlserveggroupresponse.Status = NOT_PASS
-		owlservergrouphandler.owlserveggroupresponse.Results = ResStatusToString(NOT_PASS)
+	case group.SUCCESS:
+		owlservergrouphandler.owlserveggroupresponse.Status = group.SUCCESS
+		owlservergrouphandler.owlserveggroupresponse.Results = group.ResStatusToString(group.SUCCESS)
+	case group.ERROR:
+		owlservergrouphandler.owlserveggroupresponse.Status = group.ERROR
+		owlservergrouphandler.owlserveggroupresponse.Results = group.ResStatusToString(group.ERROR)
+	case group.NOT_FOUND:
+		owlservergrouphandler.owlserveggroupresponse.Status = group.NOT_FOUND
+		owlservergrouphandler.owlserveggroupresponse.Results = group.ResStatusToString(group.NOT_FOUND)
+	case group.UNKNOWN_COMMAND:
+		owlservergrouphandler.owlserveggroupresponse.Status = group.UNKNOWN_COMMAND
+		owlservergrouphandler.owlserveggroupresponse.Results = group.ResStatusToString(group.UNKNOWN_COMMAND)
+	case group.NOT_PASS:
+		owlservergrouphandler.owlserveggroupresponse.Status = group.NOT_PASS
+		owlservergrouphandler.owlserveggroupresponse.Results = group.ResStatusToString(group.NOT_PASS)
 	}
 
 	owlservergrouphandler.owlserveggroupresponse.Cmd = owlservergrouphandler.owlservergrouprequest.Cmd
@@ -136,17 +135,17 @@ func (owlservergrouphandler *OwlServerGroupHandler) Add() {
 		ServerGroupList.RemoveAt(int32(at))                                                 //先删除
 		ok := ServerGroupList.AddAt(int32(at), owlservergrouphandler.owlservergrouprequest) //后增加
 		if ok {
-			owlservergrouphandler.Transmit(SUCCESS)
+			owlservergrouphandler.Transmit(group.SUCCESS)
 		} else {
-			owlservergrouphandler.Transmit(ERROR)
+			owlservergrouphandler.Transmit(group.ERROR)
 		}
 	} else {
 		//不存在
 		ok := ServerGroupList.Add(owlservergrouphandler.owlservergrouprequest)
 		if ok {
-			owlservergrouphandler.Transmit(SUCCESS)
+			owlservergrouphandler.Transmit(group.SUCCESS)
 		} else {
-			owlservergrouphandler.Transmit(ERROR)
+			owlservergrouphandler.Transmit(group.ERROR)
 		}
 	}
 
@@ -158,7 +157,16 @@ func (owlservergrouphandler *OwlServerGroupHandler) find(address string) (int32,
 	resbool := false
 	list := ServerGroupList.Values()
 	for k, _ := range list {
-		val, ok := list[k].(*OwlServerGroupRequest)
+
+		defer func() {
+			if err := recover(); err != nil {
+				log.Panicln(err)
+			}
+		}()
+
+		val, ok := list[k].(group.OwlServerGroupRequest)
+
+		//fmt.Println(val, ok)
 		if ok {
 			if val.Address == address {
 				resat = int32(k)
@@ -175,13 +183,13 @@ func (owlservergrouphandler *OwlServerGroupHandler) Delete() {
 	if exits {
 		res := ServerGroupList.RemoveAt(int32(at))
 		if res {
-			owlservergrouphandler.Transmit(SUCCESS)
+			owlservergrouphandler.Transmit(group.SUCCESS)
 		} else {
-			owlservergrouphandler.Transmit(ERROR)
+			owlservergrouphandler.Transmit(group.ERROR)
 		}
 	} else {
 		//不存在
-		owlservergrouphandler.Transmit(NOT_FOUND)
+		owlservergrouphandler.Transmit(group.NOT_FOUND)
 	}
 }
 
@@ -189,7 +197,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Delete() {
 func (owlservergrouphandler *OwlServerGroupHandler) GetAll() {
 	list := ServerGroupList.Values()
 	owlservergrouphandler.owlserveggroupresponse.Data = list
-	owlservergrouphandler.Transmit(SUCCESS)
+	owlservergrouphandler.Transmit(group.SUCCESS)
 }
 
 //获取一个服务器信息
@@ -200,13 +208,13 @@ func (owlservergrouphandler *OwlServerGroupHandler) Get() {
 		res, ok := ServerGroupList.GetAt(int32(at))
 		if ok {
 			owlservergrouphandler.owlserveggroupresponse.Data = res
-			owlservergrouphandler.Transmit(SUCCESS)
+			owlservergrouphandler.Transmit(group.SUCCESS)
 		} else {
-			owlservergrouphandler.Transmit(ERROR)
+			owlservergrouphandler.Transmit(group.ERROR)
 		}
 	} else {
 		//不存在
-		owlservergrouphandler.Transmit(NOT_FOUND)
+		owlservergrouphandler.Transmit(group.NOT_FOUND)
 	}
 
 }
