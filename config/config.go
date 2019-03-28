@@ -19,6 +19,7 @@ type OwlConfig struct {
 	Tcpport                  string //Tcp监听端口
 	Httpport                 string //Http监听端口
 	HttpClientRequestTimeout string //集群互相通信时的请求超时时间
+	GroupWorkMode            string //集群方式:owlcache、gossip
 }
 
 //创建一个默认配置文件的实体
@@ -31,6 +32,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Tcpport:                  "7720",
 		Httpport:                 "7721",
 		HttpClientRequestTimeout: "3",
+		GroupWorkMode:            "owlcache",
 	}
 }
 
@@ -101,5 +103,8 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["HttpClientRequestTimeout"]) >= 1 {
 		param.HttpClientRequestTimeout = config["HttpClientRequestTimeout"]
+	}
+	if len(config["GroupWorkMode"]) >= 1 {
+		param.GroupWorkMode = config["GroupWorkMode"]
 	}
 }

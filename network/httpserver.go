@@ -21,7 +21,7 @@ func stratHTTP() {
 	//设置服务器集群
 	http.HandleFunc("/server/", Server) //设置服务器集群信息，单机。
 	//设置服务器集群
-	http.HandleFunc("/server_group/", ServerGroup) //设置服务器集群信息，单机。
+	http.HandleFunc("/server_group/", ServerGroup) //设置服务器集群信息,集群。
 
 	//监听设置
 	err := http.ListenAndServe(addr, nil) //设置监听的端口
@@ -47,6 +47,7 @@ func GroupExe(w http.ResponseWriter, r *http.Request) {
 
 	owlhandler := NewOwlHandler()
 	owlhandler.owlrequest.HTTPReceive(w, r)
+	//owlconfig
 	owlhandler.HTTPGroupDataHandle(w, r) //执行数据
 	resstr := owlhandler.owlresponse.ConvertToString()
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
