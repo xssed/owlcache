@@ -47,7 +47,7 @@ func main() {
 	}()
 
 	for i := 0; i < 100; i++ {
-		servergroup.AddAt(2, OwlServerGroupRequest{"", "http://192.168.10." + strconv.Itoa(i), strconv.Itoa(i), ""})
+		go servergroup.AddAt(2, OwlServerGroupRequest{"", "http://192.168.10." + strconv.Itoa(i), strconv.Itoa(i), ""})
 	}
 
 	time.Sleep(time.Second * 10)
