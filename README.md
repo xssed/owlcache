@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🦉Owlcache
+# 🦉owlcache
 
 ![Image text](https://github.com/xssed/owlcache/blob/master/assets/owl.jpg?raw=true)
 
@@ -9,7 +9,7 @@
 
 </div>
 
- 🦉Owlcache 是一款由Golang编写的轻量级、高性能、无中心分布式的Key/Value内存缓存型的数据共享应用(一定场景下可以作为轻量型数据库来使用)。  
+ 🦉owlcache 是一款由Go编写的轻量级、高性能、无中心分布式的Key/Value内存缓存型的数据共享应用(一定场景下可以作为轻量型数据库来使用)。    
 
 
 ## 亮点与功能简述
