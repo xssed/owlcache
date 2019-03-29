@@ -100,6 +100,7 @@ import (
 //切片list结构
 type Servergroup struct {
 	list []interface{}
+	lock sync.RWMutex
 }
 
 //创建一个空list结构
@@ -110,6 +111,9 @@ func NewServergroup() *Servergroup {
 
 //将对象添加到列表末尾
 func (servergroup *Servergroup) Add(val interface{}) bool {
+	servergroup.lock.Lock()
+	defer servergroup.lock.Unlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -123,6 +127,9 @@ func (servergroup *Servergroup) Add(val interface{}) bool {
 
 //在指定索引处向列表中插入元素,i从0起始
 func (servergroup *Servergroup) AddAt(i int32, val interface{}) bool {
+	servergroup.lock.Lock()
+	defer servergroup.lock.Unlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -138,6 +145,9 @@ func (servergroup *Servergroup) AddAt(i int32, val interface{}) bool {
 
 //删除列表指定索引处的元素,i从0起始
 func (servergroup *Servergroup) RemoveAt(i int32) bool {
+	servergroup.lock.Lock()
+	defer servergroup.lock.Unlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -151,6 +161,9 @@ func (servergroup *Servergroup) RemoveAt(i int32) bool {
 
 //删除列表中的最前的一个元素
 func (servergroup *Servergroup) RemoveFirst() bool {
+	servergroup.lock.Lock()
+	defer servergroup.lock.Unlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -164,6 +177,9 @@ func (servergroup *Servergroup) RemoveFirst() bool {
 
 //删除列表中的最后的一个元素
 func (servergroup *Servergroup) RemoveLast() bool {
+	servergroup.lock.Lock()
+	defer servergroup.lock.Unlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -177,6 +193,9 @@ func (servergroup *Servergroup) RemoveLast() bool {
 
 //删除列表中的所有元素
 func (servergroup *Servergroup) Clear() bool {
+	servergroup.lock.Lock()
+	defer servergroup.lock.Unlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -190,6 +209,9 @@ func (servergroup *Servergroup) Clear() bool {
 
 //按索引获取元素
 func (servergroup *Servergroup) GetAt(i int32) (interface{}, bool) {
+	servergroup.lock.RLock()
+	defer servergroup.lock.RUnlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -202,6 +224,9 @@ func (servergroup *Servergroup) GetAt(i int32) (interface{}, bool) {
 
 //按范围获取元素
 func (servergroup *Servergroup) GetRange(begin int32, end int32) ([]interface{}, bool) {
+	servergroup.lock.RLock()
+	defer servergroup.lock.RUnlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -214,6 +239,9 @@ func (servergroup *Servergroup) GetRange(begin int32, end int32) ([]interface{},
 
 //获取列表中的第一个元素
 func (servergroup *Servergroup) GetFirst() (interface{}, bool) {
+	servergroup.lock.RLock()
+	defer servergroup.lock.RUnlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -226,6 +254,9 @@ func (servergroup *Servergroup) GetFirst() (interface{}, bool) {
 
 //获取列表中的最后一个元素
 func (servergroup *Servergroup) GetLast() (interface{}, bool) {
+	servergroup.lock.RLock()
+	defer servergroup.lock.RUnlock()
+
 	ret := true
 	defer func() {
 		if r := recover(); r != nil {
@@ -238,16 +269,25 @@ func (servergroup *Servergroup) GetLast() (interface{}, bool) {
 
 //统计列表中有多少个数据
 func (servergroup *Servergroup) Count() int {
+	servergroup.lock.RLock()
+	defer servergroup.lock.RUnlock()
+
 	return len(servergroup.list)
 }
 
 //获取列表中的所有值
 func (servergroup *Servergroup) Values() []interface{} {
+	servergroup.lock.RLock()
+	defer servergroup.lock.RUnlock()
+
 	return servergroup.list
 }
 
 //确定元素是否在列表中,只对切片中的值是字符串的有效
 func (servergroup *Servergroup) Exists(find interface{}) bool {
+	servergroup.lock.RLock()
+	defer servergroup.lock.RUnlock()
+
 	for _, value := range servergroup.list {
 		if value == find {
 			return true
@@ -258,6 +298,9 @@ func (servergroup *Servergroup) Exists(find interface{}) bool {
 
 //返回切片字符串列表,只对切片中的值是字符串的有效
 func (servergroup *Servergroup) ToSliceString() []string {
+	servergroup.lock.RLock()
+	defer servergroup.lock.RUnlock()
+
 	strList := make([]string, len(servergroup.list))
 	for k := range servergroup.list {
 		val, ok := servergroup.list[k].(string)
@@ -270,6 +313,9 @@ func (servergroup *Servergroup) ToSliceString() []string {
 
 //从文件中读取序列化的数据
 func (servergroup *Servergroup) LoadFromFile(filename string) error {
+	servergroup.lock.Lock()
+	defer servergroup.lock.Unlock()
+
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Println(err)
@@ -306,11 +352,10 @@ func (servergroup *Servergroup) LoadFromFile(filename string) error {
 
 //将内存数据保存到文件
 func (servergroup *Servergroup) SaveToFile(filename string) error {
+	servergroup.lock.RLock()
 
-	var mu sync.RWMutex
-	mu.RLock()
 	defer func() {
-		mu.RUnlock()
+		servergroup.lock.RUnlock()
 		//		if x := recover(); x != nil {
 		//			err = fmt.Errorf("Error: Save " + filename)
 		//		}

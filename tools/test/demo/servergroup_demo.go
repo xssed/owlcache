@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/xssed/owlcache/group"
 )
@@ -22,13 +24,34 @@ var servergroup *group.Servergroup
 func main() {
 
 	servergroup = group.NewServergroup()
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.1", "1111111111111", "111"})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.2", "1111111111111", "222"})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.3", "1111111111111", "333"})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.4", "1111111111111", "444"})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.5", "1111111111111", "555"})
-	servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.6", "1111111111111", "666"})
-	servergroup.AddAt(2, OwlServerGroupRequest{"", "http://192.168.0.7", "1111111111111", ""})
+	go func() {
+		servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.1", "1111111111111", "111"})
+	}()
+	go func() {
+		servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.2", "1111111111111", "222"})
+	}()
+	go func() {
+		servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.3", "1111111111111", "333"})
+	}()
+	go func() {
+		servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.4", "1111111111111", "444"})
+	}()
+	go func() {
+		servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.5", "1111111111111", "555"})
+	}()
+	go func() {
+		servergroup.Add(OwlServerGroupRequest{"", "http://192.168.0.6", "1111111111111", "666"})
+	}()
+	go func() {
+		servergroup.AddAt(2, OwlServerGroupRequest{"", "http://192.168.0.7", "1111111111111", ""})
+	}()
+
+	for i := 0; i < 100; i++ {
+		servergroup.AddAt(2, OwlServerGroupRequest{"", "http://192.168.10." + strconv.Itoa(i), strconv.Itoa(i), ""})
+	}
+
+	time.Sleep(time.Second * 10)
+
 	//	fmt.Println(servergroup.AddAt(2, OwlServerGroupRequest{"", "http://192.168.0.8", "1111111111111", ""}))
 	//	fmt.Println(servergroup.AddAt(222, OwlServerGroupRequest{"", "http://192.168.0.8", "1111111111111", ""}))
 	//	fmt.Println(servergroup.ToSliceString())
@@ -48,6 +71,8 @@ func main() {
 	//	fmt.Println(servergroup.Count())
 	resat := 0
 	resbool := false
+	fmt.Println(servergroup.Count())
+
 	list := servergroup.Values()
 	fmt.Println(list)
 	for k := range list {
@@ -70,5 +95,6 @@ func main() {
 	servergroup.LoadFromFile("./servergroup.db")
 	fmt.Println(servergroup.Values())
 	//fmt.Println(servergroup.Exists("192.168.1.10"))
+	fmt.Println(servergroup.Count())
 
 }
