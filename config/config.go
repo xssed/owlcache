@@ -40,7 +40,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 func ConfigInit() {
 
 	//执行步骤信息
-	fmt.Println("owlcache  loading config...")
+	//fmt.Println("owlcache  loading config...")
 
 	//读取配置文件获取一个最终的配置模型
 	var config = make(map[string]string)
@@ -78,6 +78,9 @@ func ConfigInit() {
 	//最后检查参数
 	OwlConfigModel = CmdParamInit(OwlConfigModel)
 	//fmt.Println(OwlConfigModel) //打印出最终赋值后的配置信息
+
+	//执行步骤信息
+	fmt.Println("owlcache  configuration initialization is complete...")
 
 }
 
