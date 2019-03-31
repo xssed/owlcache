@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"os/signal"
 	"runtime"
 
 	owlconfig "github.com/xssed/owlcache/config"
@@ -13,11 +10,20 @@ import (
 	owlsystem "github.com/xssed/owlcache/system"
 )
 
+//                _                _
+//   _____      _| | ___ __ _  ___| |__   ___
+//  / _ \ \ /\ / / |/ __/ _` |/ __| '_ \ / _ \
+// | (_) \ V  V /| | (_| (_| | (__| | | |  __/
+//  \___/ \_/\_/ |_|\___\__,_|\___|_| |_|\___|
+//
+//If you have any questions,Please contact us: xsser@xsser.cc
+//Project Home:https://github.com/xssed/owlcache
+
 func main() {
 	//使用多核cpu
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	//欢迎信息
-	owlsystem.SayHello()
+	owlsystem.DosSayHello()
 	//初始化配置
 	owlconfig.ConfigInit()
 	//初始化日志记录
@@ -26,16 +32,6 @@ func main() {
 	owlnetwork.BaseCacheDBInit()
 	//定时任务服务
 	owljob.JobInit()
-
 	//捕获程序正常退出操作 ctrl+c
-	OnExit()
-}
-
-//捕获程序正常退出操作 ctrl+c
-func OnExit() {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, os.Kill)
-	<-c
-	owllog.Info("Owlcache is stoped") //日志记录
-	fmt.Println("Owlcache is stoped \nBye!")
+	owlsystem.OnExit()
 }
