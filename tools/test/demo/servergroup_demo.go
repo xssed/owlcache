@@ -89,10 +89,10 @@ func main() {
 
 	fmt.Println(servergroup.Values())
 
-	servergroup.SaveToFile("./servergroup.db")
+	servergroup.SaveToFile("./db_file/servergroup.db")
 	servergroup.Clear() //Clear()清空
 	fmt.Println(servergroup.Values())
-	servergroup.LoadFromFile("./servergroup.db")
+	servergroup.LoadFromFile("./db_file/servergroup.db")
 	fmt.Println(servergroup.Values())
 	//fmt.Println(servergroup.Exists("192.168.1.10"))
 	fmt.Println(servergroup.Count())

@@ -9,14 +9,14 @@ import (
 )
 
 const (
-	VERSION      string = "0.1.2"
+	VERSION      string = "0.1.3"
 	VERSION_DATE string = "2018-01-30"
 )
 
 //程序启动欢迎信息
 func DosSayHello() {
 
-	fmt.Println("\nWelcome to use owlcache. Version:" + VERSION + "\nIf you have any questions,Please contact us: xsser@xsser.cc \nProject Home:https://github.com/xssed/owlcache")
+	fmt.Println("Welcome to use owlcache. Version:" + VERSION + "\nIf you have any questions,Please contact us: xsser@xsser.cc \nProject Home:https://github.com/xssed/owlcache")
 	fmt.Println(`                _                _          `)
 	fmt.Println(`   _____      _| | ___ __ _  ___| |__   ___ `)
 	fmt.Println(`  / _ \ \ /\ / / |/ __/ _' |/ __| '_ \ / _ \`)
