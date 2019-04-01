@@ -90,9 +90,11 @@ import (
 	"io/ioutil"
 	"log"
 
-	//"os"
 	"encoding/json"
+	//"os"
 	"sync"
+
+	"github.com/xssed/owlcache/tools"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -312,11 +314,11 @@ func (servergroup *Servergroup) ToSliceString() []string {
 }
 
 //从文件中读取序列化的数据
-func (servergroup *Servergroup) LoadFromFile(filename string) error {
+func (servergroup *Servergroup) LoadFromFile(folder, filename string) error {
 	servergroup.lock.Lock()
 	defer servergroup.lock.Unlock()
 
-	b, err := ioutil.ReadFile(filename)
+	b, err := ioutil.ReadFile(folder + filename)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -351,7 +353,7 @@ func (servergroup *Servergroup) LoadFromFile(filename string) error {
 }
 
 //将内存数据保存到文件
-func (servergroup *Servergroup) SaveToFile(filename string) error {
+func (servergroup *Servergroup) SaveToFile(folder, filename string) error {
 	servergroup.lock.RLock()
 
 	defer func() {
@@ -366,10 +368,20 @@ func (servergroup *Servergroup) SaveToFile(filename string) error {
 		log.Fatalf("Json marshaling failed：%s\n", marshal_err)
 	}
 	//fmt.Printf("%s\n", data)
-	err := ioutil.WriteFile(filename, data, 0777)
-	if err != nil {
-		log.Fatalf("ioutil WriteFile failed：%s\n", err)
+
+	//创建文件
+	servergroup_dbfile, create_err := tools.CreateFolderAndFile(folder, filename)
+	if create_err != nil {
+		log.Fatalf("Create File failed：%s\n", create_err)
 	}
+	_, err := servergroup_dbfile.Write([]byte(data))
+	if err != nil {
+		log.Fatalf("Write File failed：%s\n", err)
+	}
+	//释放资源
+	servergroup_dbfile.Close()
+
+	//err := ioutil.WriteFile(filename, data, 0777)
 
 	return err
 }
