@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/xssed/owlcache/cache"
+	owlconfig "github.com/xssed/owlcache/config"
 	"github.com/xssed/owlcache/group"
 	"github.com/xssed/owlcache/network/httpclient"
 )
@@ -29,20 +30,20 @@ func BaseCacheDBInit() {
 	BaseCacheDB = cache.NewCache("owlcache")
 
 	//加载之前缓存本地的DB数据
-	BaseCacheDB.LoadFromFile("./owlcache.db")
+	BaseCacheDB.LoadFromFile(owlconfig.OwlConfigModel.DBfile + "owlcache.db")
 
 	//身份认证数据,所有客户端身份认证都在这里有效期60分钟
 	//存储内容: key:tonken  value:"uuid"
 	BaseAuth = cache.NewCache("Auth")
 
 	//加载之前缓存本地的DB数据
-	BaseAuth.LoadFromFile("./auth.db")
+	BaseAuth.LoadFromFile(owlconfig.OwlConfigModel.DBfile + "auth.db")
 
 	//初始化服务器集群信息存储列表
 	ServerGroupList = group.NewServergroup()
 
 	//加载之前缓存本地的服务器集群信息
-	ServerGroupList.LoadFromFile("./servergroup.db")
+	ServerGroupList.LoadFromFile(owlconfig.OwlConfigModel.DBfile, "servergroup.db")
 
 	//初始化HttpClient客户端
 	HttpClient = httpclient.NewOwlClient()
