@@ -14,12 +14,17 @@ var OwlConfigModel *OwlConfig
 type OwlConfig struct {
 	Configfile               string //配置文件路径
 	Logfile                  string //日志文件路径
+	DBfile                   string //数据库文件路径
 	Pass                     string //owlcache密钥
 	Host                     string //主机地址
 	Tcpport                  string //Tcp监听端口
 	Httpport                 string //Http监听端口
 	HttpClientRequestTimeout string //集群互相通信时的请求超时时间
 	GroupWorkMode            string //集群方式:owlcache、gossip
+	Task_DataBackup          string //自动备份DB数据的存储时间
+	Task_DataAuthBackup      string //自动备份用户认证数据的存储时间
+	Task_ClearExpireData     string //自动清理数据库中过期数据的时间
+	Task_ServerListBackup    string //自动备份服务器集群信息数据的时间
 }
 
 //创建一个默认配置文件的实体
@@ -27,12 +32,17 @@ func NewDefaultOwlConfig() *OwlConfig {
 	return &OwlConfig{
 		Configfile:               "owlcache.conf",
 		Logfile:                  "",
+		DBfile:                   "",
 		Pass:                     "shi!jie9he?ping6",
 		Host:                     "127.0.0.1",
 		Tcpport:                  "7720",
 		Httpport:                 "7721",
 		HttpClientRequestTimeout: "3",
 		GroupWorkMode:            "owlcache",
+		Task_DataBackup:          "1",
+		Task_DataAuthBackup:      "1",
+		Task_ClearExpireData:     "1",
+		Task_ServerListBackup:    "1",
 	}
 }
 
@@ -104,10 +114,25 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 		//!!!如果在命令行中启动服务时指定了Logfile值，而配置文件这里没有注释掉则会以配置文件为准
 		param.Logfile = config["Logfile"]
 	}
+	if len(config["DBfile"]) > 3 {
+		param.DBfile = config["DBfile"]
+	}
 	if len(config["HttpClientRequestTimeout"]) >= 1 {
 		param.HttpClientRequestTimeout = config["HttpClientRequestTimeout"]
 	}
 	if len(config["GroupWorkMode"]) >= 1 {
 		param.GroupWorkMode = config["GroupWorkMode"]
+	}
+	if len(config["Task_DataBackup"]) >= 1 {
+		param.Task_DataBackup = config["Task_DataBackup"]
+	}
+	if len(config["Task_DataAuthBackup"]) >= 1 {
+		param.Task_DataAuthBackup = config["Task_DataAuthBackup"]
+	}
+	if len(config["Task_ClearExpireData"]) >= 1 {
+		param.Task_ClearExpireData = config["Task_ClearExpireData"]
+	}
+	if len(config["Task_ServerListBackup"]) >= 1 {
+		param.Task_ServerListBackup = config["Task_ServerListBackup"]
 	}
 }
