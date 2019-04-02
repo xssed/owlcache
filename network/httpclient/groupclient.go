@@ -10,7 +10,7 @@ func (c *OwlClient) Get(address string, value string) {
 	owlclient := NewOwlHttpClient(c.OwlTransport)
 	fmt.Println(owlclient)
 	owlclient.Get("httpbin.org/get")
-	owlclient.SetTimeout(*c.HCRequestTimeout * time.Second)
+	owlclient.SetTimeout(c.HCRequestTimeout * time.Second)
 	owlclient.Query.Add("key", "value")
 	res, err := owlclient.Do()
 	if err != nil {

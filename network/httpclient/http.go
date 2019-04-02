@@ -17,7 +17,7 @@ import (
 
 const (
 	MaxIdleConnections int = 20
-	RequestTimeout     int = 3
+	RequestTimeout     int = 3 //初始默认值，在配置文件中已经定义。如果调用OwlHttp.SetTimeout()可以在使用时再次更改
 )
 
 //var OwlTransport *http.Transport
