@@ -65,7 +65,7 @@ func ConfigInit() {
 		fmt.Print("Can not read configuration file. now exit\n")
 		os.Exit(0)
 	}
-	buff := bufio.NewReader(config_file) //读入缓存
+	buff := bufio.NewReader(config_file) //将内容读入缓冲区
 	//读取配置文件
 	for {
 		line, err := buff.ReadString('\n') //以'\n'为结束符读入一行
