@@ -7,9 +7,12 @@ import (
 	"encoding/gob"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/xssed/owlcache/tools"
 )
 
 //创建一个缓存库模型
@@ -120,11 +123,18 @@ func (baseCache *BaseCache) Count() int {
 }
 
 //将内存数据序列化到文件
-func (baseCache *BaseCache) SaveToFile(filename string) error {
-	f, err := os.Create(filename)
+func (baseCache *BaseCache) SaveToFile(folder, filename string) error {
+	//	f, err := os.Create(filename)
+	//	if err != nil {
+	//		return err
+	//	}
+	//创建文件
+	f, err := tools.CreateFolderAndFile(folder, filename)
 	if err != nil {
+		log.Fatalf("Create File failed：%s\n", err)
 		return err
 	}
+
 	if err = baseCache.SaveIoWriter(f); err != nil {
 		f.Close()
 		return err
