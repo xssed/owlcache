@@ -76,6 +76,9 @@ func ConfigInit() {
 		if string(rs[0:1]) == `#` || len(line) < 3 {
 			continue
 		}
+		if string(rs[0:1]) == `[` || len(line) < 3 {
+			continue
+		}
 		type_name := string(rs[0:strings.Index(line, " ")])
 		type_value := string(rs[strings.Index(line, " ")+1 : len(rs)-2]) //-1
 		config[type_name] = type_value
