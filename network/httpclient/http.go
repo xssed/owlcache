@@ -160,6 +160,14 @@ func (h *OwlHttp) Claer() *OwlHttp {
 	return h
 }
 
+//打印数据，测试用
+func (h *OwlHttp) EchoInfo() {
+	fmt.Println(*h.Request)
+	fmt.Println(*h.Client)
+	fmt.Println(h.Query)
+	fmt.Println(h.Param)
+}
+
 //Do  return Response and err
 func (h *OwlHttp) Do() (*Response, error) {
 	rawquery := h.Query.Encode()
