@@ -43,7 +43,7 @@ func BaseCacheDBInit() {
 	ServerGroupList = group.NewServergroup()
 
 	//加载之前缓存本地的服务器集群信息
-	ServerGroupList.LoadFromFile(owlconfig.OwlConfigModel.DBfile, "servergroup.db")
+	ServerGroupList.LoadFromFile(owlconfig.OwlConfigModel.DBfile, "server_group_config.json")
 
 	//初始化HttpClient客户端
 	HttpClient = httpclient.NewOwlClient()

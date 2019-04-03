@@ -87,6 +87,7 @@ package group
 import (
 	//"encoding/gob"
 	//"fmt"
+	"bytes"
 	"io/ioutil"
 	"log"
 
@@ -368,13 +369,20 @@ func (servergroup *Servergroup) SaveToFile(folder, filename string) error {
 		log.Fatalf("Json marshaling failed：%s\n", marshal_err)
 	}
 	//fmt.Printf("%s\n", data)
+	//格式化数据格式
+	var out bytes.Buffer
+	fmt_err := json.Indent(&out, data, "", "\t")
+	if fmt_err != nil {
+		log.Fatalf("Json Format failed：%s\n", fmt_err)
+	}
+	//fmt.Println(out.String())
 
 	//创建文件
 	servergroup_dbfile, create_err := tools.CreateFolderAndFile(folder, filename)
 	if create_err != nil {
 		log.Fatalf("Create File failed：%s\n", create_err)
 	}
-	_, err := servergroup_dbfile.Write([]byte(data))
+	_, err := servergroup_dbfile.Write([]byte(out.String()))
 	if err != nil {
 		log.Fatalf("Write File failed：%s\n", err)
 	}

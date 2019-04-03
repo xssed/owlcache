@@ -111,7 +111,7 @@ func ServerListBackup() {
 	ticker := time.NewTicker(time.Minute * time.Duration(task_serverlistbackup))
 	go func() {
 		for _ = range ticker.C {
-			err := owlnetwork.ServerGroupList.SaveToFile(owlconfig.OwlConfigModel.DBfile, "servergroup.db")
+			err := owlnetwork.ServerGroupList.SaveToFile(owlconfig.OwlConfigModel.DBfile, "server_group_config.json")
 			if err != nil {
 				fmt.Println(err)
 				owllog.Error(err)
