@@ -46,8 +46,8 @@ func (c *OwlClient) GetToken(address, cmd, pass string) string {
 	owlclient.Query.Add("pass", pass)
 	res, err := owlclient.Do()
 	if err != nil {
-		owllog.Println("OwlClient Method GetToken error：" + err.Error()) //日志记录
-		fmt.Println("OwlClient Method GetToken error：" + err.Error())
+		owllog.Println("owlClient Method GetToken error：" + err.Error()) //日志记录
+		fmt.Println("owlClient Method GetToken error：" + err.Error())
 	}
 	owlclient.Claer()
 	if res != nil && res.StatusCode == 200 {
@@ -59,16 +59,17 @@ func (c *OwlClient) GetToken(address, cmd, pass string) string {
 }
 
 //获取Key值
-func (c *OwlClient) GetKey(address, cmd, key string) string {
+func (c *OwlClient) GetValue(address, key string) string {
+
 	owlclient := NewOwlHttpClient(c.OwlTransport)
 	owlclient.PostForm(address + "/data")
 	owlclient.SetTimeout(c.HCRequestTimeout * time.Second)
-	owlclient.Query.Add("cmd", cmd)
+	owlclient.Query.Add("cmd", "get")
 	owlclient.Query.Add("key", key)
 	res, err := owlclient.Do()
 	if err != nil {
-		owllog.Println("OwlClient Method GetToken error：" + err.Error()) //日志记录
-		fmt.Println("OwlClient Method GetToken error：" + err.Error())
+		owllog.Println("owlclient method GetValue error：" + err.Error()) //日志记录
+		fmt.Println("owlclient method GetValue error：" + err.Error())
 	}
 	owlclient.Claer()
 	if res != nil && res.StatusCode == 200 {

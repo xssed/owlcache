@@ -13,13 +13,13 @@ import (
 
 func JobInit() {
 	fmt.Println("owlcache  job running...")
-	//DB数据备份(每分钟)
+	//DB数据备份
 	DataBackup()
-	//Auth数据备份(每分钟)
+	//Auth数据备份
 	DataAuthBackup()
-	//定期清理DB中过期的数据(每分钟)
+	//定期清理DB中过期的数据
 	ClearExpireData()
-	//服务器集群信息数据定期备份(每15秒)
+	//服务器集群信息数据定期备份
 	ServerListBackup()
 }
 

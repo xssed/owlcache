@@ -20,8 +20,8 @@ func stratHTTP() {
 	http.HandleFunc("/group_data/", GroupExe) //设置访问的路由
 	//设置服务器集群
 	http.HandleFunc("/server/", Server) //设置服务器集群信息，单机。
-	//设置服务器集群
-	http.HandleFunc("/server_group/", ServerGroup) //设置服务器集群信息,集群。
+	//	//设置服务器集群
+	//	http.HandleFunc("/server_group/", ServerGroup) //设置服务器集群信息,集群。
 
 	//监听设置
 	err := http.ListenAndServe(addr, nil) //设置监听的端口
@@ -47,7 +47,6 @@ func GroupExe(w http.ResponseWriter, r *http.Request) {
 
 	owlhandler := NewOwlHandler()
 	owlhandler.owlrequest.HTTPReceive(w, r)
-	//owlconfig
 	owlhandler.HTTPGroupDataHandle(w, r) //执行数据
 	resstr := owlhandler.owlresponse.ConvertToString()
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
@@ -65,16 +64,16 @@ func Server(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//设置服务器集群信息，集群
-func ServerGroup(w http.ResponseWriter, r *http.Request) {
+////设置服务器集群信息，集群
+//func ServerGroup(w http.ResponseWriter, r *http.Request) {
 
-	owlservergrouphandler := NewOwlServerGroupHandler()
-	owlservergrouphandler.owlservergrouprequest.HTTPReceive(w, r)
-	owlservergrouphandler.HTTPServerGroupHandle(w, r) //执行数据
-	resstr := owlservergrouphandler.owlserveggroupresponse.ConvertToString()
-	fmt.Fprintf(w, resstr) //输出到客户端的信息
+//	owlservergrouphandler := NewOwlServerGroupHandler()
+//	owlservergrouphandler.owlservergrouprequest.HTTPReceive(w, r)
+//	owlservergrouphandler.HTTPServerGroupHandle(w, r) //执行数据
+//	resstr := owlservergrouphandler.owlserveggroupresponse.ConvertToString()
+//	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
-}
+//}
 
 //首页
 func IndexPage(w http.ResponseWriter, r *http.Request) {
