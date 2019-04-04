@@ -3,6 +3,7 @@ package network
 import (
 	"encoding/json"
 	//"fmt"
+	"time"
 )
 
 type OwlResponse struct {
@@ -16,6 +17,8 @@ type OwlResponse struct {
 	Key string
 	//返回内容
 	Data interface{}
+	//内容的创建时间
+	KeyCreateTime time.Time
 }
 
 //将数据转换成json

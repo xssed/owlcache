@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/xssed/owlcache/cache"
 	owlconfig "github.com/xssed/owlcache/config"
 	tools "github.com/xssed/owlcache/tools"
 )
@@ -167,9 +168,10 @@ func (owlhandler *OwlHandler) Expire() {
 }
 
 func (owlhandler *OwlHandler) Get() {
-	if v, found := BaseCacheDB.Get(owlhandler.owlrequest.Key); found {
+	if v, found := BaseCacheDB.GetKvStore(owlhandler.owlrequest.Key); found {
 		owlhandler.Transmit(SUCCESS)
-		owlhandler.owlresponse.Data = v
+		owlhandler.owlresponse.Data = v.(*cache.KvStore).Value
+		owlhandler.owlresponse.KeyCreateTime = v.(*cache.KvStore).CreateTime
 	} else {
 		owlhandler.Transmit(NOT_FOUND)
 	}

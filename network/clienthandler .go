@@ -18,7 +18,7 @@ func (owlhandler *OwlHandler) GetGroupData() { //r *http.Request
 		val, ok := list[k].(group.OwlServerGroupRequest)
 		if ok {
 			fmt.Println(HttpClient.GetValue(val.Address, owlhandler.owlrequest.Key))
-			fmt.Println(val)
+			//fmt.Println(val)
 		}
 	}
 

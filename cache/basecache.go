@@ -63,6 +63,23 @@ func (baseCache *BaseCache) Get(key interface{}) (interface{}, bool) {
 	return nil, ok
 }
 
+//获取一条内容
+func (baseCache *BaseCache) GetKvStore(key interface{}) (interface{}, bool) {
+	v, ok := baseCache.KvStoreItems.Load(key)
+	//如果存在
+	if ok {
+		//检查是否过期
+		if !v.(*KvStore).IsExpired() {
+			return v.(*KvStore), ok
+		} else {
+			//过期key删除
+			baseCache.Delete(key)
+			return nil, false
+		}
+	}
+	return nil, ok
+}
+
 //遍历集合
 func (baseCache *BaseCache) GetKvStoreSlice() []*KvStore {
 
