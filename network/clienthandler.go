@@ -2,7 +2,7 @@ package network
 
 import (
 	//"encoding/json"
-	"fmt"
+	//"fmt"
 	//"log"
 
 	//"net/http"
@@ -17,37 +17,25 @@ func (owlhandler *OwlHandler) GetGroupData() { //r *http.Request
 	list := ServerGroupList.Values()
 	//fmt.Println(list)
 
-	ch := make(chan string)
-	count := ServerGroupList.Count() //count 表示活动的协程个数
-	fmt.Println(count)
+	//ch := make(chan string)
+	//count := ServerGroupList.Count() //count 表示活动的协程个数
+	//fmt.Println(count)
 	for k := range list {
 		val, ok := list[k].(group.OwlServerGroupRequest)
 		if ok {
 			//fmt.Println(val)
-			go owlhandler.ParseContent(val.Address, owlhandler.owlrequest.Key, ch)
+			go owlhandler.ParseContent(val.Address, owlhandler.owlrequest.Key)
 
 		}
 	}
 
-	for range ch {
-		// 每次从ch中接收数据，表明一个活动的协程结束
-		count--
-
-		fmt.Println(ch)
-
-		// 当所有活动的协程都结束时，关闭管道
-		if count == 0 {
-			close(ch)
-			continue
-		}
-	}
-
-	//	owlservergrouphandler.Transmit(group.NOT_FOUND)
+	owlhandler.Transmit(SUCCESS)
+	owlhandler.owlresponse.Data = "123"
 
 }
 
 //解析内容
-func (owlhandler *OwlHandler) ParseContent(address, key string, ch chan string) {
+func (owlhandler *OwlHandler) ParseContent(address, key string) {
 
 	s := HttpClient.GetValue(address, key)
 	if s != "" {
@@ -57,7 +45,6 @@ func (owlhandler *OwlHandler) ParseContent(address, key string, ch chan string) 
 		// 	log.Fatalf("OwlHandler ParseContent JSON unmarshling failed: %s", err)
 		// }
 		// ch <- resbody
-		ch <- s
 		//owlhandler.owlhcp
 		//fmt.Println(resbody.KeyCreateTime)
 	}

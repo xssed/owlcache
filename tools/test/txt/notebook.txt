@@ -2,13 +2,13 @@
 
 http://127.0.0.1:7721/data/?cmd=pass&pass=shi!jie9he?ping6
 
-http://127.0.0.1:7721/server/?cmd=add&address=http://182.168.1.1&pass=shi!jie9he?ping6&token=f943478c6fa5002164dcef9cc31adc53
+http://127.0.0.1:7721/server/?cmd=add&address=http://127.0.0.1:7721&pass=shi!jie9he?ping6&token=fbef158b901fab1b2ce0e5673b7f5f9d
 
-http://127.0.0.1:7721/server/?cmd=getall&token=f943478c6fa5002164dcef9cc31adc53
+http://127.0.0.1:7721/server/?cmd=getall&token=fbef158b901fab1b2ce0e5673b7f5f9d
 
-http://127.0.0.1:7721/server/?cmd=get&address=http://182.168.1.1&token=f943478c6fa5002164dcef9cc31adc53
+http://127.0.0.1:7721/server/?cmd=get&address=http://127.0.0.1&token=fbef158b901fab1b2ce0e5673b7f5f9d
 
-http://127.0.0.1:7721/server/?cmd=delete&address=http://182.168.1.3&token=f943478c6fa5002164dcef9cc31adc53
+http://127.0.0.1:7721/server/?cmd=delete&address=http://127.0.0.1&token=fbef158b901fab1b2ce0e5673b7f5f9d
 
 
 

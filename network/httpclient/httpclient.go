@@ -71,6 +71,9 @@ func (c *OwlClient) GetValue(address, key string) string {
 		owllog.Println("owlclient method GetValue error：" + err.Error()) //日志记录
 		//fmt.Println("owlclient method GetValue error：" + err.Error())
 	}
+
+	fmt.Println("HTTP request OK："+address, key)
+
 	owlclient.Claer()
 	if res != nil && res.StatusCode == 200 {
 		return res.String()
