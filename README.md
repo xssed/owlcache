@@ -67,16 +67,25 @@ owlcache
 
 ```shell
 owlcache -help
-Welcome to use owlcache. Version:0.1  by:d4rkdu0
+
+Welcome to use owlcache. Version:0.1.3
+If you have any questions,Please contact us: xsser@xsser.cc
+Project Home:https://github.com/xssed/owlcache
+                _                _
+   _____      _| | ___ __ _  ___| |__   ___
+  / _ \ \ /\ / / |/ __/ _' |/ __| '_ \ / _ \
+ | (_) \ V  V /| | (_| (_| | (__| | | |  __/
+  \___/ \_/\_/ |_|\___\__,_|\___|_| |_|\___|
+
 Usage of owlcache:
   -config string
-        Owlcache config file path.[demo:/var/home/owl.conf] (default "owlcache.conf")
+        owlcache config file path.[demo:/var/home/owl.conf] (default "owlcache.conf")
   -host string
-        binding local host ip adress. (default "127.0.0.1")
+        binding local host ip adress. (default "0.0.0.0")
   -log string
-        Owlcache log file path.[demo:/var/log/]
+        owlcache log file path.[demo:/var/log/] (default "./log_file/")
   -pass string
-        Owlcache connection password. (default "shi!jie9he?ping6")
+        owlcache Http connection password. (default "shi!jie9he?ping6")
 ```
 
 带配置参数运行的例子
