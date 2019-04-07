@@ -45,7 +45,7 @@ owl是猫头鹰的意思🦉。机灵又可爱🦉。它们脑袋的活动范围
 * golang >= 1.9
 
 源码下载
-* go命令下载
+* go命令下载(会自动下载依赖库，如果直接下载源码编译会提示类库缺失)
 ```shell
 go get github.com/xssed/owlcache
 ```
@@ -56,7 +56,7 @@ go build
 ```
 
 ## 运行
-* 注意owlcache.conf文件要跟主程序同目录（下面有介绍动态的设置owlcache.conf文件路径参数）
+* 注意owlcache.conf文件要跟主程序同目录（下面有介绍动态的设置owlcache.conf文件路径参数）  
 Linux
 ```shell
 ./owlcache
