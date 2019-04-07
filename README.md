@@ -50,13 +50,18 @@ owl是猫头鹰的意思🦉。机灵又可爱🦉。它们脑袋的活动范围
 go get github.com/xssed/owlcache
 ```
 
-编译
+进入owlcache主目录执行编译命令
 ```shell
 go build
 ```
 
 ## 运行
 * 注意owlcache.conf文件要跟主程序同目录（下面有介绍动态的设置owlcache.conf文件路径参数）
+Linux
+```shell
+./owlcache
+```
+Windows
 ```shell
 owlcache
 ```
