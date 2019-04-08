@@ -47,7 +47,7 @@ func (c *OwlClient) GetToken(address, cmd, pass string) string {
 	res, err := owlclient.Do()
 	if err != nil {
 		owllog.Println("owlClient Method GetToken error：" + err.Error()) //日志记录
-		fmt.Println("owlClient Method GetToken error：" + err.Error())
+		//fmt.Println("owlClient Method GetToken error：" + err.Error())
 	}
 	owlclient.Claer()
 	if res != nil && res.StatusCode == 200 {
@@ -71,9 +71,7 @@ func (c *OwlClient) GetValue(address, key string) string {
 		owllog.Println("owlclient method GetValue error：" + err.Error()) //日志记录
 		//fmt.Println("owlclient method GetValue error：" + err.Error())
 	}
-
-	fmt.Println("HTTP request OK："+address, key)
-
+	//fmt.Println("HTTP request OK："+address, key)
 	owlclient.Claer()
 	if res != nil && res.StatusCode == 200 {
 		return res.String()
