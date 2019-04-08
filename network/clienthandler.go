@@ -34,7 +34,9 @@ func (owlhandler *OwlHandler) GetGroupData() {
 	}
 	wg.Wait()
 
-	fmt.Println(groupKVlist.Values())
+	//fmt.Println(groupKVlist.Values())
+
+	fmt.Println(owlhandler.BubbleSortContent(groupKVlist))
 
 	owlhandler.Transmit(SUCCESS)
 	owlhandler.owlresponse.Data = "123"
@@ -48,7 +50,6 @@ func (owlhandler *OwlHandler) ParseContent(address, key string, kvlist *group.Se
 
 	s := HttpClient.GetValue(address, key)
 	if s != "" {
-
 		var resbody OwlResponse
 		if err := json.Unmarshal([]byte(s), &resbody); err != nil {
 			log.Fatalf("OwlHandler ParseContent JSON unmarshling failed: %s", err)
@@ -57,5 +58,34 @@ func (owlhandler *OwlHandler) ParseContent(address, key string, kvlist *group.Se
 		//kvlist.Add(s)
 		//fmt.Println(resbody)
 	}
+
+}
+
+//排序
+func (owlhandler *OwlHandler) BubbleSortContent(kvlist *group.Servergroup) []OwlResponse {
+
+	var array []OwlResponse
+
+	list := kvlist.Values()
+	for k := range list {
+		val, ok := list[k].(OwlResponse)
+		if ok {
+			array = append(array, val)
+		}
+	}
+
+	var sorted = false
+	for !sorted {
+		sorted = true
+		for i := 0; i < len(array)-1; i++ {
+			if array[i].KeyCreateTime.Unix() < array[i+1].KeyCreateTime.Unix() {
+				sorted = false
+				array[i], array[i+1] = array[i+1], array[i]
+			}
+		}
+		//fmt.Println(array)
+	}
+
+	return array
 
 }
