@@ -17,6 +17,7 @@ type OwlConfig struct {
 	DBfile                   string //数据库文件路径
 	Pass                     string //owlcache密钥
 	Host                     string //主机地址
+	ResponseHost             string //程序响应IP,在TCP、HTTP返回的响应结果Json字符串中使用
 	Tcpport                  string //Tcp监听端口
 	Httpport                 string //Http监听端口
 	HttpClientRequestTimeout string //集群互相通信时的请求超时时间
@@ -34,7 +35,8 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Logfile:                  "",
 		DBfile:                   "",
 		Pass:                     "shi!jie9he?ping6",
-		Host:                     "127.0.0.1",
+		Host:                     "0.0.0.0",
+		ResponseHost:             "127.0.0.1",
 		Tcpport:                  "7720",
 		Httpport:                 "7721",
 		HttpClientRequestTimeout: "2",
@@ -103,6 +105,9 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	if len(config["Host"]) > 3 {
 		//!!!如果在命令行中启动服务时指定了Host值，而配置文件这里没有注释掉则会以配置文件为准
 		param.Host = config["Host"]
+	}
+	if len(config["ResponseHost"]) > 3 {
+		param.ResponseHost = config["ResponseHost"]
 	}
 	if len(config["Tcpport"]) > 1 {
 		param.Tcpport = config["Tcpport"]
