@@ -37,7 +37,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Host:                     "127.0.0.1",
 		Tcpport:                  "7720",
 		Httpport:                 "7721",
-		HttpClientRequestTimeout: "3",
+		HttpClientRequestTimeout: "2",
 		GroupWorkMode:            "owlcache",
 		Task_DataBackup:          "1",
 		Task_DataAuthBackup:      "1",
