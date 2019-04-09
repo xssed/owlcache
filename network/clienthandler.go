@@ -2,7 +2,7 @@ package network
 
 import (
 	"encoding/json"
-	"fmt"
+	//"fmt"
 	"log"
 	"sync"
 
@@ -12,6 +12,14 @@ import (
 
 //发起请求获取集合数据
 func (owlhandler *OwlHandler) GetGroupData() {
+
+	owlhandler.Transmit(SUCCESS)
+	owlhandler.owlresponse.Data = owlhandler.conversionContent(owlhandler.getHttpData())
+
+}
+
+//发起请求获取数据
+func (owlhandler *OwlHandler) getHttpData() []OwlResponse {
 
 	list := ServerGroupList.Values()
 	//fmt.Println(list)
@@ -29,22 +37,22 @@ func (owlhandler *OwlHandler) GetGroupData() {
 		if ok {
 			//fmt.Println(val)
 			wg.Add(1)
-			go owlhandler.ParseContent(val.Address, owlhandler.owlrequest.Key, groupKVlist, &wg)
+			go owlhandler.parseContent(val.Address, owlhandler.owlrequest.Key, groupKVlist, &wg)
 		}
 	}
 	wg.Wait()
 
 	//fmt.Println(groupKVlist.Values())
+	//排序数据
+	bubblesortlist := owlhandler.bubbleSortContent(groupKVlist)
+	//fmt.Println(bubblesortlist)
 
-	fmt.Println(owlhandler.BubbleSortContent(groupKVlist))
-
-	owlhandler.Transmit(SUCCESS)
-	owlhandler.owlresponse.Data = "123"
+	return bubblesortlist
 
 }
 
 //解析内容
-func (owlhandler *OwlHandler) ParseContent(address, key string, kvlist *group.Servergroup, wg *sync.WaitGroup) {
+func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Servergroup, wg *sync.WaitGroup) {
 
 	defer wg.Done()
 
@@ -52,7 +60,7 @@ func (owlhandler *OwlHandler) ParseContent(address, key string, kvlist *group.Se
 	if s != "" {
 		var resbody OwlResponse
 		if err := json.Unmarshal([]byte(s), &resbody); err != nil {
-			log.Fatalf("OwlHandler ParseContent JSON unmarshling failed: %s", err)
+			log.Fatalf("OwlHandler parseContent JSON unmarshling failed: %s", err)
 		}
 		kvlist.Add(resbody)
 		//kvlist.Add(s)
@@ -62,7 +70,7 @@ func (owlhandler *OwlHandler) ParseContent(address, key string, kvlist *group.Se
 }
 
 //排序
-func (owlhandler *OwlHandler) BubbleSortContent(kvlist *group.Servergroup) []OwlResponse {
+func (owlhandler *OwlHandler) bubbleSortContent(kvlist *group.Servergroup) []OwlResponse {
 
 	var array []OwlResponse
 
@@ -87,5 +95,29 @@ func (owlhandler *OwlHandler) BubbleSortContent(kvlist *group.Servergroup) []Owl
 	}
 
 	return array
+
+}
+
+//封装返回数据
+func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []map[string]interface{} {
+
+	var response_list []map[string]interface{}
+
+	for index := range res_slice {
+
+		oldresponse := res_slice[index]
+
+		temp_map := make(map[string]interface{})
+		temp_map["Address"] = "127.0.0.1"
+		temp_map["Status"] = oldresponse.Status
+		temp_map["Data"] = oldresponse.Data
+		temp_map["KeyCreateTime"] = oldresponse.KeyCreateTime
+		response_list = append(response_list, temp_map)
+
+	}
+
+	//data, _ := json.Marshal(response_list)
+	//string(data)
+	return response_list
 
 }

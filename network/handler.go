@@ -93,7 +93,6 @@ func (owlhandler *OwlHandler) HTTPGroupDataHandle(w http.ResponseWriter, r *http
 	switch command {
 	case GET:
 		//HttpClient
-		//owlhandler.Get()
 		owlhandler.GetGroupData()
 	case EXIST:
 		owlhandler.Exists()
