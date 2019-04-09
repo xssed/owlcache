@@ -106,13 +106,15 @@ func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []map[s
 	for index := range res_slice {
 
 		oldresponse := res_slice[index]
-
-		temp_map := make(map[string]interface{})
-		temp_map["Address"] = "127.0.0.1"
-		temp_map["Status"] = oldresponse.Status
-		temp_map["Data"] = oldresponse.Data
-		temp_map["KeyCreateTime"] = oldresponse.KeyCreateTime
-		response_list = append(response_list, temp_map)
+		//只接受存在的数据（响应内容状态为200）
+		if oldresponse.Status == 200 {
+			temp_map := make(map[string]interface{})
+			temp_map["Address"] = oldresponse.ResponseHost
+			temp_map["Status"] = oldresponse.Status
+			temp_map["Data"] = oldresponse.Data
+			temp_map["KeyCreateTime"] = oldresponse.KeyCreateTime
+			response_list = append(response_list, temp_map)
+		}
 
 	}
 

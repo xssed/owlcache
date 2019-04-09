@@ -37,7 +37,7 @@ func Exe(w http.ResponseWriter, r *http.Request) {
 	owlhandler := NewOwlHandler()
 	owlhandler.owlrequest.HTTPReceive(w, r)
 	owlhandler.HTTPHandle(w, r) //执行数据
-	resstr := owlhandler.owlresponse.ConvertToString()
+	resstr := owlhandler.owlresponse.ConvertToString("HTTP")
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
 }
@@ -48,7 +48,7 @@ func GroupExe(w http.ResponseWriter, r *http.Request) {
 	owlhandler := NewOwlHandler()
 	owlhandler.owlrequest.HTTPReceive(w, r)
 	owlhandler.HTTPGroupDataHandle(w, r) //执行数据
-	resstr := owlhandler.owlresponse.ConvertToString()
+	resstr := owlhandler.owlresponse.ConvertToString("HTTP")
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
 }

@@ -23,7 +23,7 @@ func stratTCP() {
 		owlhandler := NewOwlHandler()
 		owlhandler.owlrequest.TCPReceive(message) //解析数据
 		owlhandler.TCPHandle()                    //执行数据
-		resstr := owlhandler.owlresponse.ConvertToString() + "\n"
+		resstr := owlhandler.owlresponse.ConvertToString("TCP") + "\n"
 		c.Send(resstr)
 
 	})
