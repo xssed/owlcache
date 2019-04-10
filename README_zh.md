@@ -1,4 +1,4 @@
-<a href="https://github.com/xssed/owlcache/blob/master/README.md" target="_blank">English</a> | 中文简介
+<a href="https://github.com/xssed/owlcache" target="_blank">English</a> | 中文简介
 
 <div align="center">
 
@@ -105,7 +105,7 @@ owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/ -pass 1245!df
 ```
 
 # 简单使用示例
-## 单机获取Key值
+## 单节点获取Key值
 * TCP
 命令: `get <key>`
 ~~~shell
@@ -138,7 +138,7 @@ http://127.0.0.1:7721/data/?cmd=get&key=hello
 ~~~
 
 ## 集群获取Key值
-* 假设现在有三个owlcache服务:127.0.0.1:7721、127.0.0.1:7723、127.0.0.1:7725。  每个服务中都有一个Key叫hello的数据
+* 假设现在有三个owlcache服务:127.0.0.1:7721、127.0.0.1:7723、127.0.0.1:7725。每个服务中都有一个Key叫hello的数据。
 
 
 |请求参数        | 参数值          | 
@@ -185,7 +185,7 @@ http://127.0.0.1:7721/group_data/?cmd=get&key=hello
 
 ~~~
 
-owlcache默认的集群方式，每个节点数据都是独立的，集群中相同Key的数据不会被删除，查询时会得到一个根据时间排序的数据列表，最新数据优先展示。  
+每个节点数据都是独立的，集群中重复Key的数据不会被删除(owlcache默认的集群方式)，查询时会得到一个根据时间排序的数据列表，最新数据优先展示。  
 
 
 
