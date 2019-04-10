@@ -1,4 +1,5 @@
-英文简介 | <a href="https://github.com/xssed/owlcache/blob/master/README_zh.md" target="_blank">中文简介</a>
+<a href="https://github.com/xssed/owlcache/blob/master/README.md" target="_blank">英文简介</a> | 中文简介
+
 <div align="center">
 
 # 🦉owlcache
@@ -26,8 +27,10 @@
 * 📝日志记录
 * 🔭**同时支持TCP、HTTP两种方式连接**
 
+
 ## 中文使用文档
-- 📝http://owl.xsser.cc 
+- 📝http://owl.xsser.cc  
+
 
 ## 设计初衷
 
