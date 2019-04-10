@@ -1,4 +1,5 @@
-英文简介 | <a href="https://github.com/xssed/owlcache/blob/master/README_zh.md" target="_blank">中文简介</a>
+English | <a href="https://github.com/xssed/owlcache/blob/master/README_zh.md" target="_blank">中文简介</a>
+
 <div align="center">
 
 # 🦉owlcache

@@ -1,4 +1,4 @@
-<a href="https://github.com/xssed/owlcache/blob/master/README.md" target="_blank">英文简介</a> | 中文简介
+<a href="https://github.com/xssed/owlcache/blob/master/README.md" target="_blank">English</a> | 中文简介
 
 <div align="center">
 
