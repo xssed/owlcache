@@ -1,3 +1,4 @@
+英文简介 | <a href="https://github.com/xssed/owlcache/blob/master/README.md" target="_blank">中文简介</a>
 <div align="center">
 
 # 🦉owlcache
@@ -11,32 +12,33 @@
 
  🦉owlcache 是一款由Go编写的轻量级、高性能、无中心分布式的Key/Value内存缓存型的数据共享应用(一定场景下可以作为轻量型数据库来使用)。    
 
+## 中文使用文档
+- 📝http://owl.xsser.cc  
+
 
 ## 亮点与功能简述
 
-* 💡跨平台
+* 💡跨平台运行
 * 🚀单机超高性能
 * ⛓无中心分布式
 * 🌈数据并发安全
 * 🔍支持数据过期
 * 🖥数据落地存储
-* 🎨使用简单，操作命令类似Memcache
-* 🔭**同时支持TCP、HTTP两种方式连接**
+* 🎨使用简单，操作命令只有几个
 * ⚔️身份认证
 * 📝日志记录
+* 🔭**同时支持TCP、HTTP两种方式连接**
 
 
 ## 设计初衷
 
-我不喜欢造轮子，我最早的想法就是实现一个数据共享应用，它可以非常轻松的构建一个高效的数据共享集群。在集群中的数据，它们可以是共同拥有的，也可以是一个节点拥有其它节点随时来获取。集群里面的所有数据首先要是可“共享”的、可“查阅”的数据。
+我最早的想法就是实现一个数据共享应用，它可以非常轻松的构建一个高效的数据共享集群。在集群中的数据，它们可以是共同拥有的，也可以是一个节点拥有其它节点随时来获取。集群里面的所有数据首先要是可“共享”的、可“查阅”的数据。
 
-owl是猫头鹰的意思🦉。机灵又可爱🦉。它们脑袋的活动范围为270°🦉。      
+猫头鹰🦉机灵又可爱。它们脑袋的活动范围为270°🦉。      
 
 
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
 
-## 使用文档
-- 📝http://owl.xsser.cc
 
 
 ## 如何编译
@@ -47,7 +49,7 @@ owl是猫头鹰的意思🦉。机灵又可爱🦉。它们脑袋的活动范围
 源码下载
 * go命令下载(会自动下载依赖库，如果直接下载源码编译会提示类库缺失)
 ```shell
-go get github.com/xssed/owlcache
+go get -u github.com/xssed/owlcache
 ```
 
 进入owlcache主目录执行编译命令
@@ -62,19 +64,20 @@ Linux
 ```shell
 ./owlcache
 ```
-Windows
+Windows (DOS下)
 ```shell
 owlcache
 ```
 
 参数help
-* 运行时您可以查看使用帮助 
+* 运行前您可以查看使用帮助 
 * 注意运行时的配置参数要优先于*.conf文件里的配置参数
 
 ```shell
 owlcache -help
-
-Welcome to use owlcache. Version:0.1.3
+```
+```shell
+Welcome to use owlcache. Version:0.2
 If you have any questions,Please contact us: xsser@xsser.cc
 Project Home:https://github.com/xssed/owlcache
                 _                _
@@ -100,7 +103,7 @@ owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/ -pass 1245!df
 ```
 
 # 简单使用示例
-## 获取Key值
+## 单机获取Key值
 * TCP
 命令: `get <key>`
 ~~~shell
@@ -132,19 +135,59 @@ http://127.0.0.1:7721/data/?cmd=get&key=hello
 }
 ~~~
 
+## 集群获取Key值
+* 假设现在有三个owlcache服务:127.0.0.1:7721、127.0.0.1:7723、127.0.0.1:7725。  每个服务中都有一个Key叫hello的数据
+
+~~~shell
+http://127.0.0.1:7721/group_data/?cmd=get&key=hello
+~~~
+<br>
+
+响应结果例子:   
+~~~shell
+{
+    "Cmd": "get",
+    "Status": 200,
+    "Results": "SUCCESS",
+    "Key": "hello",
+    "Data": [
+        {
+            "Address": "127.0.0.1:7723",
+            "Data": "test7722\r\n ",
+            "KeyCreateTime": "2019-04-10T13:43:01.6576413+08:00",
+            "Status": 200
+        },
+        {
+            "Address": "127.0.0.1:7721",
+            "Data": "world",
+            "KeyCreateTime": "2019-04-09T17:50:59.458104+08:00",
+            "Status": 200
+        },
+        {
+            "Address": "127.0.0.1:7725",
+            "Data": "world7725",
+            "KeyCreateTime": "2019-04-08T14:32:20.6934487+08:00",
+            "Status": 200
+        }
+    ],
+    "ResponseHost": "127.0.0.1:7721",
+    "KeyCreateTime": "0001-01-01T00:00:00Z"
+}
+
+~~~
+
+owlcache默认的集群方式，不考虑删除集群中相同Key的数据，而是得到一个根据时间排序的数据列表，最新数据的优先展示。  
+
+
+
 ......更多请参阅文档的详细说明
 
-## 开发计划
 
-Version 0.1 🚲实现单机状态基本功能  
-Version 0.2 🏍实现集群数据共享  
-Version 0.3 🚕...... 
 
 
 ## 开发与讨论
 - 联系我📪:xsser@xsser.cc
 - 个人主页🛀:https://www.xsser.cc
 
-## 开源协议
-- [![License](https://img.shields.io/github/license/xssed/owlcache.svg)](https://github.com/xssed/owlcache/blob/master/LICENSE)
+
 
