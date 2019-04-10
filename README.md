@@ -2,7 +2,7 @@
 
 # 🦉owlcache
 
-![Image text](https://github.com/xssed/owlcache/blob/master/assets/owl.jpg?raw=true)
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/owl.jpg?raw=true)
 
 [![License](https://img.shields.io/github/license/xssed/owlcache.svg)](https://github.com/xssed/owlcache/blob/master/LICENSE)
 [![release](https://img.shields.io/github/release/xssed/owlcache.svg?style=popout-square)](https://github.com/xssed/owlcache/releases)
@@ -33,7 +33,7 @@
 owl是猫头鹰的意思🦉。机灵又可爱🦉。它们脑袋的活动范围为270°🦉。      
 
 
-![Image text](https://github.com/xssed/owlcache/blob/master/assets/group.gif?raw=true)
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
 
 ## 使用文档
 - 📝http://owl.xsser.cc
