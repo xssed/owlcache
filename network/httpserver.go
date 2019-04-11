@@ -11,6 +11,7 @@ import (
 
 func stratHTTP() {
 
+	//设置监听的端口
 	addr := owlconfig.OwlConfigModel.Host + ":" + owlconfig.OwlConfigModel.Httpport
 	//默认信息
 	http.HandleFunc("/", IndexPage) //设置访问的路由
@@ -24,11 +25,15 @@ func stratHTTP() {
 	//	http.HandleFunc("/server_group/", ServerGroup) //设置服务器集群信息,集群。
 
 	//监听设置
-	err := http.ListenAndServe(addr, nil) //设置监听的端口
+	//支持HTTPS
+	//http.ListenAndServeTLS(":8080", "/www/server.crt", "/www/server.key", &ServerEntity{handler: http.DefaultServeMux})
+
+	err := http.ListenAndServe(addr, &ServerEntity{handler: http.DefaultServeMux})
 	if err != nil {
 		fmt.Println("Error starting HTTP server.")
 		log.Fatal("ListenAndServe: ", err)
 	}
+
 }
 
 //单机数据执行信息
