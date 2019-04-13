@@ -66,7 +66,8 @@ Linux
 ```shell
 ./owlcache
 ```
-Windows (DOS下)
+Windows (DOS下)  
+* 注意:Windows生产环境部署中发现，查询请求处理后内存释放会相对慢一些，大概半小时之内才会释放完毕，Linux不存在这个问题，这跟Go的内部机制有关。
 ```shell
 owlcache
 ```
