@@ -48,8 +48,8 @@ owl🦉 is clever and cute. Their heads range from 270°🦉.
 Compilation environment requirements
 * golang >= 1.9
 
-Source download
-*Go command download (will automatically download the dependent library, if you directly download the source code will prompt the class library is missing)
+Source download  
+* Go command download (will automatically download the dependent library, if you directly download the source code will prompt the class library is missing)
 ```shell
 go get -u github.com/xssed/owlcache
 ```
