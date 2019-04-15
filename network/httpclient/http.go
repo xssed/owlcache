@@ -1,9 +1,8 @@
-//关于这个包我不是很满意。。。。因为是Owl集群的工作模式是server to server
-//想提升效率又怕用net包自己写client后面维护成本高 以后官方包http2 client完善再说
 package httpclient
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -11,8 +10,11 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
+
+	owlconfig "github.com/xssed/owlcache/config"
 )
 
 const (
@@ -23,10 +25,23 @@ const (
 //var OwlTransport *http.Transport
 
 func NewOwlTransport() *http.Transport {
+
+	var skipverify *tls.Config
+	if owlconfig.OwlConfigModel.HttpsClient_InsecureSkipVerify == "1" {
+		skipverify = &tls.Config{InsecureSkipVerify: true}
+	} else if owlconfig.OwlConfigModel.HttpsClient_InsecureSkipVerify == "0" {
+		skipverify = &tls.Config{InsecureSkipVerify: false}
+	} else {
+		fmt.Println(ErrorHttpsClientInsecureSkipVerify)
+		os.Exit(0)
+	}
+
 	OwlTransport := &http.Transport{
 		MaxIdleConnsPerHost: MaxIdleConnections,
+		TLSClientConfig:     skipverify,
 	}
 	return OwlTransport
+
 }
 
 type OwlHttp struct {
