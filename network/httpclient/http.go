@@ -26,6 +26,7 @@ const (
 
 func NewOwlTransport() *http.Transport {
 
+	//动态配置InsecureSkipVerify方式
 	var skipverify *tls.Config
 	if owlconfig.OwlConfigModel.HttpsClient_InsecureSkipVerify == "1" {
 		skipverify = &tls.Config{InsecureSkipVerify: true}
@@ -36,6 +37,7 @@ func NewOwlTransport() *http.Transport {
 		os.Exit(0)
 	}
 
+	//创建Transport
 	OwlTransport := &http.Transport{
 		MaxIdleConnsPerHost: MaxIdleConnections,
 		TLSClientConfig:     skipverify,
