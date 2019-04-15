@@ -25,12 +25,18 @@ func stratHTTP() {
 	//	http.HandleFunc("/server_group/", ServerGroup) //设置服务器集群信息,集群。
 
 	//监听设置
-	//支持HTTPS
-	//http.ListenAndServeTLS(":8080", "/www/server.crt", "/www/server.key", &ServerEntity{handler: http.DefaultServeMux})
-
-	err := http.ListenAndServe(addr, &ServerEntity{handler: http.DefaultServeMux})
+	var err error
+	if owlconfig.OwlConfigModel.Open_Https == "1" {
+		//支持HTTPS
+		err = http.ListenAndServeTLS(addr, owlconfig.OwlConfigModel.Https_CertFile, owlconfig.OwlConfigModel.Https_KeyFile, &ServerEntity{handler: http.DefaultServeMux})
+	} else if owlconfig.OwlConfigModel.Open_Https == "0" {
+		//普通HTTP
+		err = http.ListenAndServe(addr, &ServerEntity{handler: http.DefaultServeMux})
+	} else {
+		err = ErrorOpenHttpsSelected
+	}
 	if err != nil {
-		fmt.Println("Error starting HTTP server.")
+		fmt.Println("Error starting HTTP server.", err)
 		log.Fatal("ListenAndServe: ", err)
 	}
 

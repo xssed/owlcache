@@ -26,6 +26,9 @@ type OwlConfig struct {
 	Task_DataAuthBackup      string //自动备份用户认证数据的存储时间
 	Task_ClearExpireData     string //自动清理数据库中过期数据的时间
 	Task_ServerListBackup    string //自动备份服务器集群信息数据的时间
+	Open_Https               string //是否开启HTTPS。值为0(关闭)、1(开启)。默认关闭。
+	Https_CertFile           string //Cert文件路径。
+	Https_KeyFile            string //Key文件路径。
 }
 
 //创建一个默认配置文件的实体
@@ -45,6 +48,9 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Task_DataAuthBackup:      "1",
 		Task_ClearExpireData:     "1",
 		Task_ServerListBackup:    "1",
+		Open_Https:               "0",
+		Https_CertFile:           "/www/server.crt",
+		Https_KeyFile:            "/www/server.key",
 	}
 }
 
@@ -142,5 +148,14 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["Task_ServerListBackup"]) >= 1 {
 		param.Task_ServerListBackup = config["Task_ServerListBackup"]
+	}
+	if len(config["Open_Https"]) >= 1 {
+		param.Open_Https = config["Open_Https"]
+	}
+	if len(config["Https_CertFile"]) >= 1 {
+		param.Https_CertFile = config["Https_CertFile"]
+	}
+	if len(config["Https_KeyFile"]) >= 1 {
+		param.Https_KeyFile = config["Https_KeyFile"]
 	}
 }
