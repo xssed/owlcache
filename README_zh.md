@@ -163,13 +163,13 @@ http://127.0.0.1:7721/group_data/?cmd=get&key=hello
     "Data": [
         {
             "Address": "127.0.0.1:7723",
-            "Data": "test7722\r\n ",
+            "Data": "world7723",
             "KeyCreateTime": "2019-04-10T13:43:01.6576413+08:00",
             "Status": 200
         },
         {
             "Address": "127.0.0.1:7721",
-            "Data": "world",
+            "Data": "world7721",
             "KeyCreateTime": "2019-04-09T17:50:59.458104+08:00",
             "Status": 200
         },
