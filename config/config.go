@@ -30,6 +30,7 @@ type OwlConfig struct {
 	Https_CertFile                 string //Cert文件路径。
 	Https_KeyFile                  string //Key文件路径。
 	HttpsClient_InsecureSkipVerify string //当开启HTTPS模式后，owlcache之间互相通讯时是否校验证书。值为0(关闭)、1(开启)。默认关闭。开启时不会校验证书合法性。
+	CloseTcp                       string //是否关闭Tcp服务(因为TCP模式下无密码认证)  值为"1"(开启)和"0"(关闭)。默认为1开启服务。
 }
 
 //创建一个默认配置文件的实体
@@ -53,6 +54,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Https_CertFile:                 "/www/server.crt",
 		Https_KeyFile:                  "/www/server.key",
 		HttpsClient_InsecureSkipVerify: "0",
+		CloseTcp:                       "1",
 	}
 }
 
@@ -163,4 +165,8 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	if len(config["HttpsClient_InsecureSkipVerify"]) >= 1 {
 		param.HttpsClient_InsecureSkipVerify = config["HttpsClient_InsecureSkipVerify"]
 	}
+	if len(config["CloseTcp"]) >= 1 {
+		param.CloseTcp = config["CloseTcp"]
+	}
+
 }
