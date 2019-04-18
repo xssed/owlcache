@@ -32,6 +32,8 @@ type Handler interface {
 /**
 ===================
 LogHandler struct是对标准库log.Logger的封装
+===================
+**/
 
 type LogHandler struct {
 	lg *log.Logger
