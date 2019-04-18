@@ -5,12 +5,12 @@ import (
 	//"log"
 	"os"
 
-	"github.com/xssed/logger"
+	"github.com/xssed/owlcache/logger"
 )
 
 func main() {
-	//cutFileHandler := logger.NewCutFileHandler("test", "owl.log", 10*1024*1024) //10M
-	cutFileHandler := logger.NewFileHandler("test", "owl.log")
+	cutFileHandler := logger.NewCutFileHandler("test", "owl.log", 10*1024*1024) //10M
+	//cutFileHandler := logger.NewFileHandler("test", "owl.log")
 
 	logger.SetHandlers(logger.Console, cutFileHandler)
 
