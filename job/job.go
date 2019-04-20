@@ -30,14 +30,14 @@ func DataBackup() {
 	//	task_databackup, err := time.ParseDuration(owlconfig.OwlConfigModel.Task_DataBackup + "m")
 	//	if err != nil {
 	//		//强制异常，退出
-	//		owllog.Println("Config File Task_DataBackup Parse error：" + err.Error()) //日志记录
+	//		owllog.OwlLogRun.Info("Config File Task_DataBackup Parse error：" + err.Error()) //日志记录
 	//		fmt.Println("Config File Task_DataBackup Parse error：" + err.Error())
 	//		os.Exit(0)
 	//	}
 	task_databackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_DataBackup)
 	if err != nil {
-		owllog.Println("Config File Task_DataBackup Parse error：" + err.Error()) //日志记录
-		fmt.Println("Config File Task_DataBackup Parse error：" + err.Error())
+		owllog.OwlLogRun.Info("Config File Task_DataBackup Parse error：" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_DataBackup Parse error：" + err.Error())
 		os.Exit(0)
 	}
 
@@ -47,8 +47,7 @@ func DataBackup() {
 			//fmt.Printf("ticked at %v", time.Now())
 			err := owlnetwork.BaseCacheDB.SaveToFile(owlconfig.OwlConfigModel.DBfile, "owlcache.db")
 			if err != nil {
-				fmt.Println(err)
-				owllog.Error(err)
+				owllog.OwlLogRun.Error(err)
 			}
 		}
 	}()
@@ -60,8 +59,8 @@ func DataAuthBackup() {
 
 	task_dataauthbackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_DataAuthBackup)
 	if err != nil {
-		owllog.Println("Config File Task_DataAuthBackup Parse error：" + err.Error()) //日志记录
-		fmt.Println("Config File Task_DataAuthBackup Parse error：" + err.Error())
+		owllog.OwlLogRun.Info("Config File Task_DataAuthBackup Parse error：" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_DataAuthBackup Parse error：" + err.Error())
 		os.Exit(0)
 	}
 
@@ -71,7 +70,7 @@ func DataAuthBackup() {
 			err := owlnetwork.BaseAuth.SaveToFile(owlconfig.OwlConfigModel.DBfile, "auth.db")
 			if err != nil {
 				fmt.Println(err)
-				owllog.Error(err)
+				owllog.OwlLogRun.Error(err)
 			}
 		}
 	}()
@@ -83,8 +82,8 @@ func ClearExpireData() {
 
 	task_clearexpiredata, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_ClearExpireData)
 	if err != nil {
-		owllog.Println("Config File Task_ClearExpireData Parse error：" + err.Error()) //日志记录
-		fmt.Println("Config File Task_ClearExpireData Parse error：" + err.Error())
+		owllog.OwlLogRun.Info("Config File Task_ClearExpireData Parse error：" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_ClearExpireData Parse error：" + err.Error())
 		os.Exit(0)
 	}
 
@@ -92,7 +91,7 @@ func ClearExpireData() {
 	go func() {
 		for _ = range ticker.C {
 			owlnetwork.BaseCacheDB.ClearExpireData()
-			//owllog.Info("exe ClearExpireData()")
+			//owllog.OwlLogRun.Log.Info("exe ClearExpireData()")
 		}
 	}()
 
@@ -103,8 +102,8 @@ func ServerListBackup() {
 
 	task_serverlistbackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_ServerListBackup)
 	if err != nil {
-		owllog.Println("Config File Task_ServerListBackup Parse error：" + err.Error()) //日志记录
-		fmt.Println("Config File Task_ServerListBackup Parse error：" + err.Error())
+		owllog.OwlLogRun.Info("Config File Task_ServerListBackup Parse error：" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_ServerListBackup Parse error：" + err.Error())
 		os.Exit(0)
 	}
 
@@ -113,8 +112,8 @@ func ServerListBackup() {
 		for _ = range ticker.C {
 			err := owlnetwork.ServerGroupList.SaveToFile(owlconfig.OwlConfigModel.DBfile, "server_group_config.json")
 			if err != nil {
-				fmt.Println(err)
-				owllog.Error(err)
+				//fmt.Println(err)
+				owllog.OwlLogRun.Error(err)
 			}
 		}
 	}()

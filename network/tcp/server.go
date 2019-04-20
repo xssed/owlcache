@@ -1,9 +1,9 @@
 package tcp
 
 import (
-	"fmt"
-	"log"
 	"net"
+
+	owllog "github.com/xssed/owlcache/log"
 )
 
 type server struct {
@@ -16,8 +16,7 @@ type server struct {
 func (s *server) Listen() {
 	listener, err := net.Listen("tcp", s.address)
 	if err != nil {
-		fmt.Println("Error starting TCP server.")
-		log.Fatal("Error starting TCP server.")
+		owllog.OwlLogRun.Fatal("Error starting TCP server.")
 	}
 
 	defer listener.Close()
@@ -34,7 +33,7 @@ func (s *server) Listen() {
 }
 
 func New(address string) *server {
-	log.Println("Creating TCP server with address", address)
+	owllog.OwlLogRun.Info("Creating TCP server with address", address)
 	server := &server{
 		address: address,
 	}
@@ -48,7 +47,7 @@ func New(address string) *server {
 
 //日志打印
 func (s *server) Log(message string) {
-	log.Println(message)
+	owllog.OwlLogRun.Info(message)
 }
 
 //当客户端连接进来时

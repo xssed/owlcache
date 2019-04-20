@@ -2,10 +2,10 @@ package network
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	owlconfig "github.com/xssed/owlcache/config"
+	owllog "github.com/xssed/owlcache/log"
 	owlsystem "github.com/xssed/owlcache/system"
 )
 
@@ -36,8 +36,9 @@ func stratHTTP() {
 		err = ErrorOpenHttpsSelected
 	}
 	if err != nil {
-		fmt.Println("Error starting HTTP server.", err)
-		log.Fatal("ListenAndServe: ", err)
+		owllog.OwlLogRun.Fatal("Error starting HTTP server.", err)
+	} else {
+		owllog.OwlLogRun.Info("Creating HTTP server with address " + addr)
 	}
 
 }

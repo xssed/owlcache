@@ -2,11 +2,11 @@ package network
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/xssed/owlcache/cache"
 	owlconfig "github.com/xssed/owlcache/config"
 	"github.com/xssed/owlcache/group"
+	owllog "github.com/xssed/owlcache/log"
 	"github.com/xssed/owlcache/network/httpclient"
 )
 
@@ -55,11 +55,10 @@ func BaseCacheDBInit() {
 		fmt.Println("owlcache  tcp server running...")
 		go stratTCP()
 	} else if owlconfig.OwlConfigModel.CloseTcp == "0" {
-		log.Println("The configuration file does not open the TCP service.")
+		owllog.OwlLogRun.Info("The configuration file does not open the TCP service.")
 	} else {
 		//检测到配置书写异常强制退出
-		fmt.Println(ErrorCloseTcp)
-		log.Fatal(ErrorCloseTcp)
+		owllog.OwlLogRun.Fatal(ErrorCloseTcp)
 	}
 
 	//启动http服务
