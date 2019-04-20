@@ -9,14 +9,16 @@ import (
 )
 
 func main() {
+	log := logger.New()
+
 	cutFileHandler := logger.NewCutFileHandler("test", "owl.log", 10*1024*1024) //10M
 	//cutFileHandler := logger.NewFileHandler("test", "owl.log")
 
-	logger.SetHandlers(logger.Console, cutFileHandler)
+	log.SetHandlers(logger.Console, cutFileHandler)
 
-	defer logger.Close()
+	defer log.Close()
 
-	logger.SetFlags(0) //log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile
+	log.SetFlags(0) //log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile
 
 	//logger.SetLevel(logger.INFO)
 
@@ -24,9 +26,9 @@ func main() {
 		go func(num int) {
 			count := 0
 			for {
-				logger.Info("Info", num, "-", count)
-				logger.Error("Error", num, "-", count)
-				logger.Warn("Warn", num, "-", count)
+				log.Info("Info", num, "-", count)
+				log.Error("Error", num, "-", count)
+				log.Warn("Warn", num, "-", count)
 				//logger.Fatal("Fatal", num, "-", count)
 				count++
 			}
