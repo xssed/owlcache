@@ -1,15 +1,13 @@
 package httpclient
 
 import (
-	"fmt"
-	owllog "log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
 
 	owlconfig "github.com/xssed/owlcache/config"
-	//owlnetwork "github.com/xssed/owlcache/network"
+	owllog "github.com/xssed/owlcache/log"
 )
 
 //定义HTTP客户端结构
@@ -27,8 +25,8 @@ func NewOwlClient() *OwlClient {
 	hcrequesttimeout, err := strconv.Atoi(owlconfig.OwlConfigModel.HttpClientRequestTimeout)
 	if err != nil {
 		//强制异常，退出
-		owllog.Println("Config File HttpClientRequestTimeout Parse error：" + err.Error()) //日志记录
-		fmt.Println("Config File HttpClientRequestTimeout Parse error：" + err.Error())
+		owllog.OwlLogHttp.Info("Config File HttpClientRequestTimeout Parse error：" + err.Error()) //日志记录
+		//fmt.Println("Config File HttpClientRequestTimeout Parse error：" + err.Error())
 		os.Exit(0)
 	}
 
@@ -46,7 +44,7 @@ func (c *OwlClient) GetToken(address, cmd, pass string) string {
 	owlclient.Query.Add("pass", pass)
 	res, err := owlclient.Do()
 	if err != nil {
-		owllog.Println("owlClient Method GetToken error：" + err.Error()) //日志记录
+		owllog.OwlLogHttp.Info("owlClient Method GetToken error：" + err.Error()) //日志记录
 		//fmt.Println("owlClient Method GetToken error：" + err.Error())
 	}
 	owlclient.Claer()
@@ -68,11 +66,11 @@ func (c *OwlClient) GetValue(address, key string) string {
 	owlclient.Query.Add("key", key)
 	res, err := owlclient.Do()
 	if err != nil {
-		owllog.Println("owlclient method GetValue error：" + err.Error()) //日志记录
+		owllog.OwlLogHttp.Info("owlclient method GetValue error：" + err.Error()) //日志记录
 		//fmt.Println("owlclient method GetValue error：" + err.Error())
 	}
 	//fmt.Println("HTTP request OK："+address, key)
-	//owllog.Println("HTTP request OK："+address, key) //日志记录
+	//owllog.OwlLogHttp.Info("HTTP request OK："+address, key) //日志记录
 	owlclient.Claer()
 	if res != nil && res.StatusCode == 200 {
 		return res.String()

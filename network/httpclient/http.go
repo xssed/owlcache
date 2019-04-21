@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -15,6 +14,7 @@ import (
 	"time"
 
 	owlconfig "github.com/xssed/owlcache/config"
+	owllog "github.com/xssed/owlcache/log"
 )
 
 const (
@@ -129,8 +129,7 @@ func newRequest(method, Url string) *http.Request {
 
 	if err != nil {
 		//panic(err.Error())
-		log.Println(err.Error())
-		fmt.Println(err.Error())
+		owllog.OwlLogHttp.Info(err.Error())
 	}
 	if u.Scheme == "" {
 		u.Scheme = "http"

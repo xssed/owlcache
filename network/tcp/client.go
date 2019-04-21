@@ -3,8 +3,9 @@ package tcp
 import (
 	"bufio"
 	"io"
-	"log"
 	"net"
+
+	owllog "github.com/xssed/owlcache/log"
 )
 
 type Client struct {
@@ -14,7 +15,7 @@ type Client struct {
 
 func (c *Client) listen() {
 
-	log.Printf("New connection from %s", c.conn.RemoteAddr().String())
+	owllog.OwlLogRun.Printf("New connection from %s", c.conn.RemoteAddr().String())
 	defer c.conn.Close()
 	reader := bufio.NewReader(c.conn)
 	for {
@@ -23,11 +24,11 @@ func (c *Client) listen() {
 			c.conn.Close()
 
 			if err == io.EOF {
-				log.Printf("Client closed the connection %s", c.conn.RemoteAddr().String())
+				owllog.OwlLogRun.Printf("Client closed the connection %s", c.conn.RemoteAddr().String())
 			} else {
-				log.Printf("Some problem with reading from client %s", c.conn.RemoteAddr().String())
+				owllog.OwlLogRun.Printf("Some problem with reading from client %s", c.conn.RemoteAddr().String())
 			}
-			log.Printf("done serving %s", c.conn.RemoteAddr().String())
+			owllog.OwlLogRun.Printf("done serving %s", c.conn.RemoteAddr().String())
 
 			c.Server.onClientConnectionClosed(c, err)
 			return
