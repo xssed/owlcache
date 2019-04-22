@@ -50,6 +50,7 @@ func Exe(w http.ResponseWriter, r *http.Request) {
 	owlhandler.owlrequest.HTTPReceive(w, r)
 	owlhandler.HTTPHandle(w, r) //执行数据
 	resstr := owlhandler.owlresponse.ConvertToString("HTTP")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
 }
@@ -61,6 +62,7 @@ func GroupExe(w http.ResponseWriter, r *http.Request) {
 	owlhandler.owlrequest.HTTPReceive(w, r)
 	owlhandler.HTTPGroupDataHandle(w, r) //执行数据
 	resstr := owlhandler.owlresponse.ConvertToString("HTTP")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
 }
@@ -72,6 +74,7 @@ func Server(w http.ResponseWriter, r *http.Request) {
 	owlservergrouphandler.owlservergrouprequest.HTTPReceive(w, r)
 	owlservergrouphandler.HTTPServerHandle(w, r) //执行数据
 	resstr := owlservergrouphandler.owlserveggroupresponse.ConvertToString()
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
 }
@@ -83,6 +86,7 @@ func Server(w http.ResponseWriter, r *http.Request) {
 //	owlservergrouphandler.owlservergrouprequest.HTTPReceive(w, r)
 //	owlservergrouphandler.HTTPServerGroupHandle(w, r) //执行数据
 //	resstr := owlservergrouphandler.owlserveggroupresponse.ConvertToString()
+//	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 //	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
 //}
