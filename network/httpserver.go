@@ -28,17 +28,17 @@ func stratHTTP() {
 	var err error
 	if owlconfig.OwlConfigModel.Open_Https == "1" {
 		//支持HTTPS
+		owllog.OwlLogRun.Info("Creating HTTPS server with address： " + addr)
 		err = http.ListenAndServeTLS(addr, owlconfig.OwlConfigModel.Https_CertFile, owlconfig.OwlConfigModel.Https_KeyFile, &ServerEntity{handler: http.DefaultServeMux})
 	} else if owlconfig.OwlConfigModel.Open_Https == "0" {
 		//普通HTTP
+		owllog.OwlLogRun.Info("Creating HTTP server with address： " + addr)
 		err = http.ListenAndServe(addr, &ServerEntity{handler: http.DefaultServeMux})
 	} else {
 		err = ErrorOpenHttpsSelected
 	}
 	if err != nil {
 		owllog.OwlLogRun.Fatal("Error starting HTTP server.", err)
-	} else {
-		owllog.OwlLogRun.Info("Creating HTTP server with address " + addr)
 	}
 
 }
