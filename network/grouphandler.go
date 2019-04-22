@@ -1,10 +1,10 @@
 package network
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/xssed/owlcache/group"
+	owllog "github.com/xssed/owlcache/log"
 	tools "github.com/xssed/owlcache/tools"
 )
 
@@ -159,7 +159,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) find(address string) (int32,
 
 		defer func() {
 			if err := recover(); err != nil {
-				log.Panicln(err)
+				owllog.OwlLogHttp.Panicln(err)
 			}
 		}()
 

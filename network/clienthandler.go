@@ -2,10 +2,10 @@ package network
 
 import (
 	"encoding/json"
-	"log"
 	"sync"
 
 	"github.com/xssed/owlcache/group"
+	owllog "github.com/xssed/owlcache/log"
 )
 
 //发起请求获取集合数据
@@ -58,7 +58,7 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 	if s != "" {
 		var resbody OwlResponse
 		if err := json.Unmarshal([]byte(s), &resbody); err != nil {
-			log.Fatalf("OwlHandler parseContent JSON unmarshling failed: %s", err)
+			owllog.OwlLogHttp.Fatalf("OwlHandler parseContent JSON unmarshling failed: %s", err)
 		}
 		kvlist.Add(resbody)
 		//kvlist.Add(s)
