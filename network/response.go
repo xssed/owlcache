@@ -2,7 +2,6 @@ package network
 
 import (
 	"encoding/json"
-	//"fmt"
 	"time"
 
 	owlconfig "github.com/xssed/owlcache/config"

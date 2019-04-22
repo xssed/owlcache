@@ -1,10 +1,7 @@
 package network
 
 import (
-	//"bufio"
 	"fmt"
-	//"io"
-	//"strconv"
 	"net/http"
 	"strings"
 	"time"

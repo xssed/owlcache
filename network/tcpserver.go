@@ -1,10 +1,6 @@
 package network
 
 import (
-	//"fmt"
-
-	//"strings"
-
 	owlconfig "github.com/xssed/owlcache/config"
 	"github.com/xssed/owlcache/network/tcp"
 )

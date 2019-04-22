@@ -2,12 +2,10 @@ package network
 
 import (
 	"encoding/json"
-	//"fmt"
 	"log"
 	"sync"
 
 	"github.com/xssed/owlcache/group"
-	//tools "github.com/xssed/owlcache/tools"
 )
 
 //发起请求获取集合数据
