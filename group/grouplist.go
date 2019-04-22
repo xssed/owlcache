@@ -85,19 +85,14 @@
 package group
 
 import (
-	//"encoding/gob"
-	//"fmt"
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"log"
-
-	"encoding/json"
-	//"os"
 	"sync"
 
-	"github.com/xssed/owlcache/tools"
-
 	"github.com/mitchellh/mapstructure"
+	"github.com/xssed/owlcache/tools"
 )
 
 //切片list结构

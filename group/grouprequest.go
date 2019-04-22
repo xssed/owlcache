@@ -1,13 +1,9 @@
 package group
 
 import (
-	//"bufio"
 	"fmt"
-	//"io"
-	//"strconv"
 	"net/http"
 	"strings"
-	//"time"
 )
 
 type OwlServerGroupRequest struct {
