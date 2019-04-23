@@ -31,6 +31,8 @@ type OwlConfig struct {
 	Https_KeyFile                  string //Key文件路径。
 	HttpsClient_InsecureSkipVerify string //当开启HTTPS模式后，owlcache之间互相通讯时是否校验证书。值为0(关闭)、1(开启)。默认关闭。开启时不会校验证书合法性。
 	CloseTcp                       string //是否关闭Tcp服务(因为TCP模式下无密码认证)  值为"1"(开启)和"0"(关闭)。默认为1开启服务。
+	Cors                           string //是否开启跨域
+	Access_Control_Allow_Origin    string //设置指定的域
 }
 
 //创建一个默认配置文件的实体
@@ -55,6 +57,8 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Https_KeyFile:                  "/www/server.key",
 		HttpsClient_InsecureSkipVerify: "0",
 		CloseTcp:                       "1",
+		Cors:                           "0",
+		Access_Control_Allow_Origin:    "*",
 	}
 }
 
@@ -167,6 +171,12 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["CloseTcp"]) >= 1 {
 		param.CloseTcp = config["CloseTcp"]
+	}
+	if len(config["Cors"]) >= 1 {
+		param.Cors = config["Cors"]
+	}
+	if len(config["Access_Control_Allow_Origin"]) >= 1 {
+		param.Access_Control_Allow_Origin = config["Access_Control_Allow_Origin"]
 	}
 
 }
