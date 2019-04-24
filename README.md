@@ -25,11 +25,11 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 * 🎨Easy to use, only a few operating commands
 * ⚔️Authentication
 * 📝Logging
-* 🔭**Support both TCP and HTTP connections**
+* 🔭**Support both TCP and HTTP/HTTPS connections**
 
 
-## Chinese use documentation
-- 📝http://owl.xsser.cc  
+## Documentation
+- 📝[Simplified Chinese](doc/zh/0.directory.md)
 
 
 ## Original design intention
