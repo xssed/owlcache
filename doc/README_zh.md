@@ -28,8 +28,8 @@
 * 🔭**同时支持TCP、HTTP/HTTPS两种方式连接**
 
 
-## 中文使用文档
-- 📝[简体中文](doc/zh/0.directory.md) 
+## 使用文档
+- 📝[简体中文](zh/0.directory.md) 
 
 
 ## 设计初衷
