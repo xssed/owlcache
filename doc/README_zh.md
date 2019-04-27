@@ -80,7 +80,7 @@ owlcache
 owlcache -help
 ```
 ```shell
-Welcome to use owlcache. Version:0.2
+Welcome to use owlcache. Version:XXX
 If you have any questions,Please contact us: xsser@xsser.cc
 Project Home:https://github.com/xssed/owlcache
                 _                _
@@ -134,7 +134,9 @@ http://127.0.0.1:7721/data/?cmd=get&key=hello
     "Status": 200,
     "Results": "SUCCESS",
     "Key": "hello",
-    "Data": "world"
+    "Data": "world",
+    "ResponseHost": "127.0.0.1:7721",
+    "KeyCreateTime": "2019-04-24T18:05:10.9132377+08:00"
 }
 ~~~
 
