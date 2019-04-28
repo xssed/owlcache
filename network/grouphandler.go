@@ -1,6 +1,7 @@
 package network
 
 import (
+	//"fmt"
 	"net/http"
 
 	"github.com/xssed/owlcache/group"
@@ -121,18 +122,18 @@ func (owlservergrouphandler *OwlServerGroupHandler) Add() {
 
 	//数据清理
 	owlservergrouphandler.owlservergrouprequest.Cmd = ""
+	//创建数据
+	var reqs group.OwlServerGroupRequest
+	reqs.Cmd = owlservergrouphandler.owlservergrouprequest.Cmd
+	reqs.Address = owlservergrouphandler.owlservergrouprequest.Address
+	reqs.Pass = owlservergrouphandler.owlservergrouprequest.Pass
+	reqs.Token = owlservergrouphandler.owlservergrouprequest.Token
 
 	at, exits := owlservergrouphandler.find(owlservergrouphandler.owlservergrouprequest.Address)
 	//存在
 	if exits {
-		//		res := ServerGroupList.RemoveAt(int32(at))
-		//		if res {
-		//			owlservergrouphandler.Transmit(SUCCESS)
-		//		} else {
-		//			owlservergrouphandler.Transmit(ERROR)
-		//		}
-		ServerGroupList.RemoveAt(int32(at))                                                 //先删除
-		ok := ServerGroupList.AddAt(int32(at), owlservergrouphandler.owlservergrouprequest) //后增加
+		ServerGroupList.RemoveAt(int32(at))          //先删除
+		ok := ServerGroupList.AddAt(int32(at), reqs) //后增加
 		if ok {
 			owlservergrouphandler.Transmit(group.SUCCESS)
 		} else {
@@ -140,7 +141,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Add() {
 		}
 	} else {
 		//不存在
-		ok := ServerGroupList.Add(owlservergrouphandler.owlservergrouprequest)
+		ok := ServerGroupList.Add(reqs)
 		if ok {
 			owlservergrouphandler.Transmit(group.SUCCESS)
 		} else {
@@ -163,9 +164,8 @@ func (owlservergrouphandler *OwlServerGroupHandler) find(address string) (int32,
 			}
 		}()
 
+		//fmt.Println(fmt.Sprintf("%T", list[k]))
 		val, ok := list[k].(group.OwlServerGroupRequest)
-
-		//fmt.Println(val, ok)
 		if ok {
 			if val.Address == address {
 				resat = int32(k)

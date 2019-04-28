@@ -1,6 +1,5 @@
 {
     "package": {
-         "github.com/mitchellh/mapstructure",
          "github.com/satori/go.uuid"         
     }
 }

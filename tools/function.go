@@ -3,6 +3,7 @@ package tools
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"os"
 	"strings"
 
@@ -47,4 +48,9 @@ func CreateFolderAndFile(folder, filename string) (*os.File, error) {
 
 	return file, err
 
+}
+
+//判断返回传入值的类型
+func Typeof(v interface{}) string {
+	return fmt.Sprintf("%T", v)
 }

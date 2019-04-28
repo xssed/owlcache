@@ -3,11 +3,12 @@ package group
 import (
 	"bytes"
 	"encoding/json"
+
+	//"fmt"
 	"io/ioutil"
 	"log"
 	"sync"
 
-	"github.com/mitchellh/mapstructure"
 	"github.com/xssed/owlcache/tools"
 )
 
@@ -246,13 +247,19 @@ func (servergroup *Servergroup) LoadFromFile(folder, filename string) error {
 
 	newlist := NewServergroup()
 
+	//log.Println(list)
+
 	for k := range list {
 
+		//fmt.Println(tools.Typeof(list[k]))
+		temp := list[k].(map[string]interface{})
+
 		var servergrouprequest OwlServerGroupRequest
-		//将 map 转换为指定的结构体
-		if err3 := mapstructure.Decode(list[k], &servergrouprequest); err3 != nil {
-			log.Println(err3)
-		}
+
+		servergrouprequest.Cmd = GroupCommandType(temp["Cmd"].(string))
+		servergrouprequest.Address = temp["Address"].(string)
+		servergrouprequest.Pass = temp["Pass"].(string)
+		servergrouprequest.Token = temp["Token"].(string)
 
 		newlist.Add(servergrouprequest)
 
