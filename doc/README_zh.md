@@ -29,7 +29,8 @@
 
 
 ## 使用文档
-- 📝[简体中文](zh/0.directory.md) 
+- 📝[中文简体](zh/0.directory.md)
+- 📝[English](en/0.directory.md)
 
 
 ## 设计初衷

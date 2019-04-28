@@ -29,7 +29,8 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 
 
 ## Documentation
-- 📝[Simplified Chinese](doc/zh/0.directory.md)
+- 📝[中文简体](doc/zh/0.directory.md)
+- 📝[English](doc/en/0.directory.md)
 
 
 ## Original design intention
