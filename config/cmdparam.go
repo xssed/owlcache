@@ -25,7 +25,7 @@ func CmdParamInit(param *OwlConfig) *OwlConfig {
 
 //将Owlcache启动时接收到的参数进行解析绑定
 func CmdParamExe(param *OwlConfig) *OwlConfig {
-	host := flag.String("host", param.Host, "binding local host ip adress.")
+	host := flag.String("host", param.Host, "binding local host ip address.")
 	configPath := flag.String("config", param.Configfile, "owlcache config file path.[demo:/var/home/owl.conf]")
 	logPath := flag.String("log", param.Logfile, "owlcache log file path.[demo:/var/log/]") //owlcache auto generation
 	pass := flag.String("pass", param.Pass, "owlcache Http connection password.")
