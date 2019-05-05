@@ -9,7 +9,7 @@ import (
 	owlsystem "github.com/xssed/owlcache/system"
 )
 
-func stratHTTP() {
+func startHTTP() {
 
 	//设置监听的端口
 	addr := owlconfig.OwlConfigModel.Host + ":" + owlconfig.OwlConfigModel.Httpport

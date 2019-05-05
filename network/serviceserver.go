@@ -53,7 +53,7 @@ func BaseCacheDBInit() {
 	//检查是否开启TCP服务。默认为开启。
 	if owlconfig.OwlConfigModel.CloseTcp == "1" {
 		fmt.Println("owlcache  tcp server running...")
-		go stratTCP()
+		go startTCP()
 	} else if owlconfig.OwlConfigModel.CloseTcp == "0" {
 		owllog.OwlLogRun.Info("The configuration file does not open the TCP service.")
 	} else {
@@ -63,6 +63,18 @@ func BaseCacheDBInit() {
 
 	//启动http服务
 	fmt.Println("owlcache  http server running...")
-	go stratHTTP()
+	go startHTTP()
+
+	//启动gossip数据最终一致服务
+	//检查是否开启gossip服务。默认为关闭。
+	if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
+		fmt.Println("owlcache  final consistency service running...")
+		go startGossip()
+	} else if owlconfig.OwlConfigModel.GroupWorkMode == "owlcache" {
+		//什么也不做，集群方式默认开启owlcache
+	} else {
+		//检测到配置书写异常强制退出
+		owllog.OwlLogRun.Fatal(ErrorGroupWorkMode)
+	}
 
 }

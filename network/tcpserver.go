@@ -5,7 +5,7 @@ import (
 	"github.com/xssed/owlcache/network/tcp"
 )
 
-func stratTCP() {
+func startTCP() {
 
 	addr := owlconfig.OwlConfigModel.Host + ":" + owlconfig.OwlConfigModel.Tcpport
 	server := tcp.New(addr)
