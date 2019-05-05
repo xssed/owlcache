@@ -94,28 +94,6 @@ func (owlhandler *OwlHandler) HTTPGroupDataHandle(w http.ResponseWriter, r *http
 	case GET:
 		//HttpClient
 		owlhandler.GetGroupData()
-	case EXIST:
-		owlhandler.Exists()
-	case SET:
-		if !owlhandler.CheckAuth(r) {
-			owlhandler.Transmit(NOT_PASS)
-			break
-		}
-		owlhandler.Set()
-	case EXPIRE:
-		if !owlhandler.CheckAuth(r) {
-			owlhandler.Transmit(NOT_PASS)
-			break
-		}
-		owlhandler.Expire()
-	case DELETE:
-		if !owlhandler.CheckAuth(r) {
-			owlhandler.Transmit(NOT_PASS)
-			break
-		}
-		owlhandler.Delete()
-	case PASS:
-		owlhandler.Pass(r)
 	default:
 		owlhandler.Transmit(UNKNOWN_COMMAND)
 	}
