@@ -54,13 +54,11 @@ func (q *Queue) Clear() bool {
 		fmt.Println("queue is empty!")
 		return false
 	}
-
-	for i := 0; i < q.Size(); i++ {
-		q.lock.Lock()
-		q.element[i] = nil
-		q.lock.Unlock()
-	}
+	size := q.Size()
 	q.lock.Lock()
+	for i := 0; i < size; i++ {
+		q.element[i] = nil
+	}
 	q.element = nil
 	q.lock.Unlock()
 
