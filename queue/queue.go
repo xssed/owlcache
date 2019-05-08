@@ -2,7 +2,7 @@ package queue
 
 //thread-safe queue
 import (
-	"fmt"
+	//"fmt"
 	"sync"
 )
 
@@ -36,7 +36,7 @@ func (q *Queue) Push(e Element) {
 func (q *Queue) Pop() Element {
 
 	if q.IsEmpty() {
-		fmt.Println("queue is empty!")
+		//fmt.Println("queue is empty!")
 		return nil
 	}
 	q.lock.Lock()
@@ -51,7 +51,7 @@ func (q *Queue) Pop() Element {
 func (q *Queue) Clear() bool {
 
 	if q.IsEmpty() {
-		fmt.Println("queue is empty!")
+		//fmt.Println("queue is empty!")
 		return false
 	}
 	size := q.Size()

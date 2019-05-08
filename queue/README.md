@@ -23,10 +23,21 @@ func main() {
 	queue.Push("52测试")
 	fmt.Println("移除最前面的元素：", queue.Pop())
 	fmt.Println("移除最前面的元素：", queue.Pop())
+
+	e := queue.Pop()
+	fmt.Println("结果:", e)
+	if e != nil {
+		v, convert_ok := e.(string)
+		if convert_ok {
+			fmt.Println("string:", v)
+		}
+	}
+
 	fmt.Println("元素个数:", queue.Size())
 	fmt.Println("清空队列：", queue.Clear())
 	fmt.Println("元素个数:", queue.Size())
 
 }
+
 
 ```
