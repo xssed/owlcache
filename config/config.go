@@ -22,6 +22,7 @@ type OwlConfig struct {
 	Httpport                       string //Http监听端口
 	HttpClientRequestTimeout       string //集群互相通信时的请求超时时间
 	GroupWorkMode                  string //集群方式:owlcache、gossip
+	Gossipport                     string //启用Gossip服务该项才会生效。Gossip监听端口，默认值为0(系统自动监听一个端口并在启动信息输出该端口)。
 	Task_DataBackup                string //自动备份DB数据的存储时间
 	Task_DataAuthBackup            string //自动备份用户认证数据的存储时间
 	Task_ClearExpireData           string //自动清理数据库中过期数据的时间
@@ -48,6 +49,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Httpport:                       "7721",
 		HttpClientRequestTimeout:       "2",
 		GroupWorkMode:                  "owlcache",
+		Gossipport:                     "0",
 		Task_DataBackup:                "1",
 		Task_DataAuthBackup:            "1",
 		Task_ClearExpireData:           "1",
@@ -144,6 +146,9 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["GroupWorkMode"]) >= 1 {
 		param.GroupWorkMode = config["GroupWorkMode"]
+	}
+	if len(config["Gossipport"]) >= 1 {
+		param.Gossipport = config["Gossipport"]
 	}
 	if len(config["Task_DataBackup"]) >= 1 {
 		param.Task_DataBackup = config["Task_DataBackup"]
