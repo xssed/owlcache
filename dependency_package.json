@@ -1,5 +1,6 @@
 {
     "package": {
-         "github.com/satori/go.uuid"         
+         "github.com/satori/go.uuid"
+         "github.com/hashicorp/memberlist"        
     }
 }
