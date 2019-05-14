@@ -5,7 +5,12 @@ import (
 )
 
 var (
-	members = "" //flag.String("members", "", "comma seperated list of members")
-	H       = NewHandler()
-	Q       = queue.New()
+	H *Handler
+	Q *queue.Queue
 )
+
+//初始化
+func init() {
+	H = NewHandler()
+	Q = queue.New()
+}
