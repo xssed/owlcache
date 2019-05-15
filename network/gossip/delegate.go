@@ -24,6 +24,7 @@ func (d *delegate) NotifyMsg(b []byte) {
 	protocol_head_len := len(pass)
 
 	switch str[:protocol_head_len] {
+	//验证密码
 	case pass:
 		//定义数据包列表
 		var executes []*Execute
