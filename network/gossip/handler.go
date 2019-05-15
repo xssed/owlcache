@@ -3,34 +3,44 @@ package gossip
 import (
 	"fmt"
 	"os"
-	"strings"
+	"strconv"
 
 	"github.com/hashicorp/memberlist"
-	"github.com/pborman/uuid"
+	"github.com/xssed/owlcache/tools"
 )
 
 type Handler struct {
 	broadcasts *memberlist.TransmitLimitedQueue
+	nodes      []string
+	Password   string
 }
 
 func NewHandler() *Handler {
-	return &Handler{}
+	return &Handler{nodes: []string{}, Password: "owlcache"}
 }
 
-func (h *Handler) StartService() error {
+func (h *Handler) StartService(str_addresslist []string, passWord string, bindAddress string, bindPort string) error {
+	//赋值
+	h.nodes = str_addresslist
+
+	if len(passWord) != 0 {
+		h.Password = passWord
+	}
+
+	bindport, _ := strconv.Atoi(bindPort)
+
 	hostname, _ := os.Hostname()
 	c := memberlist.DefaultLocalConfig()
 	c.Delegate = &delegate{}
-	c.BindPort = 0
-	//c.BindPort = 7723
-	c.Name = hostname + "-" + uuid.NewUUID().String()
+	c.Name = hostname + "-" + tools.GetUUIDString()
+	c.BindAddr = bindAddress
+	c.BindPort = bindport
 	m, err := memberlist.Create(c)
 	if err != nil {
 		return err
 	}
-	if len(members) > 0 {
-		parts := strings.Split(members, ",")
-		_, err := m.Join(parts)
+	if len(h.nodes) > 0 {
+		_, err := m.Join(h.nodes)
 		if err != nil {
 			return err
 		}
@@ -39,17 +49,17 @@ func (h *Handler) StartService() error {
 		NumNodes: func() int {
 			return m.NumMembers()
 		},
-		RetransmitMult: 3,
+		RetransmitMult: 2,
 	}
 	node := m.LocalNode()
-	fmt.Printf("Local member %s:%d\n", node.Addr, node.Port)
+	fmt.Printf("Mark : local member %s:%d\n", node.Addr, node.Port)
 	return nil
 }
 
 func (h *Handler) QueueBroadcast(b []byte) {
 	//发送数据到集群
 	h.broadcasts.QueueBroadcast(&broadcast{
-		msg:    append([]byte("d"), b...),
+		msg:    append([]byte(h.Password), b...),
 		notify: nil,
 	})
 

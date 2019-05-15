@@ -2,6 +2,8 @@ package gossip
 
 import (
 	"encoding/json"
+	"strconv"
+	"time"
 )
 
 //数据包结构(数据交换)
@@ -19,11 +21,12 @@ func PostQueueBroadcast(exedata *Execute) {
 }
 
 //设置Key数据
-func Set(key, val string) {
+func Set(key, val string, expires time.Duration) {
 	exedata := make(Execute)
-	exedata["cmd"] = "add"
+	exedata["cmd"] = "set"
 	exedata["key"] = key
 	exedata["val"] = val
+	exedata["expire"] = strconv.FormatInt(int64(expires)/1000000000, 10) //转string
 	PostQueueBroadcast(&exedata)
 }
 
@@ -32,15 +35,17 @@ func Delete(key string) {
 	exedata := make(Execute)
 	exedata["cmd"] = "del"
 	exedata["key"] = key
-	exedata["val"] = ""
+	// exedata["val"] = ""
+	// exedata["expire"] = ""
 	PostQueueBroadcast(&exedata)
 }
 
 //为Key设置过期时间
-func Expire(key, expires string) {
+func Expire(key string, expires time.Duration) {
 	exedata := make(Execute)
 	exedata["cmd"] = "expire"
 	exedata["key"] = key
-	exedata["val"] = expires
+	// exedata["val"] = ""
+	exedata["expire"] = strconv.FormatInt(int64(expires)/1000000000, 10) //转string
 	PostQueueBroadcast(&exedata)
 }

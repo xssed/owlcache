@@ -17,12 +17,18 @@ func startHTTP() {
 	http.HandleFunc("/", IndexPage) //设置访问的路由
 	//单机数据执行信息
 	http.HandleFunc("/data/", Exe) //设置访问的路由
-	//群组数据执行信息
-	http.HandleFunc("/group_data/", GroupExe) //设置访问的路由
 	//设置服务器集群
 	http.HandleFunc("/server/", Server) //设置服务器集群信息，单机。
-	//	//设置服务器集群
-	//	http.HandleFunc("/server_group/", ServerGroup) //设置服务器集群信息,集群。
+	//启动gossip数据最终一致服务。检查是否开启gossip服务。默认为关闭。
+	if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
+		//什么也不做
+	} else if owlconfig.OwlConfigModel.GroupWorkMode == "owlcache" {
+		//群组数据执行信息
+		http.HandleFunc("/group_data/", GroupExe) //设置访问的路由
+	} else {
+		//检测到配置书写异常强制退出
+		owllog.OwlLogRun.Fatal(ErrorGroupWorkMode)
+	}
 
 	//监听设置
 	var err error
@@ -78,18 +84,6 @@ func Server(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
 
 }
-
-////设置服务器集群信息，集群
-//func ServerGroup(w http.ResponseWriter, r *http.Request) {
-
-//	owlservergrouphandler := NewOwlServerGroupHandler()
-//	owlservergrouphandler.owlservergrouprequest.HTTPReceive(w, r)
-//	owlservergrouphandler.HTTPServerGroupHandle(w, r) //执行数据
-//	resstr := owlservergrouphandler.owlserveggroupresponse.ConvertToString()
-//	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-//	fmt.Fprintf(w, resstr) //输出到客户端的信息
-
-//}
 
 //首页
 func IndexPage(w http.ResponseWriter, r *http.Request) {

@@ -1,11 +1,14 @@
 package network
 
 import (
+	//"fmt"
 	"net/http"
 	"time"
 
 	"github.com/xssed/owlcache/cache"
 	owlconfig "github.com/xssed/owlcache/config"
+
+	"github.com/xssed/owlcache/network/gossip"
 	tools "github.com/xssed/owlcache/tools"
 )
 
@@ -133,6 +136,14 @@ func (owlhandler *OwlHandler) Set() {
 	} else {
 		owlhandler.Transmit(ERROR)
 	}
+
+	//判断一致性数据同步-设置
+	if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
+		//fmt.Println("gossip.Set()")
+		//发送数据到集群
+		gossip.Set(owlhandler.owlrequest.Key, owlhandler.owlrequest.Value.(string), owlhandler.owlrequest.Expires)
+	}
+
 }
 
 func (owlhandler *OwlHandler) Expire() {
@@ -142,6 +153,14 @@ func (owlhandler *OwlHandler) Expire() {
 	} else {
 		owlhandler.Transmit(ERROR)
 	}
+
+	//判断一致性数据同步-设置Key过期
+	if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
+		//fmt.Println("gossip.Expire()")
+		//发送数据到集群
+		gossip.Expire(owlhandler.owlrequest.Key, owlhandler.owlrequest.Expires)
+	}
+
 }
 
 func (owlhandler *OwlHandler) Get() {
@@ -161,6 +180,14 @@ func (owlhandler *OwlHandler) Delete() {
 	} else {
 		owlhandler.Transmit(ERROR)
 	}
+
+	//判断一致性数据同步-删除Key
+	if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
+		//fmt.Println("gossip.Delete()")
+		//发送数据到集群
+		gossip.Delete(owlhandler.owlrequest.Key)
+	}
+
 }
 
 func (owlhandler *OwlHandler) Exists() {

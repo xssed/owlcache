@@ -19,12 +19,16 @@ func (d *delegate) NotifyMsg(b []byte) {
 		return
 	}
 	//将通讯数据的头字节取出(自定义数据协议)
-	switch b[0] {
-	case 'd':
+	str := string(b)
+	pass := H.Password
+	protocol_head_len := len(pass)
+
+	switch str[:protocol_head_len] {
+	case pass:
 		//定义数据包列表
 		var executes []*Execute
 		//绑定数据到数据包列表
-		if err := json.Unmarshal(b[1:], &executes); err != nil {
+		if err := json.Unmarshal([]byte(str[protocol_head_len:]), &executes); err != nil {
 			return
 		}
 		//遍历取单个数据包操作
