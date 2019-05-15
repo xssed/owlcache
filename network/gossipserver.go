@@ -3,11 +3,14 @@ package network
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	owlconfig "github.com/xssed/owlcache/config"
 	"github.com/xssed/owlcache/group"
 	"github.com/xssed/owlcache/network/gossip"
+
 	//"github.com/xssed/owlcache/tools"
+	owllog "github.com/xssed/owlcache/log"
 )
 
 func startGossip() {
@@ -38,6 +41,8 @@ func listenGossipQueue() {
 
 	for {
 
+		time.Sleep(time.Microsecond * 7) //微秒级阻塞
+
 		size := gossip.Q.Size()
 		if size >= 1 {
 			e := gossip.Q.Pop()
@@ -56,14 +61,22 @@ func listenGossipQueue() {
 
 				switch result["cmd"] {
 				case "set":
-					fmt.Println("set")
-					fmt.Println(result)
+					exptime, _ := time.ParseDuration(result["expire"] + "s")
+					ok := BaseCacheDB.Set(result["key"], result["val"], exptime)
+					if !ok {
+						owllog.OwlLogHttp.Println("gossip:set error " + " key:" + result["key"])
+					}
 				case "expire":
-					fmt.Println("expire")
-					fmt.Println(result)
+					exptime, _ := time.ParseDuration(result["expire"] + "s")
+					ok := BaseCacheDB.Expire(result["key"], exptime)
+					if !ok {
+						owllog.OwlLogHttp.Println("gossip:expire error " + " key:" + result["key"])
+					}
 				case "del":
-					fmt.Println("del")
-					fmt.Println(result)
+					ok := BaseCacheDB.Delete(result["key"])
+					if !ok {
+						owllog.OwlLogHttp.Println("gossip:del error " + " key:" + result["key"])
+					}
 				}
 
 			}
