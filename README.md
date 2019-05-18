@@ -141,7 +141,7 @@ Response result example:
 }
 ~~~
 
-## The cluster obtains the Key value.
+## The cluster obtains the Key value(GroupWorkMode is set to owlcache).
 * Suppose there are now three owlcache services: 127.0.0.1: 7721, 127.0.0.1:7723, 127.0.0.1:7725. Each service has a data called **Key** called **hello**.
 
 

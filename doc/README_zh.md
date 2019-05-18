@@ -141,7 +141,7 @@ http://127.0.0.1:7721/data/?cmd=get&key=hello
 }
 ~~~
 
-## 集群获取Key值
+## 集群获取Key值(GroupWorkMode设置为owlcache)
 * 假设现在有三个owlcache服务:127.0.0.1:7721、127.0.0.1:7723、127.0.0.1:7725。每个服务中都有一个Key名称叫hello的数据。
 
 
