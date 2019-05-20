@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	VERSION      string = "beta-0.3.0"
+	VERSION      string = "0.3.0-beta"
 	VERSION_DATE string = "2019-05-15"
 )
 
