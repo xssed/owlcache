@@ -42,7 +42,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Configfile:                     "owlcache.conf",
 		Logfile:                        "",
 		DBfile:                         "",
-		Pass:                           "shi!jie9he?ping6",
+		Pass:                           "",
 		Host:                           "0.0.0.0",
 		ResponseHost:                   "127.0.0.1",
 		Tcpport:                        "7720",
