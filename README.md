@@ -61,7 +61,8 @@ go build
 ```
 
 ## Run
-* Note that the owlcache.conf file should be in the same directory as the main program  
+* Note that the owlcache.conf file should be in the same directory as the main program   
+* Set the <Pass> option in the configuration file owlcache.conf.     
 
 Linux
 ```shell
