@@ -29,12 +29,10 @@ func main() {
 	owlconfig.ConfigInit()
 	//初始化日志记录
 	owllog.LogInit()
-	//初始化数据库服务,核心组件
-	owlnetwork.BaseCacheDBInit()
 	//定时任务服务
 	owljob.JobInit()
+	//初始化数据库服务,核心组件
+	owlnetwork.BaseCacheDBInit()
 	//守护包。用于保证程序的稳健、安全运行
 	owlaegis.AegisInit()
-	//捕获程序正常退出操作 ctrl+c
-	owlsystem.OnExit()
 }
