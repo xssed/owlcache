@@ -43,6 +43,11 @@
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
 
 
+## 设计  
+
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_zh.png?raw=true)
+
+
 
 ## 如何编译
 

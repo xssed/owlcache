@@ -43,6 +43,10 @@ owl🦉 is clever and cute. Their heads range from 270°🦉.
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
 
 
+## Design  
+
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_en.png?raw=true)
+
 
 ## How to compile
 
