@@ -33,9 +33,11 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 - 📝[English](doc/en/0.directory.md)
 
 
-## Original design intention
+## Why should I create this project?
 
-My first thought was to implement a data sharing application that would make it very easy to build an efficient data sharing cluster. The data in the cluster, they can be owned jointly, or a node can have other nodes to obtain at any time. All data in the cluster must first be "shared" and "accessible" data.
+* Don't like Memcache, Redis (cache usage) cluster mode  
+* Increase the cache access mode  
+* Easily build efficient data sharing clusters  
 
 owl🦉 is clever and cute. Their heads range from 270°🦉.    
 
