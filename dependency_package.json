@@ -1,6 +1,7 @@
 {
     "package": {
          "github.com/satori/go.uuid"
-         "github.com/hashicorp/memberlist"        
+         "github.com/hashicorp/memberlist" 
+         "github.com/bradfitz/gomemcache/memcache"       
     }
 }
