@@ -1,0 +1,7 @@
+{
+	"mark": "In the development process, I have referred to these excellent open source packages,thinks!",
+	"package": {
+		"gossip example": "github.com/asim/memberlist",
+		"tcp server": "github.com/firstrow/tcp_server"
+	}
+}
