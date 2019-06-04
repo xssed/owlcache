@@ -8,6 +8,7 @@ import (
 	"github.com/xssed/owlcache/group"
 	owllog "github.com/xssed/owlcache/log"
 	"github.com/xssed/owlcache/network/httpclient"
+	"github.com/xssed/owlcache/network/memcacheclient"
 )
 
 //创建一个全局的缓存DB
@@ -75,6 +76,12 @@ func BaseCacheDBInit() {
 	} else {
 		//检测到配置书写异常强制退出
 		owllog.OwlLogRun.Fatal(ErrorGroupWorkMode)
+	}
+
+	//启动是否启动从memcache中查询数据
+	if owlconfig.OwlConfigModel.Get_data_from_memcache == "1" {
+		fmt.Println("owlcache  memcache client service running...")
+		go memcacheclient.Start()
 	}
 
 }

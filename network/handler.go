@@ -7,8 +7,10 @@ import (
 
 	"github.com/xssed/owlcache/cache"
 	owlconfig "github.com/xssed/owlcache/config"
+	owllog "github.com/xssed/owlcache/log"
 
 	"github.com/xssed/owlcache/network/gossip"
+	"github.com/xssed/owlcache/network/memcacheclient"
 	tools "github.com/xssed/owlcache/tools"
 )
 
@@ -168,8 +170,32 @@ func (owlhandler *OwlHandler) Get() {
 		owlhandler.Transmit(SUCCESS)
 		owlhandler.owlresponse.Data = v.(*cache.KvStore).Value
 		owlhandler.owlresponse.KeyCreateTime = v.(*cache.KvStore).CreateTime
+		return
 	} else {
+		//NOT_FOUND状态下是否从memcache中查询数据
+		if owlconfig.OwlConfigModel.Get_data_from_memcache == "1" {
+			//请求数据
+			result, err := memcacheclient.Get(owlhandler.owlrequest.Key)
+			if err == nil {
+				//找到数据了
+				exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.Get_data_set_expire_time + "s")
+				ok := BaseCacheDB.Set(string(result.Key), string(result.Value), exptime)
+				//设置数据时出错
+				if !ok {
+					owllog.OwlLogRun.Println("Get_data_from_memcache:set error " + " key:" + owlhandler.owlrequest.Key)
+				} else {
+					owlhandler.Transmit(SUCCESS)
+					owlhandler.owlresponse.Data = string(result.Value)
+					owlhandler.owlresponse.KeyCreateTime = time.Now()
+					return
+				}
+			} else {
+				//memcache中也没有找到数据
+				owllog.OwlLogRun.Println("Get_data_from_memcache:get error " + " key:" + owlhandler.owlrequest.Key)
+			}
+		}
 		owlhandler.Transmit(NOT_FOUND)
+		return
 	}
 }
 
