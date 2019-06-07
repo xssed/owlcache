@@ -2,6 +2,7 @@
 	"package": {
 		"uuid": "github.com/satori/go.uuid",
 		"gossip server": "github.com/hashicorp/memberlist",
-		"memcache client": "github.com/bradfitz/gomemcache/memcache"
+		"memcache client": "github.com/bradfitz/gomemcache/memcache",
+		"redis client":"github.com/go-redis/redis"
 	}
 }
