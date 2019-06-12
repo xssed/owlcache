@@ -8,6 +8,8 @@ import (
 	owllog "github.com/xssed/owlcache/log"
 )
 
+var rc *redis.Client
+
 //客户端初始化
 func Start() {
 
