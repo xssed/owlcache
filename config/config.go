@@ -30,6 +30,11 @@ type OwlConfig struct {
 	Get_data_from_memcache         string //是否开启查询不存在的数据时,从memcache查询并存入本地数据库
 	Memcache_list                  string //需要查询的memcache列表,不同节点之间需要使用"|"符号间隔。
 	Get_data_set_expire_time       string //为从memcache存入本地数据库的Key设置一个过期时间。默认为0，永久不过期。单位是秒。
+	Get_data_from_redis            string //是否开启查询不存在的数据时,从redis查询并存入本地数据库。0表示不开启。
+	Redis_Addr                     string //需要查询的Redis地址。
+	Redis_Password                 string //需要查询的Redis密码。不能是空值。
+	Redis_DB                       string //需要查询Redis的数据库。默认为0。
+	Get_redis_data_set_expire_time string //为从Redis存入本地数据库的Key设置一个过期时间。默认为0，永久不过期。单位是秒。
 	Open_Https                     string //是否开启HTTPS。值为0(关闭)、1(开启)。默认关闭。
 	Https_CertFile                 string //Cert文件路径。
 	Https_KeyFile                  string //Key文件路径。
@@ -60,6 +65,11 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Get_data_from_memcache:         "0",
 		Memcache_list:                  "",
 		Get_data_set_expire_time:       "0",
+		Get_data_from_redis:            "0",
+		Redis_Addr:                     "",
+		Redis_Password:                 "",
+		Redis_DB:                       "0",
+		Get_redis_data_set_expire_time: "0",
 		Open_Https:                     "0",
 		Https_CertFile:                 "/www/server.crt",
 		Https_KeyFile:                  "/www/server.key",
@@ -176,6 +186,21 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["Get_data_set_expire_time"]) >= 1 {
 		param.Get_data_set_expire_time = config["Get_data_set_expire_time"]
+	}
+	if len(config["Get_data_from_redis"]) >= 1 {
+		param.Get_data_from_redis = config["Get_data_from_redis"]
+	}
+	if len(config["Redis_Addr"]) >= 1 {
+		param.Redis_Addr = config["Redis_Addr"]
+	}
+	if len(config["Redis_Password"]) >= 1 {
+		param.Redis_Password = config["Redis_Password"]
+	}
+	if len(config["Redis_DB"]) >= 1 {
+		param.Redis_DB = config["Redis_DB"]
+	}
+	if len(config["Get_redis_data_set_expire_time"]) >= 1 {
+		param.Get_redis_data_set_expire_time = config["Get_redis_data_set_expire_time"]
 	}
 	if len(config["Open_Https"]) >= 1 {
 		param.Open_Https = config["Open_Https"]
