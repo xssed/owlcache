@@ -2,6 +2,7 @@ package aegis
 
 import (
 	"os"
+	"strconv"
 
 	owlconfig "github.com/xssed/owlcache/config"
 	owllog "github.com/xssed/owlcache/log"
@@ -20,6 +21,12 @@ func CheckRedisConfig() {
 		//没有设置密码
 		if owlconfig.OwlConfigModel.Redis_Password == "" {
 			owllog.OwlLogRun.Println("Please set a redis password.Set the <Redis_Password> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
+			os.Exit(0)
+		}
+		//检查数据库设置是否正确
+		_, db_err := strconv.Atoi(owlconfig.OwlConfigModel.Redis_DB)
+		if db_err != nil {
+			owllog.OwlLogRun.Println("Redis DB is not a number.Set the <Redis_DB> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
 			os.Exit(0)
 		}
 

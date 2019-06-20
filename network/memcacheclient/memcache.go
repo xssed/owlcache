@@ -29,7 +29,7 @@ func Start() {
 func Get(key string) (*memcache.Item, error) {
 	it, err := mc.Get(key)
 	if err != nil {
-		owllog.OwlLogRun.Println("Get() error:", err)
+		owllog.OwlLogRun.Println("Memcache Client Get() error:", err)
 		return nil, err
 	}
 	return it, nil
