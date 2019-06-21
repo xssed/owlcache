@@ -9,6 +9,7 @@ import (
 	owllog "github.com/xssed/owlcache/log"
 	"github.com/xssed/owlcache/network/httpclient"
 	"github.com/xssed/owlcache/network/memcacheclient"
+	"github.com/xssed/owlcache/network/redisclient"
 )
 
 //创建一个全局的缓存DB
@@ -82,6 +83,12 @@ func BaseCacheDBInit() {
 	if owlconfig.OwlConfigModel.Get_data_from_memcache == "1" {
 		fmt.Println("owlcache  memcache client service running...")
 		go memcacheclient.Start()
+	}
+
+	//启动是否启动从memcache中查询数据
+	if owlconfig.OwlConfigModel.Get_data_from_redis == "1" {
+		fmt.Println("owlcache  redis client service running...")
+		go redisclient.Start()
 	}
 
 }

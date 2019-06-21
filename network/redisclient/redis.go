@@ -1,6 +1,7 @@
 package redisclient
 
 import (
+	"os"
 	"strconv"
 
 	"github.com/go-redis/redis"
@@ -34,7 +35,7 @@ func Get(key string) (string, error) {
 	val, err := rc.Get(key).Result()
 	if err != nil {
 		owllog.OwlLogRun.Println("Redis Client Get() error:", err)
-		return nil, err
+		return "", err
 	}
 	return val, nil
 
