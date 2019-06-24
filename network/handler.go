@@ -11,6 +11,7 @@ import (
 
 	"github.com/xssed/owlcache/network/gossip"
 	"github.com/xssed/owlcache/network/memcacheclient"
+	"github.com/xssed/owlcache/network/redisclient"
 	tools "github.com/xssed/owlcache/tools"
 )
 
@@ -192,6 +193,28 @@ func (owlhandler *OwlHandler) Get() {
 			} else {
 				//memcache中也没有找到数据
 				owllog.OwlLogRun.Println("Get_data_from_memcache:get error " + " key:" + owlhandler.owlrequest.Key)
+			}
+		}
+		//NOT_FOUND状态下是否从redis中查询数据
+		if owlconfig.OwlConfigModel.Get_data_from_redis == "1" {
+			//请求数据
+			rcres, err := redisclient.Get(owlhandler.owlrequest.Key)
+			if err == nil {
+				//找到数据了
+				rcexptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.Get_redis_data_set_expire_time + "s")
+				ok := BaseCacheDB.Set(owlhandler.owlrequest.Key, rcres, rcexptime)
+				//设置数据时出错
+				if !ok {
+					owllog.OwlLogRun.Println("Get_data_from_redis:set error " + " key:" + owlhandler.owlrequest.Key)
+				} else {
+					owlhandler.Transmit(SUCCESS)
+					owlhandler.owlresponse.Data = rcres
+					owlhandler.owlresponse.KeyCreateTime = time.Now()
+					return
+				}
+			} else {
+				//redis中也没有找到数据
+				owllog.OwlLogRun.Println("Get_data_from_redis:get error " + " key:" + owlhandler.owlrequest.Key)
 			}
 		}
 		owlhandler.Transmit(NOT_FOUND)
