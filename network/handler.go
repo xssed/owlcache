@@ -179,7 +179,7 @@ func (owlhandler *OwlHandler) Get() {
 			result, err := memcacheclient.Get(owlhandler.owlrequest.Key)
 			if err == nil {
 				//找到数据了
-				exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.Get_data_set_expire_time + "s")
+				exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.Get_memcache_data_set_expire_time + "s")
 				ok := BaseCacheDB.Set(string(result.Key), string(result.Value), exptime)
 				//设置数据时出错
 				if !ok {

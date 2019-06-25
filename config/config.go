@@ -12,71 +12,71 @@ var OwlConfigModel *OwlConfig
 
 //配置文件模型
 type OwlConfig struct {
-	Configfile                     string //配置文件路径
-	Logfile                        string //日志文件路径
-	DBfile                         string //数据库文件路径
-	Pass                           string //owlcache密钥
-	Host                           string //主机地址
-	ResponseHost                   string //程序响应IP,在TCP、HTTP返回的响应结果Json字符串中使用
-	Tcpport                        string //Tcp监听端口
-	Httpport                       string //Http监听端口
-	HttpClientRequestTimeout       string //集群互相通信时的请求超时时间
-	GroupWorkMode                  string //集群方式:owlcache、gossip
-	Gossipport                     string //启用Gossip服务该项才会生效。Gossip监听端口，默认值为0(系统自动监听一个端口并在启动信息输出该端口)。
-	Task_DataBackup                string //自动备份DB数据的存储时间
-	Task_DataAuthBackup            string //自动备份用户认证数据的存储时间
-	Task_ClearExpireData           string //自动清理数据库中过期数据的时间
-	Task_ServerListBackup          string //自动备份服务器集群信息数据的时间
-	Get_data_from_memcache         string //是否开启查询不存在的数据时,从memcache查询并存入本地数据库
-	Memcache_list                  string //需要查询的memcache列表,不同节点之间需要使用"|"符号间隔。
-	Get_data_set_expire_time       string //为从memcache存入本地数据库的Key设置一个过期时间。默认为0，永久不过期。单位是秒。
-	Get_data_from_redis            string //是否开启查询不存在的数据时,从redis查询并存入本地数据库。0表示不开启。
-	Redis_Addr                     string //需要查询的Redis地址。
-	Redis_Password                 string //需要查询的Redis密码。不能是空值。
-	Redis_DB                       string //需要查询Redis的数据库。默认为0。
-	Get_redis_data_set_expire_time string //为从Redis存入本地数据库的Key设置一个过期时间。默认为0，永久不过期。单位是秒。
-	Open_Https                     string //是否开启HTTPS。值为0(关闭)、1(开启)。默认关闭。
-	Https_CertFile                 string //Cert文件路径。
-	Https_KeyFile                  string //Key文件路径。
-	HttpsClient_InsecureSkipVerify string //当开启HTTPS模式后，owlcache之间互相通讯时是否校验证书。值为0(关闭)、1(开启)。默认关闭。开启时不会校验证书合法性。
-	CloseTcp                       string //是否关闭Tcp服务(因为TCP模式下无密码认证)  值为"1"(开启)和"0"(关闭)。默认为1开启服务。
-	Cors                           string //是否开启跨域
-	Access_Control_Allow_Origin    string //设置指定的域
+	Configfile                        string //配置文件路径
+	Logfile                           string //日志文件路径
+	DBfile                            string //数据库文件路径
+	Pass                              string //owlcache密钥
+	Host                              string //主机地址
+	ResponseHost                      string //程序响应IP,在TCP、HTTP返回的响应结果Json字符串中使用
+	Tcpport                           string //Tcp监听端口
+	Httpport                          string //Http监听端口
+	HttpClientRequestTimeout          string //集群互相通信时的请求超时时间
+	GroupWorkMode                     string //集群方式:owlcache、gossip
+	Gossipport                        string //启用Gossip服务该项才会生效。Gossip监听端口，默认值为0(系统自动监听一个端口并在启动信息输出该端口)。
+	Task_DataBackup                   string //自动备份DB数据的存储时间
+	Task_DataAuthBackup               string //自动备份用户认证数据的存储时间
+	Task_ClearExpireData              string //自动清理数据库中过期数据的时间
+	Task_ServerListBackup             string //自动备份服务器集群信息数据的时间
+	Get_data_from_memcache            string //是否开启查询不存在的数据时,从memcache查询并存入本地数据库
+	Memcache_list                     string //需要查询的memcache列表,不同节点之间需要使用"|"符号间隔。
+	Get_memcache_data_set_expire_time string //为从memcache存入本地数据库的Key设置一个过期时间。默认为0，永久不过期。单位是秒。
+	Get_data_from_redis               string //是否开启查询不存在的数据时,从redis查询并存入本地数据库。0表示不开启。
+	Redis_Addr                        string //需要查询的Redis地址。
+	Redis_Password                    string //需要查询的Redis密码。不能是空值。
+	Redis_DB                          string //需要查询Redis的数据库。默认为0。
+	Get_redis_data_set_expire_time    string //为从Redis存入本地数据库的Key设置一个过期时间。默认为0，永久不过期。单位是秒。
+	Open_Https                        string //是否开启HTTPS。值为0(关闭)、1(开启)。默认关闭。
+	Https_CertFile                    string //Cert文件路径。
+	Https_KeyFile                     string //Key文件路径。
+	HttpsClient_InsecureSkipVerify    string //当开启HTTPS模式后，owlcache之间互相通讯时是否校验证书。值为0(关闭)、1(开启)。默认关闭。开启时不会校验证书合法性。
+	CloseTcp                          string //是否关闭Tcp服务(因为TCP模式下无密码认证)  值为"1"(开启)和"0"(关闭)。默认为1开启服务。
+	Cors                              string //是否开启跨域
+	Access_Control_Allow_Origin       string //设置指定的域
 }
 
 //创建一个默认配置文件的实体
 func NewDefaultOwlConfig() *OwlConfig {
 	return &OwlConfig{
-		Configfile:                     "owlcache.conf",
-		Logfile:                        "",
-		DBfile:                         "",
-		Pass:                           "",
-		Host:                           "0.0.0.0",
-		ResponseHost:                   "127.0.0.1",
-		Tcpport:                        "7720",
-		Httpport:                       "7721",
-		HttpClientRequestTimeout:       "2",
-		GroupWorkMode:                  "owlcache",
-		Gossipport:                     "0",
-		Task_DataBackup:                "1",
-		Task_DataAuthBackup:            "1",
-		Task_ClearExpireData:           "1",
-		Task_ServerListBackup:          "1",
-		Get_data_from_memcache:         "0",
-		Memcache_list:                  "",
-		Get_data_set_expire_time:       "0",
-		Get_data_from_redis:            "0",
-		Redis_Addr:                     "",
-		Redis_Password:                 "",
-		Redis_DB:                       "0",
-		Get_redis_data_set_expire_time: "0",
-		Open_Https:                     "0",
-		Https_CertFile:                 "/www/server.crt",
-		Https_KeyFile:                  "/www/server.key",
-		HttpsClient_InsecureSkipVerify: "0",
-		CloseTcp:                       "1",
-		Cors:                           "0",
-		Access_Control_Allow_Origin:    "*",
+		Configfile:                        "owlcache.conf",
+		Logfile:                           "",
+		DBfile:                            "",
+		Pass:                              "",
+		Host:                              "0.0.0.0",
+		ResponseHost:                      "127.0.0.1",
+		Tcpport:                           "7720",
+		Httpport:                          "7721",
+		HttpClientRequestTimeout:          "2",
+		GroupWorkMode:                     "owlcache",
+		Gossipport:                        "0",
+		Task_DataBackup:                   "1",
+		Task_DataAuthBackup:               "1",
+		Task_ClearExpireData:              "1",
+		Task_ServerListBackup:             "1",
+		Get_data_from_memcache:            "0",
+		Memcache_list:                     "",
+		Get_memcache_data_set_expire_time: "0",
+		Get_data_from_redis:               "0",
+		Redis_Addr:                        "",
+		Redis_Password:                    "",
+		Redis_DB:                          "0",
+		Get_redis_data_set_expire_time:    "0",
+		Open_Https:                        "0",
+		Https_CertFile:                    "/www/server.crt",
+		Https_KeyFile:                     "/www/server.key",
+		HttpsClient_InsecureSkipVerify:    "0",
+		CloseTcp:                          "1",
+		Cors:                              "0",
+		Access_Control_Allow_Origin:       "*",
 	}
 }
 
@@ -184,8 +184,8 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	if len(config["Memcache_list"]) >= 1 {
 		param.Memcache_list = config["Memcache_list"]
 	}
-	if len(config["Get_data_set_expire_time"]) >= 1 {
-		param.Get_data_set_expire_time = config["Get_data_set_expire_time"]
+	if len(config["Get_memcache_data_set_expire_time"]) >= 1 {
+		param.Get_memcache_data_set_expire_time = config["Get_memcache_data_set_expire_time"]
 	}
 	if len(config["Get_data_from_redis"]) >= 1 {
 		param.Get_data_from_redis = config["Get_data_from_redis"]
