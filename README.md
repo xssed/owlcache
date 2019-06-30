@@ -206,7 +206,7 @@ Each node data is independent. The data of the duplicate key in the cluster will
 
 
 
-## Development and discussion
+## Development and discussion(not involved in business cooperation)
 - Email📪:xsser@xsser.cc
 - Homepage🛀:https://www.xsser.cc
 
