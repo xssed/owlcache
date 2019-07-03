@@ -2,7 +2,6 @@ package counter
 
 import (
 	"sync"
-	"sync/atomic"
 )
 
 //创建
@@ -12,24 +11,32 @@ func NewCounter() *BaseCounter {
 
 //定义计数器
 type BaseCounter struct {
-	mut     sync.Mutex
+	mut     sync.RWMutex
 	currNum int64 //当前数
 }
 
 //+1
 func (c *BaseCounter) AddOne() int {
-	return int(atomic.AddInt64(&c.currNum, 1))
+	c.mut.Lock()
+	c.currNum += 1
+	c.mut.Unlock()
+	return int(c.currNum)
 }
 
 //-1
 func (c *BaseCounter) DecOne() int {
-	return int(atomic.AddInt64(&c.currNum, -1))
-
+	c.mut.Lock()
+	c.currNum -= 1
+	c.mut.Unlock()
+	return int(c.currNum)
 }
 
 //获取当前
 func (c *BaseCounter) Current() int {
-	return int(atomic.LoadInt64(&c.currNum))
+	c.mut.RLock()
+	value := c.currNum
+	c.mut.RUnlock()
+	return int(value)
 }
 
 //重置
