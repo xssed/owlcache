@@ -5,7 +5,7 @@ import (
 )
 
 //创建
-func NewCounter() *BaseCounter {
+func NewBaseCounter() *BaseCounter {
 	return &BaseCounter{}
 }
 
