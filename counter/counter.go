@@ -2,6 +2,7 @@ package counter
 
 import (
 	"sync"
+	"time"
 )
 
 //创建
@@ -15,23 +16,29 @@ type Counter struct {
 }
 
 //+1
-func (c *Counter) Add(name string) int {
+func (c *Counter) Add(name string, max int64, lt time.Duration) int {
 
 	if name == "" {
-		return 0
+		return -1
 	}
 
 	if v, ok := c.sm.Load(name); ok {
 		//存在这个Key
 		bc := v.(*BaseCounter)
-		bc.AddOne()
-		return bc.Current()
+		if bc.IsUse() {
+			bc.AddOne()
+			return bc.CurrentNum()
+		} else {
+			return -1
+		}
+
 	}
+
 	//不存在这个Key
-	nb := NewBaseCounter()
+	nb := NewBaseCounter(max, lt)
 	nb.AddOne()
 	c.sm.Store(name, nb)
-	return nb.Current()
+	return nb.CurrentNum()
 
 }
 
