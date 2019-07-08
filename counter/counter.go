@@ -1,6 +1,7 @@
 package counter
 
 import (
+	//"fmt"
 	"sync"
 	"time"
 )
@@ -29,6 +30,15 @@ func (c *Counter) Add(name string, max int64, lt time.Duration) int {
 			bc.AddOne()
 			return bc.CurrentNum()
 		} else {
+			if bc.CurrentStatus() == 0 {
+				bc.ReTime()
+				bc.ReStatusOff()
+			} else {
+				if bc.IsExpired() {
+					bc.ReStatusOn()
+					bc.Reset()
+				}
+			}
 			return -1
 		}
 
