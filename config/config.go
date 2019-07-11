@@ -235,5 +235,23 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	if len(config["Access_Control_Allow_Origin"]) >= 1 {
 		param.Access_Control_Allow_Origin = config["Access_Control_Allow_Origin"]
 	}
+	if len(config["HttpClient_Request_Timeout_Sleeptime"]) >= 1 {
+		param.HttpClient_Request_Timeout_Sleeptime = config["HttpClient_Request_Timeout_Sleeptime"]
+	}
+	if len(config["HttpClient_Request_Max_Error_Number"]) >= 1 {
+		param.HttpClient_Request_Max_Error_Number = config["HttpClient_Request_Max_Error_Number"]
+	}
+	if len(config["MemcacheClient_Request_Timeout_Sleeptime"]) >= 1 {
+		param.MemcacheClient_Request_Timeout_Sleeptime = config["MemcacheClient_Request_Timeout_Sleeptime"]
+	}
+	if len(config["MemcacheClient_Request_Max_Error_Number"]) >= 1 {
+		param.MemcacheClient_Request_Max_Error_Number = config["MemcacheClient_Request_Max_Error_Number"]
+	}
+	if len(config["RedisClient_Request_Timeout_Sleeptime"]) >= 1 {
+		param.RedisClient_Request_Timeout_Sleeptime = config["RedisClient_Request_Timeout_Sleeptime"]
+	}
+	if len(config["RedisClient_Request_Max_Error_Number"]) >= 1 {
+		param.RedisClient_Request_Max_Error_Number = config["RedisClient_Request_Max_Error_Number"]
+	}
 
 }
