@@ -1,8 +1,5 @@
 package cache
 
-//底层封装了sync.Map来实现线程安全的Map
-//但是sync.Map中缺少很多方法，例如获取Map.dirty的方法等等
-
 import (
 	"encoding/gob"
 	"fmt"
