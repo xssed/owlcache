@@ -1,7 +1,6 @@
 package counter
 
 import (
-	//"fmt"
 	"sync"
 	"time"
 )
