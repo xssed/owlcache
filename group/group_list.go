@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 
-	//"fmt"
 	"io/ioutil"
 	"log"
 	"sync"
