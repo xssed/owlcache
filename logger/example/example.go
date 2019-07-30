@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	//"log"
 	"os"
 
 	"github.com/xssed/owlcache/logger"
