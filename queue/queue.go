@@ -2,7 +2,6 @@ package queue
 
 //thread-safe queue
 import (
-	//"fmt"
 	"sync"
 )
 
