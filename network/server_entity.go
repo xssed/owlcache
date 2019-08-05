@@ -1,7 +1,6 @@
 package network
 
 import (
-	//"fmt"
 	"net/http"
 
 	owlconfig "github.com/xssed/owlcache/config"
