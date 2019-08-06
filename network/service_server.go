@@ -5,6 +5,7 @@ import (
 
 	"github.com/xssed/owlcache/cache"
 	owlconfig "github.com/xssed/owlcache/config"
+	"github.com/xssed/owlcache/counter"
 	"github.com/xssed/owlcache/group"
 	owllog "github.com/xssed/owlcache/log"
 	"github.com/xssed/owlcache/network/httpclient"
@@ -23,6 +24,15 @@ var ServerGroupList *group.Servergroup
 
 //创建一个全局的HttpClient客户端
 var HttpClient *httpclient.OwlClient
+
+//创建一个全局的HttpClient错误请求控制计数器
+var HttpClientRequestErrorCounter *counter.Counter
+
+//创建一个全局的MemcacheClient错误请求控制计数器
+var MemcacheClientRequestErrorCounter *counter.Counter
+
+//创建一个全局的RedisClient错误请求控制计数器
+var RedisClientRequestErrorCounter *counter.Counter
 
 func BaseCacheDBInit() {
 
@@ -50,6 +60,15 @@ func BaseCacheDBInit() {
 
 	//初始化HttpClient客户端
 	HttpClient = httpclient.NewOwlClient()
+
+	//初始化HttpClient错误请求控制计数器
+	HttpClientRequestErrorCounter = counter.NewCounter()
+
+	//初始化MemcacheClient错误请求控制计数器
+	MemcacheClientRequestErrorCounter = counter.NewCounter()
+
+	//初始化RedisClient错误请求控制计数器
+	RedisClientRequestErrorCounter = counter.NewCounter()
 
 	//启动tcp服务
 	//检查是否开启TCP服务。默认为开启。
