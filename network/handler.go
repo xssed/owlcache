@@ -2,6 +2,7 @@ package network
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/xssed/owlcache/cache"
@@ -174,24 +175,30 @@ func (owlhandler *OwlHandler) Get() {
 	} else {
 		//NOT_FOUND状态下是否从memcache中查询数据
 		if owlconfig.OwlConfigModel.Get_data_from_memcache == "1" {
-			//请求数据
-			result, err := memcacheclient.Get(owlhandler.owlrequest.Key)
-			if err == nil {
-				//找到数据了
-				exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.Get_memcache_data_set_expire_time + "s")
-				ok := BaseCacheDB.Set(string(result.Key), string(result.Value), exptime)
-				//设置数据时出错
-				if !ok {
-					owllog.OwlLogRun.Println("Get_data_from_memcache:set error " + " key:" + owlhandler.owlrequest.Key)
+			//请求优化部分
+			mcrts_exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.MemcacheClient_Request_Timeout_Sleeptime + "s") //睡眠时间
+			mrmen_maxnum, _ := strconv.Atoi(owlconfig.OwlConfigModel.MemcacheClient_Request_Max_Error_Number)               //最大请求数
+			if MemcacheClientRequestErrorCounter.Add(owlhandler.owlrequest.Key, int64(mrmen_maxnum-1), mcrts_exptime) > 0 {
+				//请求数据
+				//owllog.OwlLogRun.Println("memcacheclient:get key " + " key:" + owlhandler.owlrequest.Key)
+				result, err := memcacheclient.Get(owlhandler.owlrequest.Key)
+				if err == nil {
+					//找到数据了
+					exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.Get_memcache_data_set_expire_time + "s")
+					ok := BaseCacheDB.Set(string(result.Key), string(result.Value), exptime)
+					//设置数据时出错
+					if !ok {
+						owllog.OwlLogRun.Println("Get_data_from_memcache:set error " + " key:" + owlhandler.owlrequest.Key)
+					} else {
+						owlhandler.Transmit(SUCCESS)
+						owlhandler.owlresponse.Data = string(result.Value)
+						owlhandler.owlresponse.KeyCreateTime = time.Now()
+						return
+					}
 				} else {
-					owlhandler.Transmit(SUCCESS)
-					owlhandler.owlresponse.Data = string(result.Value)
-					owlhandler.owlresponse.KeyCreateTime = time.Now()
-					return
+					//memcache中也没有找到数据
+					owllog.OwlLogRun.Println("Get_data_from_memcache:get error " + " key:" + owlhandler.owlrequest.Key)
 				}
-			} else {
-				//memcache中也没有找到数据
-				owllog.OwlLogRun.Println("Get_data_from_memcache:get error " + " key:" + owlhandler.owlrequest.Key)
 			}
 		}
 		//NOT_FOUND状态下是否从redis中查询数据
