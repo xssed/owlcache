@@ -42,12 +42,12 @@ type OwlConfig struct {
 	CloseTcp                                 string //是否关闭Tcp服务(因为TCP模式下无密码认证)  值为"1"(开启)和"0"(关闭)。默认为1开启服务。
 	Cors                                     string //是否开启跨域
 	Access_Control_Allow_Origin              string //设置指定的域
-	HttpClient_Request_Timeout_Sleeptime     string //http客户端请求设置。Max_Error_Number超过限定值时，http客户端请求将“暂停”Sleeptime值，来优化程序响应速度。
-	HttpClient_Request_Max_Error_Number      string
-	MemcacheClient_Request_Timeout_Sleeptime string //MemcacheClient客户端请求设置。Max_Error_Number超过限定值时，MemcacheClient请求将“暂停”Sleeptime值，来优化程序响应速度。
-	MemcacheClient_Request_Max_Error_Number  string
-	RedisClient_Request_Timeout_Sleeptime    string //RedisClient客户端请求设置。Max_Error_Number超过限定值时，RedisClient请求将“暂停”Sleeptime值，来优化程序响应速度。
-	RedisClient_Request_Max_Error_Number     string
+	HttpClient_Request_Timeout_Sleeptime     string //http客户端请求设置。请求的睡眠时间。单位是整数。
+	HttpClient_Request_Max_Error_Number      string //http客户端Max_Error_Number超过限定值时，http客户端请求将“暂停”Sleeptime值，来优化程序响应速度。
+	MemcacheClient_Request_Timeout_Sleeptime string //MemcacheClient客户端请求设置。请求的睡眠时间。单位是整数。
+	MemcacheClient_Request_Max_Error_Number  string //MemcacheClient客户端Max_Error_Number超过限定值时，MemcacheClient请求将“暂停”Sleeptime值，来优化程序响应速度。
+	RedisClient_Request_Timeout_Sleeptime    string //RedisClient客户端请求设置。请求的睡眠时间。单位是整数。
+	RedisClient_Request_Max_Error_Number     string //RedisClient客户端Max_Error_Number超过限定值时，RedisClient请求将“暂停”Sleeptime值，来优化程序响应速度。
 }
 
 //创建一个默认配置文件的实体
