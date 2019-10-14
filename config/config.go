@@ -95,9 +95,6 @@ func NewDefaultOwlConfig() *OwlConfig {
 //缓存系统初始化加载配置
 func ConfigInit() {
 
-	//执行步骤信息
-	//fmt.Println("owlcache  loading config...")
-
 	//读取配置文件获取一个最终的配置模型
 	var config = make(map[string]string)
 
