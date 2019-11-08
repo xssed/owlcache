@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"runtime"
 	"strings"
 )
 
@@ -123,7 +124,16 @@ func ConfigInit() {
 			continue
 		}
 		type_name := string(rs[0:strings.Index(line, " ")])
-		type_value := string(rs[strings.Index(line, " ")+1 : len(rs)-2]) //-1
+		var type_value string
+		systype := runtime.GOOS
+		if systype == "windows" {
+			// windows系统
+			type_value = string(rs[strings.Index(line, " ")+1 : len(rs)-2]) //-1
+		} else {
+			//systype == "linux" or other
+			// LINUX系统
+			type_value = string(rs[strings.Index(line, " ")+1 : len(rs)-1]) //-1
+		}
 		config[type_name] = type_value
 	}
 
