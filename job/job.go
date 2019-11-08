@@ -30,14 +30,14 @@ func DataBackup() {
 	//	task_databackup, err := time.ParseDuration(owlconfig.OwlConfigModel.Task_DataBackup + "m")
 	//	if err != nil {
 	//		//强制异常，退出
-	//		owllog.OwlLogRun.Info("Config File Task_DataBackup Parse error：" + err.Error()) //日志记录
-	//		fmt.Println("Config File Task_DataBackup Parse error：" + err.Error())
+	//		owllog.OwlLogRun.Info("Config File Task_DataBackup Parse error:" + err.Error()) //日志记录
+	//		fmt.Println("Config File Task_DataBackup Parse error:" + err.Error())
 	//		os.Exit(0)
 	//	}
 	task_databackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_DataBackup)
 	if err != nil {
-		owllog.OwlLogRun.Info("Config File Task_DataBackup Parse error：" + err.Error()) //日志记录
-		//fmt.Println("Config File Task_DataBackup Parse error：" + err.Error())
+		owllog.OwlLogRun.Info("Config File Task_DataBackup Parse error:" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_DataBackup Parse error:" + err.Error())
 		os.Exit(0)
 	}
 
@@ -59,8 +59,8 @@ func DataAuthBackup() {
 
 	task_dataauthbackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_DataAuthBackup)
 	if err != nil {
-		owllog.OwlLogRun.Info("Config File Task_DataAuthBackup Parse error：" + err.Error()) //日志记录
-		//fmt.Println("Config File Task_DataAuthBackup Parse error：" + err.Error())//调试
+		owllog.OwlLogRun.Info("Config File Task_DataAuthBackup Parse error:" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_DataAuthBackup Parse error:" + err.Error())//调试
 		os.Exit(0)
 	}
 
@@ -82,8 +82,8 @@ func ClearExpireData() {
 
 	task_clearexpiredata, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_ClearExpireData)
 	if err != nil {
-		owllog.OwlLogRun.Info("Config File Task_ClearExpireData Parse error：" + err.Error()) //日志记录
-		//fmt.Println("Config File Task_ClearExpireData Parse error：" + err.Error())//调试
+		owllog.OwlLogRun.Info("Config File Task_ClearExpireData Parse error:" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_ClearExpireData Parse error:" + err.Error())//调试
 		os.Exit(0)
 	}
 
@@ -102,8 +102,8 @@ func ServerListBackup() {
 
 	task_serverlistbackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_ServerListBackup)
 	if err != nil {
-		owllog.OwlLogRun.Info("Config File Task_ServerListBackup Parse error：" + err.Error()) //日志记录
-		//fmt.Println("Config File Task_ServerListBackup Parse error：" + err.Error())//调试
+		owllog.OwlLogRun.Info("Config File Task_ServerListBackup Parse error:" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_ServerListBackup Parse error:" + err.Error())//调试
 		os.Exit(0)
 	}
 

@@ -25,8 +25,8 @@ func NewOwlClient() *OwlClient {
 	hcrequesttimeout, err := strconv.Atoi(owlconfig.OwlConfigModel.HttpClientRequestTimeout)
 	if err != nil {
 		//强制异常，退出
-		owllog.OwlLogHttp.Info("Config File HttpClientRequestTimeout Parse error：" + err.Error()) //日志记录
-		//fmt.Println("Config File HttpClientRequestTimeout Parse error：" + err.Error())
+		owllog.OwlLogHttp.Info("Config File HttpClientRequestTimeout Parse error:" + err.Error()) //日志记录
+		//fmt.Println("Config File HttpClientRequestTimeout Parse error:" + err.Error())
 		os.Exit(0)
 	}
 
@@ -44,8 +44,8 @@ func (c *OwlClient) GetToken(address, cmd, pass string) string {
 	owlclient.Query.Add("pass", pass)
 	res, err := owlclient.Do()
 	if err != nil {
-		owllog.OwlLogHttp.Info("owlClient Method GetToken error：" + err.Error()) //日志记录
-		//fmt.Println("owlClient Method GetToken error：" + err.Error())
+		owllog.OwlLogHttp.Info("owlClient Method GetToken error:" + err.Error()) //日志记录
+		//fmt.Println("owlClient Method GetToken error:" + err.Error())
 	}
 	owlclient.Claer()
 	if res != nil && res.StatusCode == 200 {
@@ -66,8 +66,8 @@ func (c *OwlClient) GetValue(address, key string) string {
 	owlclient.Query.Add("key", key)
 	res, err := owlclient.Do()
 	if err != nil {
-		owllog.OwlLogHttp.Info("owlclient method GetValue error：" + err.Error()) //日志记录
-		//fmt.Println("owlclient method GetValue error：" + err.Error())
+		owllog.OwlLogHttp.Info("owlclient method GetValue error:" + err.Error()) //日志记录
+		//fmt.Println("owlclient method GetValue error:" + err.Error())
 	}
 	//fmt.Println("HTTP request OK："+address, key)
 	//owllog.OwlLogHttp.Info("HTTP request OK："+address, key) //日志记录
