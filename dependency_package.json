@@ -3,6 +3,7 @@
 		"uuid": "github.com/satori/go.uuid",
 		"gossip server": "github.com/hashicorp/memberlist",
 		"memcache client": "github.com/bradfitz/gomemcache/memcache",
-		"redis client":"github.com/go-redis/redis"
+		"redis client":"github.com/go-redis/redis",
+		"charset detector library":"github.com/saintfish/chardet"
 	}
 }

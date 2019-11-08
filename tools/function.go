@@ -4,9 +4,11 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 
+	"github.com/saintfish/chardet"
 	"github.com/satori/go.uuid"
 )
 
@@ -53,4 +55,22 @@ func CreateFolderAndFile(folder, filename string) (*os.File, error) {
 //判断返回传入值的类型
 func Typeof(v interface{}) string {
 	return fmt.Sprintf("%T", v)
+}
+
+//检验文件内容是否为UTF-8
+func ValidUTF8(filename string) bool {
+	rawBytes, readfile_err := ioutil.ReadFile(filename)
+	if readfile_err != nil {
+		return false
+	}
+	detector := chardet.NewTextDetector()
+	charset, detectbest_err := detector.DetectBest(rawBytes)
+	if detectbest_err != nil {
+		return false
+	}
+	if charset.Charset == "UTF-8" {
+		return true
+	} else {
+		return false
+	}
 }

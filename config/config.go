@@ -6,6 +6,8 @@ import (
 	"os"
 	"runtime"
 	"strings"
+
+	"github.com/xssed/owlcache/tools"
 )
 
 //创建一个全局配置变量
@@ -102,14 +104,22 @@ func ConfigInit() {
 	//创建一个默认初始化配置模型
 	OwlConfigModel = NewDefaultOwlConfig()
 
-	config_file, err := os.Open(OwlConfigModel.Configfile) //打开配置文件
+	//打开配置文件
+	config_file, err := os.Open(OwlConfigModel.Configfile)
 	defer config_file.Close()
+	//监控错误
 	if err != nil {
 		fmt.Println(err)
 		fmt.Print("Can not read configuration file. now exit\n")
 		os.Exit(0)
 	}
-	buff := bufio.NewReader(config_file) //将内容读入缓冲区
+	//判断文件是否为UTF-8编码
+	if !tools.ValidUTF8(OwlConfigModel.Configfile) {
+		fmt.Print("The configuration file is not UTF-8 encode. now exit\n")
+		os.Exit(0)
+	}
+	//将内容读入缓冲区
+	buff := bufio.NewReader(config_file)
 	//读取配置文件
 	for {
 		line, err := buff.ReadString('\n') //以'\n'为结束符读入一行
