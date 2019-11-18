@@ -22,6 +22,9 @@ var BaseAuth *cache.BaseCache
 //创建一个全局的服务器集群信息存储列表
 var ServerGroupList *group.Servergroup
 
+//创建一个全局的Gossip服务的集群信息存储列表
+var ServerGroupGossipList *group.Servergroup
+
 //创建一个全局的HttpClient客户端
 var HttpClient *httpclient.OwlClient
 
@@ -57,6 +60,12 @@ func BaseCacheDBInit() {
 
 	//加载之前缓存本地的服务器集群信息
 	ServerGroupList.LoadFromFile(owlconfig.OwlConfigModel.DBfile, "server_group_config.json")
+
+	//创建一个全局的Gossip服务的集群信息存储列表
+	ServerGroupGossipList = group.NewServergroup()
+
+	//加载之前缓存本地的服务器集群信息
+	ServerGroupGossipList.LoadFromFile(owlconfig.OwlConfigModel.DBfile, "server_group_gossip_config.json")
 
 	//初始化HttpClient客户端
 	HttpClient = httpclient.NewOwlClient()
