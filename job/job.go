@@ -21,6 +21,8 @@ func JobInit() {
 	ClearExpireData()
 	//服务器集群信息数据定期备份
 	ServerListBackup()
+	//Gossip服务器集群信息数据定期备份
+	ServerGossipListBackup()
 }
 
 // K/V DB数据备份
@@ -111,6 +113,29 @@ func ServerListBackup() {
 	go func() {
 		for _ = range ticker.C {
 			err := owlnetwork.ServerGroupList.SaveToFile(owlconfig.OwlConfigModel.DBfile, "server_group_config.json")
+			if err != nil {
+				//fmt.Println(err)
+				owllog.OwlLogRun.Error(err)
+			}
+		}
+	}()
+
+}
+
+//Gossip服务器集群信息数据定期备份
+func ServerGossipListBackup() {
+
+	task_servergossiplistbackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_ServerGossipListBackup)
+	if err != nil {
+		owllog.OwlLogRun.Info("Config File Task_ServerGossipListBackup Parse error:" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_ServerGossipListBackup Parse error:" + err.Error())//调试
+		os.Exit(0)
+	}
+
+	ticker := time.NewTicker(time.Minute * time.Duration(task_servergossiplistbackup))
+	go func() {
+		for _ = range ticker.C {
+			err := owlnetwork.ServerGroupList.SaveToFile(owlconfig.OwlConfigModel.DBfile, "server_group_gossip_config.json")
 			if err != nil {
 				//fmt.Println(err)
 				owllog.OwlLogRun.Error(err)
