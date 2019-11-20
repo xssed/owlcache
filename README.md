@@ -198,7 +198,7 @@ Response result example:
 
 ~~~
 
-Each node data is independent. The data of the duplicate key in the cluster will not be deleted (the default cluster mode of owlcache). When querying, it will get a list of data sorted according to time, and the latest data will be displayed first.
+
 
 
 
