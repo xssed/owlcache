@@ -104,7 +104,7 @@ func BaseCacheDBInit() {
 		//什么也不做,没有开启数据同步服务
 	} else {
 		//检测到配置书写异常强制退出
-		owllog.OwlLogRun.Fatal(ErrorGroupWorkMode)
+		owllog.OwlLogRun.Fatal(ErrorGroupDataSync)
 	}
 
 	//启动是否启动从memcache中查询数据
