@@ -141,7 +141,7 @@ func (owlhandler *OwlHandler) Set() {
 	}
 
 	//判断一致性数据同步-设置
-	if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
+	if owlconfig.OwlConfigModel.GroupDataSync == "1" {
 		//fmt.Println("gossip.Set()")
 		//发送数据到集群
 		gossip.Set(owlhandler.owlrequest.Key, owlhandler.owlrequest.Value.(string), owlhandler.owlrequest.Expires)
@@ -158,7 +158,7 @@ func (owlhandler *OwlHandler) Expire() {
 	}
 
 	//判断一致性数据同步-设置Key过期
-	if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
+	if owlconfig.OwlConfigModel.GroupDataSync == "1" {
 		//fmt.Println("gossip.Expire()")
 		//发送数据到集群
 		gossip.Expire(owlhandler.owlrequest.Key, owlhandler.owlrequest.Expires)
@@ -242,7 +242,7 @@ func (owlhandler *OwlHandler) Delete() {
 	}
 
 	//判断一致性数据同步-删除Key
-	if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
+	if owlconfig.OwlConfigModel.GroupDataSync == "1" {
 		//fmt.Println("gossip.Delete()")
 		//发送数据到集群
 		gossip.Delete(owlhandler.owlrequest.Key)

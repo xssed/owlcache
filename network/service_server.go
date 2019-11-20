@@ -97,11 +97,11 @@ func BaseCacheDBInit() {
 
 	//启动gossip数据最终一致服务
 	//检查是否开启gossip服务。默认为关闭。
-	if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
+	if owlconfig.OwlConfigModel.GroupDataSync == "1" {
 		fmt.Println("owlcache  final consistency service running...")
 		go startGossip()
-	} else if owlconfig.OwlConfigModel.GroupWorkMode == "owlcache" {
-		//什么也不做，集群方式默认开启owlcache
+	} else if owlconfig.OwlConfigModel.GroupDataSync == "0" {
+		//什么也不做,没有开启数据同步服务
 	} else {
 		//检测到配置书写异常强制退出
 		owllog.OwlLogRun.Fatal(ErrorGroupWorkMode)
