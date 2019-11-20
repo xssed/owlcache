@@ -135,7 +135,7 @@ func ServerGossipListBackup() {
 	ticker := time.NewTicker(time.Minute * time.Duration(task_servergossiplistbackup))
 	go func() {
 		for _ = range ticker.C {
-			err := owlnetwork.ServerGroupList.SaveToFile(owlconfig.OwlConfigModel.DBfile, "server_group_gossip_config.json")
+			err := owlnetwork.ServerGroupGossipList.SaveToFile(owlconfig.OwlConfigModel.DBfile, "server_group_gossip_config.json")
 			if err != nil {
 				//fmt.Println(err)
 				owllog.OwlLogRun.Error(err)
