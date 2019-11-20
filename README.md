@@ -118,9 +118,9 @@ owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/ -pass 1245!df
 # Simple use example
 ## Single node to get the Key value
 * TCP
-command: `get <key>`
+command: `get <key>\n`
 ~~~shell
-get hello
+get hello\n
 ~~~
 
 * HTTP

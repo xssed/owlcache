@@ -119,9 +119,9 @@ owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/ -pass 1245!df
 # 简单使用示例
 ## 单节点获取Key值
 * TCP
-命令: `get <key>`
+命令: `get <key>\n`
 ~~~shell
-get hello
+get hello\n
 ~~~
 
 * HTTP
