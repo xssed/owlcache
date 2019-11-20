@@ -16,7 +16,8 @@ import (
 func startGossip() {
 
 	var str_addresslist []string
-	list := ServerGroupList.Values()
+	//list := ServerGroupList.Values()
+	list := ServerGroupGossipList.Values() //Gossip集群信息与默认集群方式分离
 	for k := range list {
 		//fmt.Println(tools.Typeof(list[k]))
 		val, ok := list[k].(group.OwlServerGroupRequest)
