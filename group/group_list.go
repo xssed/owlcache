@@ -236,12 +236,14 @@ func (servergroup *Servergroup) LoadFromFile(folder, filename string) error {
 		return err
 	}
 
-	//	str := string(b)
-	//	fmt.Println(str)
+	loadstr := string(b)
+	if loadstr == "" {
+		b = []byte("null")
+	}
 
 	var list []interface{}
 	if err2 := json.Unmarshal(b, &list); err2 != nil {
-		log.Fatalf("JSON unmarshling failed: %s", err2)
+		log.Fatalf(folder+filename+": JSON unmarshling failed: %s", err2)
 	}
 
 	newlist := NewServergroup()

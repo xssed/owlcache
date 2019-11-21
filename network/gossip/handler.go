@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/hashicorp/memberlist"
+	owllog "github.com/xssed/owlcache/log"
 	"github.com/xssed/owlcache/tools"
 )
 
@@ -20,6 +21,7 @@ func NewHandler() *Handler {
 }
 
 func (h *Handler) StartService(str_addresslist []string, passWord string, bindAddress string, bindPort string) error {
+
 	//赋值
 	h.nodes = str_addresslist
 
@@ -27,9 +29,18 @@ func (h *Handler) StartService(str_addresslist []string, passWord string, bindAd
 		h.Password = passWord
 	}
 
-	bindport, _ := strconv.Atoi(bindPort)
+	bindport, atio_err := strconv.Atoi(bindPort)
+	if atio_err != nil {
+		owllog.OwlLogRun.Println("The configuration file <Gossipport> option is not a valid number!")
+		os.Exit(0)
+	}
 
-	hostname, _ := os.Hostname()
+	hostname, get_hostname_err := os.Hostname()
+	if get_hostname_err != nil {
+		owllog.OwlLogRun.Println("When starting the gossip service, getting the Hostname failed! Please check the execution permission of owlcache!")
+		os.Exit(0)
+	}
+
 	c := memberlist.DefaultLocalConfig()
 	c.Delegate = &delegate{}
 	c.Name = hostname + "-" + tools.GetUUIDString()

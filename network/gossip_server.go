@@ -22,7 +22,9 @@ func startGossip() {
 		//fmt.Println(tools.Typeof(list[k]))
 		val, ok := list[k].(group.OwlServerGroupRequest)
 		if ok {
-			str_addresslist = append(str_addresslist, val.Address)
+			if val.Address != "" {
+				str_addresslist = append(str_addresslist, val.Address)
+			}
 		}
 	}
 
