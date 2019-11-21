@@ -24,7 +24,7 @@ type OwlConfig struct {
 	Tcpport                                  string //Tcp监听端口
 	Httpport                                 string //Http监听端口
 	HttpClientRequestTimeout                 string //集群互相通信时的请求超时时间
-	GroupDataSync                            string //集群方式:owlcache、gossip
+	GroupDataSync                            string //是否开启集群数据同步。0表示不开启。1表示开启。默认不开启。
 	Gossipport                               string //启用Gossip服务该项才会生效。Gossip监听端口，默认值为0(系统自动监听一个端口并在启动信息输出该端口)。
 	Task_DataBackup                          string //自动备份DB数据的存储时间
 	Task_DataAuthBackup                      string //自动备份用户认证数据的存储时间
