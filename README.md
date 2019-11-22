@@ -11,7 +11,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 
 </div>
 
- 🦉owlcache is a lightweight, high-performance, non-centralized, distributed Key/Value memory-cached data sharing application written by Go (used as a lightweight database in certain scenarios).You can think of each node as a separate Key/Value data service.you can query the data of any node through the cluster to obtain a data list with the same key between different nodes in the cluster. The latest data is displayed first.If the synchronous data function is enabled, the Key data of one node in the cluster is changed, and the Key data of other nodes is also updated.    
+ 🦉owlcache is a lightweight, high-performance, non-centralized, distributed Key/Value memory-cached data sharing application written by Go (used as a lightweight database in certain scenarios).You can think of each node as a separate Key/Value data service.you can query the data of any node through the cluster to obtain a data list with the same key between different nodes in the cluster. The latest data is displayed first.If the synchronous data function is enabled, the Key data of one node in the cluster is changed, and the Key data of other nodes is also updated.Even if the network environment is not good, many nodes do not synchronize data, you can still query the latest data in the nodes that can be connected.     
 
 
 ## Highlights and features
