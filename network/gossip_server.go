@@ -28,9 +28,9 @@ func startGossip() {
 		}
 	}
 
-	bindAddress := owlconfig.OwlConfigModel.Host    //host
-	bindPort := owlconfig.OwlConfigModel.Gossipport //gossip端口
-	passWord := owlconfig.OwlConfigModel.Pass       //交互密码
+	bindAddress := owlconfig.OwlConfigModel.Host               //host
+	bindPort := owlconfig.OwlConfigModel.Gossipport            //gossip端口
+	passWord := owlconfig.OwlConfigModel.GossipDataSyncAuthKey //交互密码
 
 	if err := gossip.H.StartService(str_addresslist, passWord, bindAddress, bindPort); err != nil {
 		fmt.Println(err)

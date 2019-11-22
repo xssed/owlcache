@@ -26,6 +26,7 @@ type OwlConfig struct {
 	HttpClientRequestTimeout                 string //集群互相通信时的请求超时时间
 	GroupDataSync                            string //是否开启集群数据同步。0表示不开启。1表示开启。默认不开启。
 	Gossipport                               string //启用Gossip服务该项才会生效。Gossip监听端口，默认值为0(系统自动监听一个端口并在启动信息输出该端口)。
+	GossipDataSyncAuthKey                    string //启用Gossip服务该项才会生效。集群中通过Gossip协议交换数据的令牌。整个集群需要统一的令牌。
 	Task_DataBackup                          string //自动备份DB数据的存储时间
 	Task_DataAuthBackup                      string //自动备份用户认证数据的存储时间
 	Task_ClearExpireData                     string //自动清理数据库中过期数据的时间
@@ -68,6 +69,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		HttpClientRequestTimeout:                 "2",
 		GroupDataSync:                            "0",
 		Gossipport:                               "0",
+		GossipDataSyncAuthKey:                    "",
 		Task_DataBackup:                          "1",
 		Task_DataAuthBackup:                      "1",
 		Task_ClearExpireData:                     "1",
@@ -196,6 +198,9 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["Gossipport"]) >= 1 {
 		param.Gossipport = config["Gossipport"]
+	}
+	if len(config["GossipDataSyncAuthKey"]) >= 1 {
+		param.GossipDataSyncAuthKey = config["GossipDataSyncAuthKey"]
 	}
 	if len(config["Task_DataBackup"]) >= 1 {
 		param.Task_DataBackup = config["Task_DataBackup"]
