@@ -40,7 +40,7 @@
 * 增加缓存的访问方式  
 * 轻松的构建一个高效的数据共享集群  
 
-猫头鹰🦉机灵又可爱。它们脑袋的活动范围为270°🦉。      
+      
 
 
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
@@ -59,6 +59,7 @@
 
 源码下载
 * go命令下载(会自动下载依赖库，如果直接下载源码编译会提示类库缺失)
+* go get命令无法执行请检查本机是否安装Git服务和设置Go环境 
 ```shell
 go get -u github.com/xssed/owlcache
 ```

@@ -40,7 +40,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 * Increase the cache access mode  
 * Easily build efficient data sharing clusters  
 
-owl🦉 is clever and cute. Their heads range from 270°🦉.    
+    
 
 
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
