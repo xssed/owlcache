@@ -26,5 +26,10 @@ func CheckConfigPass() {
 		owllog.OwlLogRun.Println("Password cannot be only numbers.Set the <Pass> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
 		os.Exit(0)
 	}
+	//检查Tonken_expire_time不是纯数字
+	if _, err := strconv.Atoi(owlconfig.OwlConfigModel.Tonken_expire_time); err != nil {
+		owllog.OwlLogRun.Println("Tonken_expire_time is not a number.Set the <Tonken_expire_time> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
+		os.Exit(0)
+	}
 
 }
