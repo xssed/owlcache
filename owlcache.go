@@ -21,18 +21,18 @@ import (
 //Project Home:https://github.com/xssed/owlcache
 
 func main() {
-	//使用多核cpu
+	//使用多核cpu(Use multi-core cpu)
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	//欢迎信息
+	//欢迎信息(Welcome message)
 	owlsystem.DosSayHello()
-	//初始化配置
+	//初始化配置(Initial configuration)
 	owlconfig.ConfigInit()
-	//初始化日志记录
+	//初始化日志记录(Initialize logging)
 	owllog.LogInit()
-	//定时任务服务
+	//定时任务服务(Scheduled Task Service)
 	owljob.JobInit()
-	//初始化数据库服务,核心组件
+	//初始化数据库服务,核心组件(Initialize database services, core components)
 	owlnetwork.BaseCacheDBInit()
-	//守护包。用于保证程序的稳健、安全运行
+	//守护包。用于保证程序的稳健、安全运行。(It is used to ensure the stable and safe operation of the program.)
 	owlaegis.AegisInit()
 }
