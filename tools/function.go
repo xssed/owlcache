@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/gofrs/uuid"
 	"github.com/saintfish/chardet"
-	"github.com/satori/go.uuid"
 )
 
 //生成32位md5字串
