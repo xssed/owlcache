@@ -26,7 +26,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 * ⚔️Authentication
 * 📝Logging
 * 🔭**Support both TCP and HTTP/HTTPS connections**  
-* 🍻**Support Memcache, Redis data import**  
+* 🍻**Support Memcache, Redis data import(String)**  
 
 
 ## Documentation

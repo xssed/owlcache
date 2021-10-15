@@ -26,7 +26,7 @@
 * ⚔️身份认证
 * 📝日志记录
 * 🔭**同时支持TCP、HTTP/HTTPS两种方式连接**  
-* 🍻**支持Memcache、Redis数据对接**  
+* 🍻**支持Memcache、Redis数据对接(String)**  
 
 
 ## 使用文档
