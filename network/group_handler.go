@@ -33,13 +33,13 @@ func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerHandle(w http.Resp
 
 	switch command {
 	case group.GroupADD:
-		owlservergrouphandler.Add()
+		owlservergrouphandler.Oadd()
 	case group.GroupDELETE:
-		owlservergrouphandler.Delete()
+		owlservergrouphandler.Odelete()
 	case group.GroupGetAll:
-		owlservergrouphandler.GetAll()
+		owlservergrouphandler.OgetAll()
 	case group.GroupGet:
-		owlservergrouphandler.Get()
+		owlservergrouphandler.Oget()
 	default:
 		owlservergrouphandler.Transmit(group.UNKNOWN_COMMAND)
 	}
@@ -61,13 +61,13 @@ func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerGroupHandle(w http
 
 	switch command {
 	case group.GroupADD:
-		owlservergrouphandler.Add()
+		owlservergrouphandler.Gadd()
 	case group.GroupDELETE:
-		owlservergrouphandler.Delete()
+		owlservergrouphandler.Gdelete()
 	case group.GroupGetAll:
-		owlservergrouphandler.GetAll()
+		owlservergrouphandler.GgetAll()
 	case group.GroupGet:
-		owlservergrouphandler.Get()
+		owlservergrouphandler.Gget()
 	default:
 		owlservergrouphandler.Transmit(group.UNKNOWN_COMMAND)
 	}
@@ -117,10 +117,21 @@ func (owlservergrouphandler *OwlServerGroupHandler) CheckAuth(r *http.Request) b
 }
 
 //添加一个服务器信息
-func (owlservergrouphandler *OwlServerGroupHandler) Add() {
+func (owlservergrouphandler *OwlServerGroupHandler) Oadd() {
 
 	//数据清理
 	owlservergrouphandler.owlservergrouprequest.Cmd = ""
+	owlservergrouphandler.owlservergrouprequest.Pass = ""
+	owlservergrouphandler.owlservergrouprequest.Token = ""
+
+	// //owl和gossip集群配置分离
+	// var sl *group.Servergroup
+	// if owlservergrouphandler.owlservergrouprequest.GroupType == "gossip" {
+	// 	sl = ServerGroupGossipList
+	// } else {
+	// 	sl = ServerGroupList
+	// }
+
 	//创建数据
 	var reqs group.OwlServerGroupRequest
 	reqs.Cmd = owlservergrouphandler.owlservergrouprequest.Cmd
@@ -128,7 +139,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Add() {
 	reqs.Pass = owlservergrouphandler.owlservergrouprequest.Pass
 	reqs.Token = owlservergrouphandler.owlservergrouprequest.Token
 
-	at, exits := owlservergrouphandler.find(owlservergrouphandler.owlservergrouprequest.Address)
+	at, exits := owlservergrouphandler.Ofind(owlservergrouphandler.owlservergrouprequest.Address)
 	//存在
 	if exits {
 		ServerGroupList.RemoveAt(int32(at))          //先删除
@@ -151,7 +162,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Add() {
 }
 
 //内部查找一个服务器信息
-func (owlservergrouphandler *OwlServerGroupHandler) find(address string) (int32, bool) {
+func (owlservergrouphandler *OwlServerGroupHandler) Ofind(address string) (int32, bool) {
 	var resat int32 = 0
 	resbool := false
 	list := ServerGroupList.Values()
@@ -176,8 +187,8 @@ func (owlservergrouphandler *OwlServerGroupHandler) find(address string) (int32,
 }
 
 //删除一个服务器信息
-func (owlservergrouphandler *OwlServerGroupHandler) Delete() {
-	at, exits := owlservergrouphandler.find(owlservergrouphandler.owlservergrouprequest.Address)
+func (owlservergrouphandler *OwlServerGroupHandler) Odelete() {
+	at, exits := owlservergrouphandler.Ofind(owlservergrouphandler.owlservergrouprequest.Address)
 	if exits {
 		res := ServerGroupList.RemoveAt(int32(at))
 		if res {
@@ -192,18 +203,130 @@ func (owlservergrouphandler *OwlServerGroupHandler) Delete() {
 }
 
 //获取所有服务器列表信息
-func (owlservergrouphandler *OwlServerGroupHandler) GetAll() {
+func (owlservergrouphandler *OwlServerGroupHandler) OgetAll() {
 	list := ServerGroupList.Values()
 	owlservergrouphandler.owlserveggroupresponse.Data = list
 	owlservergrouphandler.Transmit(group.SUCCESS)
 }
 
 //获取一个服务器信息
-func (owlservergrouphandler *OwlServerGroupHandler) Get() {
+func (owlservergrouphandler *OwlServerGroupHandler) Oget() {
 
-	at, exits := owlservergrouphandler.find(owlservergrouphandler.owlservergrouprequest.Address)
+	at, exits := owlservergrouphandler.Ofind(owlservergrouphandler.owlservergrouprequest.Address)
 	if exits {
 		res, ok := ServerGroupList.GetAt(int32(at))
+		if ok {
+			owlservergrouphandler.owlserveggroupresponse.Data = res
+			owlservergrouphandler.Transmit(group.SUCCESS)
+		} else {
+			owlservergrouphandler.Transmit(group.ERROR)
+		}
+	} else {
+		//不存在
+		owlservergrouphandler.Transmit(group.NOT_FOUND)
+	}
+
+}
+
+//添加一个服务器信息,gossip配置
+func (owlservergrouphandler *OwlServerGroupHandler) Gadd() {
+
+	//数据清理
+	owlservergrouphandler.owlservergrouprequest.Cmd = ""
+	owlservergrouphandler.owlservergrouprequest.Pass = ""
+	owlservergrouphandler.owlservergrouprequest.Token = ""
+
+	// //owl和gossip集群配置分离
+	// var sl *group.Servergroup
+	// if owlservergrouphandler.owlservergrouprequest.GroupType == "gossip" {
+	// 	sl = ServerGroupGossipList
+	// } else {
+	// 	sl = ServerGroupList
+	// }
+
+	//创建数据
+	var reqs group.OwlServerGroupRequest
+	reqs.Cmd = owlservergrouphandler.owlservergrouprequest.Cmd
+	reqs.Address = owlservergrouphandler.owlservergrouprequest.Address
+	reqs.Pass = owlservergrouphandler.owlservergrouprequest.Pass
+	reqs.Token = owlservergrouphandler.owlservergrouprequest.Token
+
+	at, exits := owlservergrouphandler.Gfind(owlservergrouphandler.owlservergrouprequest.Address)
+	//存在
+	if exits {
+		ServerGroupGossipList.RemoveAt(int32(at))          //先删除
+		ok := ServerGroupGossipList.AddAt(int32(at), reqs) //后增加
+		if ok {
+			owlservergrouphandler.Transmit(group.SUCCESS)
+		} else {
+			owlservergrouphandler.Transmit(group.ERROR)
+		}
+	} else {
+		//不存在
+		ok := ServerGroupGossipList.Add(reqs)
+		if ok {
+			owlservergrouphandler.Transmit(group.SUCCESS)
+		} else {
+			owlservergrouphandler.Transmit(group.ERROR)
+		}
+	}
+
+}
+
+//内部查找一个服务器信息,gossip配置
+func (owlservergrouphandler *OwlServerGroupHandler) Gfind(address string) (int32, bool) {
+	var resat int32 = 0
+	resbool := false
+	list := ServerGroupGossipList.Values()
+	for k, _ := range list {
+
+		defer func() {
+			if err := recover(); err != nil {
+				owllog.OwlLogHttp.Panicln(err)
+			}
+		}()
+
+		//fmt.Println(fmt.Sprintf("%T", list[k]))
+		val, ok := list[k].(group.OwlServerGroupRequest)
+		if ok {
+			if val.Address == address {
+				resat = int32(k)
+				resbool = true
+			}
+		}
+	}
+	return resat, resbool
+}
+
+//删除一个服务器信息,gossip配置
+func (owlservergrouphandler *OwlServerGroupHandler) Gdelete() {
+	at, exits := owlservergrouphandler.Gfind(owlservergrouphandler.owlservergrouprequest.Address)
+	if exits {
+		res := ServerGroupGossipList.RemoveAt(int32(at))
+		if res {
+			owlservergrouphandler.Transmit(group.SUCCESS)
+		} else {
+			owlservergrouphandler.Transmit(group.ERROR)
+		}
+	} else {
+		//不存在
+		owlservergrouphandler.Transmit(group.NOT_FOUND)
+	}
+}
+
+//获取所有服务器列表信息,gossip配置
+func (owlservergrouphandler *OwlServerGroupHandler) GgetAll() {
+	list := ServerGroupGossipList.Values()
+	owlservergrouphandler.owlserveggroupresponse.Data = list
+	owlservergrouphandler.Transmit(group.SUCCESS)
+}
+
+//获取一个服务器信息,gossip配置
+func (owlservergrouphandler *OwlServerGroupHandler) Gget() {
+
+	at, exits := owlservergrouphandler.Gfind(owlservergrouphandler.owlservergrouprequest.Address)
+	if exits {
+		res, ok := ServerGroupGossipList.GetAt(int32(at))
 		if ok {
 			owlservergrouphandler.owlserveggroupresponse.Data = res
 			owlservergrouphandler.Transmit(group.SUCCESS)

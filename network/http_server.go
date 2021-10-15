@@ -75,12 +75,18 @@ func GroupExe(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//设置服务器集群信息，单机
+//设置服务器集群信息，默认集群与gossip
 func Server(w http.ResponseWriter, r *http.Request) {
 
 	owlservergrouphandler := NewOwlServerGroupHandler()
 	owlservergrouphandler.owlservergrouprequest.HTTPReceive(w, r)
-	owlservergrouphandler.HTTPServerHandle(w, r) //执行数据
+
+	if r.FormValue("group_type") == "gossip" {
+		owlservergrouphandler.HTTPServerGroupHandle(w, r) //执行数据
+	} else {
+		owlservergrouphandler.HTTPServerHandle(w, r) //执行数据
+	}
+
 	resstr := owlservergrouphandler.owlserveggroupresponse.ConvertToString()
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	fmt.Fprintf(w, resstr) //输出到客户端的信息

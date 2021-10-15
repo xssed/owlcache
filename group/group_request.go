@@ -9,6 +9,8 @@ import (
 type OwlServerGroupRequest struct {
 	//请求命令
 	Cmd GroupCommandType
+	// //集群配置的类型，owlcache和gossip
+	// GroupType string
 	//地址字符串
 	Address string
 	//链接密码
@@ -40,6 +42,10 @@ func (req *OwlServerGroupRequest) HTTPReceive(w http.ResponseWriter, r *http.Req
 	}
 
 	req.Cmd = GroupCommandType(r.FormValue("cmd"))
+	// req.GroupType = r.FormValue("group_type")
+	// if req.GroupType == "" {
+	// 	req.GroupType == "owlcache" //默认
+	// }
 	req.Address = r.FormValue("address")
 	req.Pass = r.FormValue("pass")
 	req.Token = r.FormValue("token")
