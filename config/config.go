@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"runtime"
 	"strings"
 
 	"github.com/xssed/owlcache/tools"
@@ -128,28 +127,22 @@ func ConfigInit() {
 	buff := bufio.NewReader(config_file)
 	//读取配置文件
 	for {
-		line, err := buff.ReadString('\n') //以'\n'为结束符读入一行
+		line, _, err := buff.ReadLine()
 		if err != nil {
 			break
 		}
-		rs := []rune(line)
-		if string(rs[0:1]) == `#` || len(line) < 3 {
+		rs := []rune(string(line))
+		if string(rs[0:1]) == `#` || len(string(line)) < 3 {
 			continue
 		}
-		if string(rs[0:1]) == `[` || len(line) < 3 {
+		if string(rs[0:1]) == `[` || len(string(line)) < 3 {
 			continue
 		}
-		type_name := string(rs[0:strings.Index(line, " ")])
-		var type_value string
-		systype := runtime.GOOS
-		if systype == "windows" {
-			// windows系统
-			type_value = string(rs[strings.Index(line, " ")+1 : len(rs)-2]) //-1
-		} else {
-			//systype == "linux" or other
-			// LINUX系统
-			type_value = string(rs[strings.Index(line, " ")+1 : len(rs)-1]) //-1
-		}
+		config_string_arr := strings.Split(string(line), " ")
+
+		type_name := config_string_arr[0]
+		type_value := config_string_arr[1]
+
 		config[type_name] = type_value
 	}
 
