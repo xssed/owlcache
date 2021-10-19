@@ -64,7 +64,9 @@
 go get -u github.com/xssed/owlcache
 ```
 
-进入owlcache主目录执行编译命令
+>⚠如果你的Go语言环境开启了`GOMOD`,你需要在电脑本地创建一个目录,进入该目录，再次执行`git clone https://github.com/xssed/owlcache.git`命令将源代码下载. 
+
+进入owlcache主目录执行编译命令(GOPATH模式下进入GOPATH目录的owlcache主目录，GOMOD模式则进入上一步提示中你自己创建的本地目录)
 ```shell
 go build
 ```
