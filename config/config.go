@@ -32,6 +32,7 @@ type OwlConfig struct {
 	Task_ClearExpireData                     string //自动清理数据库中过期数据的时间
 	Task_ServerListBackup                    string //自动备份服务器集群信息数据的时间
 	Task_ServerGossipListBackup              string //自动备份Gossip集群信息数据的时间
+	Task_MemoryInfoToLog                     string //自动输出Owl的内存信息的时间
 	Get_data_from_memcache                   string //是否开启查询不存在的数据时,从memcache查询并存入本地数据库
 	Memcache_list                            string //需要查询的memcache列表,不同节点之间需要使用"|"符号间隔。
 	Get_memcache_data_set_expire_time        string //为从memcache存入本地数据库的Key设置一个过期时间。默认为0，永久不过期。单位是秒。
@@ -76,6 +77,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Task_ClearExpireData:                     "1",
 		Task_ServerListBackup:                    "1",
 		Task_ServerGossipListBackup:              "1",
+		Task_MemoryInfoToLog:                     "1",
 		Get_data_from_memcache:                   "0",
 		Memcache_list:                            "",
 		Get_memcache_data_set_expire_time:        "0",
@@ -214,6 +216,9 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["Task_ServerGossipListBackup"]) >= 1 {
 		param.Task_ServerGossipListBackup = config["Task_ServerGossipListBackup"]
+	}
+	if len(config["Task_MemoryInfoToLog"]) >= 1 {
+		param.Task_MemoryInfoToLog = config["Task_MemoryInfoToLog"]
 	}
 	if len(config["Get_data_from_memcache"]) >= 1 {
 		param.Get_data_from_memcache = config["Get_data_from_memcache"]

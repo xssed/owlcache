@@ -62,7 +62,9 @@ Source download
 go get -u github.com/xssed/owlcache
 ```
 
-Open the owlcache home directory to execute the compile command
+>⚠If 'gomod' is ON in your go locale, you need to create a directory locally on your computer, enter the directory, and execute ` git clone https://github.com/xssed/owlcache.git `Command to download the source code.
+
+##Enter the owlcache home directory and execute the compilation command (in gopath mode, enter the owlcache home directory of gopath directory, and in gomod mode, enter the local directory you created in the previous prompt)  
 ```shell
 go build
 ```

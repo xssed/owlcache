@@ -9,6 +9,7 @@ import (
 	owlconfig "github.com/xssed/owlcache/config"
 	owllog "github.com/xssed/owlcache/log"
 	owlnetwork "github.com/xssed/owlcache/network"
+	owlsystem "github.com/xssed/owlcache/system"
 )
 
 func JobInit() {
@@ -23,6 +24,8 @@ func JobInit() {
 	ServerListBackup()
 	//Gossip服务器集群信息数据定期备份
 	ServerGossipListBackup()
+	//定时自动输出Owl的内存信息
+	MemoryInfoToLog()
 }
 
 // K/V DB数据备份
@@ -140,6 +143,25 @@ func ServerGossipListBackup() {
 				//fmt.Println(err)
 				owllog.OwlLogRun.Error(err)
 			}
+		}
+	}()
+
+}
+
+//统计内存使用情况
+func MemoryInfoToLog() {
+
+	task_memoryinfotolog, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_MemoryInfoToLog)
+	if err != nil {
+		owllog.OwlLogRun.Info("Config File Task_MemoryInfoToLog Parse error:" + err.Error()) //日志记录
+		//fmt.Println("Config File Task_MemoryInfoToLog Parse error:" + err.Error())           //调试
+		os.Exit(0)
+	}
+
+	ticker := time.NewTicker(time.Minute * time.Duration(task_memoryinfotolog))
+	go func() {
+		for _ = range ticker.C {
+			owllog.OwlLogRun.Info(owlsystem.MemStats())
 		}
 	}()
 
