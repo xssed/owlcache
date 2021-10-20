@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
@@ -73,4 +74,16 @@ func ValidUTF8(filename string) bool {
 	} else {
 		return false
 	}
+}
+
+//高效拼接字符串
+func JoinString(args ...string) string {
+
+	var args_buffer bytes.Buffer
+
+	for i := 0; i < len(args); i++ {
+		args_buffer.WriteString(args[i])
+	}
+	return args_buffer.String()
+
 }
