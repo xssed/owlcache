@@ -34,13 +34,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 - 📝[English](doc/en/0.directory.md)
 
 
-## Why should I create this project?
 
-* Don't like Memcache, Redis (cache usage) cluster mode  
-* Increase the cache access mode  
-* Easily build efficient data sharing clusters  
-
-    
 
 
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)

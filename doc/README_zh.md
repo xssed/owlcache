@@ -33,14 +33,8 @@
 - 📝[中文简体](zh/0.directory.md)
 - 📝[English](en/0.directory.md)
 
-
-## 为什么创建这个项目
-
-* 不认可Memcache、Redis(缓存用途)的集群方式  
-* 增加缓存的访问方式  
-* 轻松的构建一个高效的数据共享集群  
-
       
+
 
 
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
