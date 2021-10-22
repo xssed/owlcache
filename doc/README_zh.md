@@ -33,14 +33,11 @@
 - 📝[中文简体](zh/0.directory.md)
 - 📝[English](en/0.directory.md)
 
-      
-
-
-
-![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
 
 
 ## 设计  
+
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
 
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_zh.png?raw=true)
 
@@ -53,14 +50,16 @@
 
 源码下载
 * go命令下载(会自动下载依赖库，如果直接下载源码编译会提示类库缺失)
-* go get命令无法执行请检查本机是否安装Git服务和设置Go环境 
+* go get命令无法执行请检查本机是否安装Git服务和设置Go环境  
+
 ```shell
 go get -u github.com/xssed/owlcache
 ```
 
->⚠如果你的Go语言环境开启了`GOMOD`,你需要在电脑本地创建一个目录,进入该目录，再次执行`git clone https://github.com/xssed/owlcache.git`命令将源代码下载. 
+#### ⚠⚠⚠如果你的Go语言环境开启了`GOMOD`,你需要在电脑本地创建一个目录,进入该目录，再次执行`git clone https://github.com/xssed/owlcache.git`命令将源代码下载. 
 
-进入owlcache主目录执行编译命令(GOPATH模式下进入GOPATH目录的owlcache主目录，GOMOD模式则进入上一步提示中你自己创建的本地目录)
+## 编译
+* 进入owlcache主目录执行编译命令(GOPATH模式下进入GOPATH目录的owlcache主目录，GOMOD模式则进入上一步提示中你自己创建的本地目录)
 ```shell
 go build
 ```

@@ -35,12 +35,9 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 
 
 
-
-
-![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
-
-
 ## Design  
+ 
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
 
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_en.png?raw=true)
 
@@ -51,14 +48,17 @@ Compilation environment requirements
 * golang >= 1.9
 
 Source download  
-* Go command download (will automatically download the dependent library, if you directly download the source code will prompt the class library is missing)
+* Go command download (will automatically download the dependent library, if you directly download the source code will prompt the class library is missing)  
+
 ```shell
 go get -u github.com/xssed/owlcache
 ```
 
->⚠If 'gomod' is ON in your go locale, you need to create a directory locally on your computer, enter the directory, and execute ` git clone https://github.com/xssed/owlcache.git `Command to download the source code.
+#### ⚠⚠⚠If 'go mod' is ON in your go locale, you need to create a directory locally on your computer, enter the directory, and execute ` git clone https://github.com/xssed/owlcache.git `Command to download the source code.
 
-Enter the owlcache home directory and execute the compilation command (in gopath mode, enter the owlcache home directory of gopath directory, and in gomod mode, enter the local directory you created in the previous prompt)  
+## Build
+* Enter the owlcache home directory and execute the compilation command (in gopath mode, enter the owlcache home directory of gopath directory, and in gomod mode, enter the local directory you created in the previous prompt) 
+
 ```shell
 go build
 ```
