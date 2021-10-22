@@ -29,16 +29,17 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 * 🍻**Support Memcache, Redis data import(String)**  
 
 
-## Documentation
+## Documentation  
+
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
+
 - 📝[中文简体](doc/zh/0.directory.md)
 - 📝[English](doc/en/0.directory.md)
 
-
+</br>
 
 ## Design  
  
-![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
-
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_en.png?raw=true)
 
 

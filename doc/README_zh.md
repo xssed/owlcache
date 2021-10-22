@@ -30,14 +30,16 @@
 
 
 ## 使用文档
+
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
+
 - 📝[中文简体](zh/0.directory.md)
 - 📝[English](en/0.directory.md)
 
-
+</br>
 
 ## 设计  
 
-![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/group.gif?raw=true)
 
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_zh.png?raw=true)
 
