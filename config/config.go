@@ -54,6 +54,9 @@ type OwlConfig struct {
 	MemcacheClient_Request_Max_Error_Number  string //MemcacheClient客户端Max_Error_Number超过限定值时，MemcacheClient请求将“暂停”Sleeptime值，来优化程序响应速度。
 	RedisClient_Request_Timeout_Sleeptime    string //RedisClient客户端请求设置。请求的睡眠时间。单位是整数。
 	RedisClient_Request_Max_Error_Number     string //RedisClient客户端Max_Error_Number超过限定值时，RedisClient请求将“暂停”Sleeptime值，来优化程序响应速度。
+	Open_Urlcache                            string //URL代理访问后将得到的HTTP响应数据缓存到Owlcache中，值为"1"(开启服务)和"0"(关闭服务)。默认为0关闭服务。
+	Urlcache_Filename                        string //开启URL缓存后的需要加载的配置文件的名称，格式为XML，它存在于DBfile配置项目录中，默认名称为sites.xml。
+	Urlcache_Request_Easy                    string //开启Urlcache的快捷访问。不影响UrlCache的默认访问方式。值为"1"(开启)和"0"(关闭)。默认为0关闭。
 }
 
 //创建一个默认配置文件的实体
@@ -99,6 +102,9 @@ func NewDefaultOwlConfig() *OwlConfig {
 		MemcacheClient_Request_Max_Error_Number:  "2",
 		RedisClient_Request_Timeout_Sleeptime:    "2",
 		RedisClient_Request_Max_Error_Number:     "2",
+		Open_Urlcache:                            "0",
+		Urlcache_Filename:                        "sites.xml",
+		Urlcache_Request_Easy:                    "0",
 	}
 }
 
@@ -282,6 +288,15 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["RedisClient_Request_Max_Error_Number"]) >= 1 {
 		param.RedisClient_Request_Max_Error_Number = config["RedisClient_Request_Max_Error_Number"]
+	}
+	if len(config["Open_Urlcache"]) >= 1 {
+		param.Open_Urlcache = config["Open_Urlcache"]
+	}
+	if len(config["Urlcache_Filename"]) >= 1 {
+		param.Urlcache_Filename = config["Urlcache_Filename"]
+	}
+	if len(config["Urlcache_Request_Easy"]) >= 1 {
+		param.Urlcache_Request_Easy = config["Urlcache_Request_Easy"]
 	}
 
 }
