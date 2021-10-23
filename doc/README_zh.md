@@ -11,7 +11,7 @@
 
 </div>
 
- 🦉owlcache 是一款由Go编写的轻量级、高性能、无中心分布式的Key/Value内存缓存型的数据共享应用(一定场景下可以作为轻量型数据库来使用)。你可以把每一个节点看做独立的Key/Value数据服务。通过集群查询任意一个节点的数据，得到集群中不同节点之间拥有相同Key的数据列表，最新的数据优先展示。如果开启了同步数据功能，集群中的一个节点Key数据被更改，不同的节点中这个Key数据也会更新。即使网络环境不佳，很多节点没有进行同步数据，你依然可以查询能连接到的节点中的最新数据。   
+ 🦉owlcache 是一款由Go编写的轻量级、高性能、无中心分布式的Key/Value内存缓存型的数据共享应用(一定场景下可以作为轻量型数据库来使用)。   
 
 
 ## 亮点与功能简述
@@ -36,14 +36,9 @@
 - 📝[中文简体](zh/0.directory.md)
 - 📝[English](en/0.directory.md)
 
-</br>
-
 ## 设计  
 
-
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_zh.png?raw=true)
-
-
 
 ## 如何编译
 
