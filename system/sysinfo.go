@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"runtime"
+
+	"github.com/xssed/owlcache/tools"
 )
 
 const (
@@ -48,7 +50,7 @@ func MemStats() string {
 	sys := float64(m.Sys) / unit_gb
 	numgc := m.NumGC
 
-	logstr := fmt.Sprintf("Sys = %vGB  NumGC = %v  Alloc = %vGB  TotalAlloc = %vGB  ", sys, numgc, alloc, totalalloc)
+	logstr := fmt.Sprintf("Sys = %vGB  NumGC = %v  Alloc = %vGB  TotalAlloc = %vGB  ", tools.RoundedFixed(sys, 7), numgc, tools.RoundedFixed(alloc, 7), tools.RoundedFixed(totalalloc, 7))
 	return logstr
 
 }

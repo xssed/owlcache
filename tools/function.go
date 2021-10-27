@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"strings"
 
@@ -85,5 +86,14 @@ func JoinString(args ...string) string {
 		args_buffer.WriteString(args[i])
 	}
 	return args_buffer.String()
+
+}
+
+//对浮点数四舍五入-保留小数点后n位
+func RoundedFixed(val float64, n int) float64 {
+
+	change := math.Pow(10, float64(n))
+	fv := 0.0000000001 + val //对浮点数产生.xxx999999999 计算不准进行处理
+	return math.Floor(fv*change+.5) / change
 
 }
