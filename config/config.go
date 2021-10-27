@@ -163,7 +163,13 @@ func ConfigInit() {
 	//fmt.Println(OwlConfigModel) //打印出最终赋值后的配置信息
 
 	//执行步骤信息
-	fmt.Println("owlcache  configuration initialization is complete...")
+	fmt.Println("owlcache  system configuration initialization is complete...")
+
+	//检查是否启动URL缓存功能
+	if OwlConfigModel.Open_Urlcache == "1" {
+		//URL缓存初始化加载配置
+		OwlUCConfigInit()
+	}
 
 }
 

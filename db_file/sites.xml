@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--UrlCache 标准配置文件-->
+<!--Urlcache standard config profile -->
+<sites>
+    <site>
+        <!--host:需要映射的URL基础网址。必填项。默认为空。例:https://www.xsser.cc/-->
+        <!--host: the base URL of the URL that needs to be mapped. Required. The default value is empty. Example: https://www.xsser.cc/-->
+        <host></host>
+        <!--header:向映射网址发送GET访问请求时，将会把当前HTTP请求Request headers的子项附带转发到映射网址。默认为空。-->
+        <!--header:When a GET request is sent to the mapped web address, the subitem of the current HTTP request `request headers` will be forwarded to the mapped web address. The default is empty.-->
+        <!--<header>-->
+        <!--<value>User-Agent</value>-->
+        <!--<value>Cookie</value>-->
+        <!--</header>-->
+        <!--max_storage_limit:映射请求返回的数据在内存中允许的最大存储字节数。单位byte。默认最大值得为5242880byte->5M -->
+        <!--max_storage_limit:The maximum number of bytes allowed in memory for the data returned by the mapping request. The unit is byte. The default maximum value is 5242880byte - > 5M -->
+        <max_storage_limit></max_storage_limit>
+        <!--check_token:是否要校验owl的token。默认为0 。0为关闭，1为开启。-->
+        <!--check_token:Whether to verify the token of owl. The default is 0. 0 is off and 1 is on.-->
+        <check_token></check_token>
+        <!--key_expire:存储在内存的有效时间。单位秒。默认为0。0为永久。-->
+        <!--key_expire:The effective time stored in memory. The unit is seconds. The default value is 0. 0 is permanent.-->
+        <key_expire></key_expire>
+        <!--timeout:映射请求的超时时间。单位毫秒。默认5000ms->5s-->
+        <!--timeout:Timeout for mapping requests. The unit is milliseconds. Default 5000ms - > 5S -->
+        <timeout></timeout>
+        <!--proxy:映射请求的代理服务器。默认为空 -->
+        <!--proxy:The proxy server that maps the request. The default is empty.Example: 77.77.77.77:7070  -->
+        <proxy></proxy>
+    </site>
+<!--<site></site>-->
+</sites>

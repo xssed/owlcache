@@ -9,6 +9,8 @@ func AegisInit() {
 	CheckGossipConfig()
 	//检查客户端请求优化参数
 	CheckClientRequest()
+	//检查urlcache的配置
+	CheckUCConfig()
 	//捕获程序正常退出操作 ctrl+c
 	OnExit()
 }
