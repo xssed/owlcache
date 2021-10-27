@@ -11,7 +11,7 @@
 
 </div>
 
- 🦉owlcache 是一款由Go编写的轻量级、高性能、无中心分布式的Key/Value内存缓存型的数据共享应用(一定场景下可以作为轻量型数据库来使用)。   
+ 🦉owlcache 是一款由Go编写的轻量级、高性能、无中心、分布式的Key/Value内存缓存。   
 
 
 ## 亮点与功能简述
@@ -35,10 +35,6 @@
 
 - 📝[中文简体](zh/0.directory.md)
 - 📝[English](en/0.directory.md)
-
-## 设计  
-
-![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_zh.png?raw=true)
 
 ## 如何编译
 
@@ -71,7 +67,6 @@ Linux
 ./owlcache
 ```
 Windows (DOS下)  
-* 注意:Windows生产环境部署中发现，查询请求处理后内存释放会相对慢一些，大概半小时之内才会释放完毕，Linux不存在这个问题，这跟Go的内部机制有关。
 ```shell
 owlcache
 ```
@@ -198,8 +193,9 @@ http://127.0.0.1:7721/group_data/?cmd=get&key=hello
 
 ## ......更多请参阅文档的详细说明
 
+## 设计  
 
-
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_zh.png?raw=true)
 
 ## 开发与讨论(不接商业合作)
 - 联系我📪:xsser@xsser.cc

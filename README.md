@@ -11,7 +11,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 
 </div>
 
- 🦉owlcache is a lightweight, high-performance, non-centralized, distributed Key/Value memory-cached data sharing application written by Go (used as a lightweight database in certain scenarios).     
+ 🦉owlcache is a lightweight, high-performance, non-centralized, distributed Key/Value in-memory Cache written in Go.     
 
 
 ## Highlights and features
@@ -35,10 +35,6 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 
 - 📝[中文简体](doc/zh/0.directory.md)
 - 📝[English](doc/en/0.directory.md)
-
-## Design  
- 
-![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_en.png?raw=true)
 
 ## How to compile
 
@@ -71,7 +67,6 @@ Linux
 ./owlcache
 ```
 Windows (DOS)  
-* Note: In the Windows production environment deployment, it is found that the memory release will be relatively slow after the query request processing, and will be released within about half an hour. Linux does not have this problem, which is related to Go's internal mechanism.
 ```shell
 owlcache
 ```
@@ -198,8 +193,9 @@ Response result example:
 
 ## ...more please refer to the detailed description of the document
 
-
-
+## Design  
+ 
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_en.png?raw=true)
 
 ## Development and discussion(not involved in business cooperation)
 - Email📪:xsser@xsser.cc
