@@ -9,6 +9,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"unicode"
 
 	"github.com/gofrs/uuid"
 	"github.com/saintfish/chardet"
