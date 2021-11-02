@@ -108,3 +108,21 @@ func Lcfirst(str string) string {
 	}
 	return str
 }
+
+//高效将字符串切片拼接字符串
+func StringSliceJoinToString(args []string) string {
+	var args_buffer bytes.Buffer
+	for i := 0; i < len(args); i++ {
+		args_buffer.WriteString(args[i])
+	}
+	return args_buffer.String()
+}
+
+//高效将错误类型切片拼接字符串
+func ErrorSliceJoinToString(args []error) string {
+	var args_buffer bytes.Buffer
+	for i := 0; i < len(args); i++ {
+		args_buffer.WriteString(args[i].Error())
+	}
+	return args_buffer.String()
+}
