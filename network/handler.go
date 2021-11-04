@@ -106,6 +106,14 @@ func (owlhandler *OwlHandler) HTTPGroupDataHandle(w http.ResponseWriter, r *http
 
 }
 
+//UrlCache数据执行信息
+func (owlhandler *OwlHandler) UCDataHandle(w http.ResponseWriter, r *http.Request) (http.ResponseWriter, []byte) {
+
+	w, print := owlhandler.GeUrlCacheData(w, r)
+	return w, print
+
+}
+
 //解析response
 func (owlhandler *OwlHandler) Transmit(resstatus ResStatus) {
 
@@ -167,6 +175,12 @@ func (owlhandler *OwlHandler) Expire() {
 }
 
 func (owlhandler *OwlHandler) Get() {
+	//执行K/V数据查询,本地内存数据库->Memcache(如果开启)->Redis(如果开启）
+	owlhandler.baseget()
+}
+
+//执行K/V数据查询,本地内存数据库->Memcache(如果开启)->Redis(如果开启）
+func (owlhandler *OwlHandler) baseget() {
 	if v, found := BaseCacheDB.GetKvStore(owlhandler.owlrequest.Key); found {
 		owlhandler.Transmit(SUCCESS)
 		owlhandler.owlresponse.Data = v.(*cache.KvStore).Value

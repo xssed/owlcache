@@ -18,6 +18,7 @@ require (
 	github.com/hashicorp/memberlist v0.2.4
 	github.com/miekg/dns v1.1.43 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
+	github.com/parnurzeal/gorequest v0.2.16
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/net v0.0.0-20211013171255-e13a2654a71e // indirect

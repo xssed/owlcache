@@ -3,8 +3,8 @@
 <!--Urlcache standard config profile -->
 <sites>
     <site>
-        <!--host:需要映射的URL基础网址。必填项。默认为空。例:https://www.xsser.cc/-->
-        <!--host: the base URL of the URL that needs to be mapped. Required. The default value is empty. Example: https://www.xsser.cc/-->
+        <!--host:需要映射的URL基础网址。必填项。默认为空。例:https://www.xsser.cc-->
+        <!--host: the base URL of the URL that needs to be mapped. Required. The default value is empty. Example: https://www.xsser.cc-->
         <host></host>
         <!--header:向映射网址发送GET访问请求时，将会把当前HTTP请求Request headers的子项附带转发到映射网址。默认为空。-->
         <!--header:When a GET request is sent to the mapped web address, the subitem of the current HTTP request `request headers` will be forwarded to the mapped web address. The default is empty.-->

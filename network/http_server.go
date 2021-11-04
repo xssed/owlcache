@@ -13,24 +13,26 @@ func startHTTP() {
 
 	//设置监听的端口
 	addr := owlconfig.OwlConfigModel.Host + ":" + owlconfig.OwlConfigModel.Httpport
-	//默认信息
-	http.HandleFunc("/", IndexPage) //设置访问的路由
+
 	//单机数据执行信息
 	http.HandleFunc("/data/", Exe) //设置访问的路由
-	//设置服务器集群
-	http.HandleFunc("/server/", Server) //设置服务器集群信息，单机。
 	//群组数据执行信息
 	http.HandleFunc("/group_data/", GroupExe) //设置访问的路由
-	//启动gossip数据最终一致服务。检查是否开启gossip服务。默认为关闭。
-	// if owlconfig.OwlConfigModel.GroupWorkMode == "gossip" {
-	// 	//什么也不做
-	// } else if owlconfig.OwlConfigModel.GroupWorkMode == "owlcache" {
-	// 	//群组数据执行信息
-	// 	http.HandleFunc("/group_data/", GroupExe) //设置访问的路由
-	// } else {
-	// 	//检测到配置书写异常强制退出
-	// 	owllog.OwlLogRun.Fatal(ErrorGroupWorkMode)
-	// }
+	//判断是否开启Url Cache
+	if owlconfig.OwlConfigModel.Open_Urlcache == "1" {
+		//Url Cache数据执行信息
+		http.HandleFunc("/uc/", UCExe) //设置访问的路由
+	}
+	//设置服务器集群
+	http.HandleFunc("/server/", Server) //设置服务器集群信息，单机。
+	//判断是否开启Urlcache的快捷访问
+	if owlconfig.OwlConfigModel.Open_Urlcache == "1" && owlconfig.OwlConfigModel.Urlcache_Request_Easy == "1" {
+		//Url Cache数据执行信息
+		http.HandleFunc("/", UCExe) //设置访问的路由
+	} else {
+		//默认信息
+		http.HandleFunc("/", IndexPage) //设置访问的路由
+	}
 
 	//监听设置
 	var err error
@@ -72,6 +74,20 @@ func GroupExe(w http.ResponseWriter, r *http.Request) {
 	resstr := owlhandler.owlresponse.ConvertToString("HTTP")
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	fmt.Fprintf(w, resstr) //输出到客户端的信息
+
+}
+
+//UrlCache数据执行信息
+func UCExe(w http.ResponseWriter, r *http.Request) {
+
+	owlhandler := NewOwlHandler()
+	owlhandler.owlrequest.HTTPReceive(w, r)
+	var print []byte
+	w, print = owlhandler.UCDataHandle(w, r) //执行数据
+	if owlhandler.owlresponse.ContentType != "" {
+		w.Header().Set("Content-Type", owlhandler.owlresponse.ContentType)
+	}
+	w.Write(print) //输出到客户端的信息
 
 }
 

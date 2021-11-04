@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	owlconfig "github.com/xssed/owlcache/config"
 )
 
 type OwlRequest struct {
@@ -26,8 +28,8 @@ type OwlRequest struct {
 
 //request to string
 func (req *OwlRequest) String() string {
-	return fmt.Sprintf("{OwlRequest cmd=%s , key='%s' , bodylen=%d }",
-		req.Cmd, req.Key, len(req.Value.(string)))
+	return fmt.Sprintf("{OwlRequest cmd=%s , key='%s' , value='%v' , length='%d' , expires='%v' , pass='%s' , token='%s' ,bodylen=%d }",
+		req.Cmd, req.Key, req.Value, req.Length, req.Expires, req.Pass, req.Token, len(req.Value.(string)))
 }
 
 //过滤接收数据中的\r\n
@@ -80,24 +82,36 @@ func (req *OwlRequest) TCPReceive(connstr string) {
 //将http请求内容 解析为一个OwlRequest对象
 func (req *OwlRequest) HTTPReceive(w http.ResponseWriter, r *http.Request) {
 
-	//r.ParseForm() //解析参数, 默认是不会解析的
+	r.ParseForm() //解析参数
 	//fmt.Println(r.Form)
 	//fmt.Println("path", r.URL.Path)
 	//fmt.Println("scheme", r.URL.Scheme)
 
-	//判断空字符串请求
-	if len(r.Form) <= 1 && strings.TrimSpace(r.FormValue("cmd")) == "" {
-		return
+	//判断是否开启Urlcache的快捷访问
+	if owlconfig.OwlConfigModel.Open_Urlcache == "1" && owlconfig.OwlConfigModel.Urlcache_Request_Easy == "1" && len(r.FormValue("key")) < 1 {
+		//开启Urlcache的快捷访问后重新定义key值
+		req.Key = r.RequestURI
+	} else {
+		//判断空字符串请求
+		if len(r.Form) <= 1 && strings.TrimSpace(r.FormValue("cmd")) == "" {
+			return
+		}
+		req.Key = r.FormValue("key")
 	}
 
 	req.Cmd = CommandType(r.FormValue("cmd"))
-	req.Key = r.FormValue("key")
 	req.Value = r.FormValue("valuedata")
 	req.Length = len(req.Value.(string))
 	exptime, _ := time.ParseDuration(req.TrimSpace(r.FormValue("exptime")) + "s")
 	req.Expires = exptime
 	req.Pass = r.FormValue("pass")
 	req.Token = r.FormValue("token")
+	//避免url cache模式开启时与url的token关键字冲突
+	if r.FormValue("owl_token") != "" {
+		req.Token = r.FormValue("owl_token")
+	}
+
+	//fmt.Println(req)
 
 }
 
