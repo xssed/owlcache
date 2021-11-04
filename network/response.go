@@ -22,6 +22,8 @@ type OwlResponse struct {
 	ResponseHost string
 	//内容的创建时间
 	KeyCreateTime time.Time
+	//响应内容格式
+	ContentType string
 }
 
 //将数据转换成json
