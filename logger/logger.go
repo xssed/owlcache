@@ -6,11 +6,7 @@ import (
 	"sync"
 )
 
-/**
-===================
- logger
-===================
-**/
+//logger
 
 type Level int32
 

@@ -5,10 +5,7 @@ import (
 	"os"
 )
 
-/**
-工具函数
-**/
-
+//工具函数
 //获取文件大小
 func fileSize(file string) int64 {
 	// 获取文件信息

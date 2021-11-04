@@ -5,12 +5,7 @@ import (
 	"os"
 )
 
-/**
-===================
-File处理子类
-===================
-**/
-
+//File处理子类
 //定义FileHandler struct
 type FileHandler struct {
 	LogHandler

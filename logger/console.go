@@ -5,12 +5,7 @@ import (
 	"os"
 )
 
-/**
-===================
-Console处理子类
-===================
-**/
-
+//Console处理子类
 //定义ConsoleHander struct
 type ConsoleHander struct {
 	LogHandler

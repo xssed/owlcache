@@ -8,12 +8,7 @@ import (
 	"time"
 )
 
-/**
-===================
-动态切割File处理子类
-===================
-**/
-
+//动态切割File处理子类
 //定义CutFileHandler struct
 type CutFileHandler struct {
 	LogHandler

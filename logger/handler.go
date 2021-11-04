@@ -29,11 +29,7 @@ type Handler interface {
 	close()
 }
 
-/**
-===================
-LogHandler struct是对标准库log.Logger的封装
-===================
-**/
+//LogHandler struct是对标准库log.Logger的封装
 
 type LogHandler struct {
 	lg *log.Logger
