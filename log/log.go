@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	config "github.com/xssed/owlcache/config"
+	owlconfig "github.com/xssed/owlcache/config"
 )
 
 //创建一个全局应用日志
@@ -20,13 +20,16 @@ func LogInit() {
 	//执行步骤信息
 	fmt.Println("owlcache  logger running...")
 	//日志目录
-	logFilePath := config.OwlConfigModel.Logfile
+	logFilePath := owlconfig.OwlConfigModel.Logfile
 	//注册全局应用日志
 	OwlLogRunRegister(logFilePath)
 	//注册全局HTTP日志
 	OwlLogHttpRegister(logFilePath)
-	//注册全局UrlCache日志
-	OwlLogUCRegister(logFilePath)
+	//判断是否开启Url Cache
+	if owlconfig.OwlConfigModel.Open_Urlcache == "1" {
+		//注册全局UrlCache日志
+		OwlLogUCRegister(logFilePath)
+	}
 }
 
 //注册全局应用日志
