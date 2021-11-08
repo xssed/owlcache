@@ -1,13 +1,13 @@
 package network
 
 import (
-	"bytes"
 	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
 	owlconfig "github.com/xssed/owlcache/config"
+	owltools "github.com/xssed/owlcache/tools"
 )
 
 type OwlRequest struct {
@@ -121,10 +121,6 @@ func (req *OwlRequest) HTTPReceive(w http.ResponseWriter, r *http.Request) {
 //将字符串切片转换成字符串
 func (req *OwlRequest) Slicetostring(slice []string) string {
 
-	var args_buffer bytes.Buffer
-	for i := 0; i < len(slice); i++ {
-		args_buffer.WriteString(slice[i])
-	}
-	return args_buffer.String()
+	return owltools.StringSliceJoinToString(slice)
 
 }
