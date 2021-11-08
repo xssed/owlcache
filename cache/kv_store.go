@@ -6,14 +6,14 @@ import (
 
 //创建key/value模型
 type KvStore struct {
-	Key        interface{}
-	Value      interface{}
+	Key        string
+	Value      []byte
 	LifeTime   time.Duration
 	CreateTime time.Time
 }
 
 //创建一条key/value内容
-func newKvStore(key interface{}, value interface{}, lifeTime time.Duration) *KvStore {
+func newKvStore(key string, value []byte, lifeTime time.Duration) *KvStore {
 	return &KvStore{
 		key,
 		value,

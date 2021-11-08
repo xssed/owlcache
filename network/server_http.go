@@ -1,7 +1,7 @@
 package network
 
 import (
-	"fmt"
+	//"fmt"
 	"net/http"
 
 	owlconfig "github.com/xssed/owlcache/config"
@@ -59,9 +59,9 @@ func Exe(w http.ResponseWriter, r *http.Request) {
 	owlhandler := NewOwlHandler()
 	owlhandler.owlrequest.HTTPReceive(w, r)
 	owlhandler.HTTPHandle(w, r) //执行数据
-	resstr := owlhandler.owlresponse.ConvertToString("HTTP")
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	fmt.Fprintf(w, resstr) //输出到客户端的信息
+	var print []byte
+	w, print = owlhandler.ToHttp(w)
+	w.Write(print) //输出到客户端的信息
 
 }
 
@@ -71,9 +71,9 @@ func GroupExe(w http.ResponseWriter, r *http.Request) {
 	owlhandler := NewOwlHandler()
 	owlhandler.owlrequest.HTTPReceive(w, r)
 	owlhandler.HTTPGroupDataHandle(w, r) //执行数据
-	resstr := owlhandler.owlresponse.ConvertToString("HTTP")
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	fmt.Fprintf(w, resstr) //输出到客户端的信息
+	var print []byte
+	w, print = owlhandler.ToHttp(w)
+	w.Write(print) //输出到客户端的信息
 
 }
 
@@ -84,10 +84,7 @@ func UCExe(w http.ResponseWriter, r *http.Request) {
 	owlhandler.owlrequest.HTTPReceive(w, r)
 	var print []byte
 	w, print = owlhandler.UCDataHandle(w, r) //执行数据
-	if owlhandler.owlresponse.ContentType != "" {
-		w.Header().Set("Content-Type", owlhandler.owlresponse.ContentType)
-	}
-	w.Write(print) //输出到客户端的信息
+	w.Write(print)                           //输出到客户端的信息
 
 }
 
@@ -102,10 +99,9 @@ func Server(w http.ResponseWriter, r *http.Request) {
 	} else {
 		owlservergrouphandler.HTTPServerHandle(w, r) //执行数据
 	}
-
-	resstr := owlservergrouphandler.owlserveggroupresponse.ConvertToString()
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	fmt.Fprintf(w, resstr) //输出到客户端的信息
+	var print []byte
+	w, print = owlservergrouphandler.HttpGroupGetKeyInfoToString(w)
+	w.Write(print)
 
 }
 

@@ -1,6 +1,7 @@
 package network
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"strings"
@@ -15,7 +16,7 @@ type OwlRequest struct {
 	//key
 	Key string
 	//请求内容
-	Value interface{}
+	Value []byte
 	//请求内容长度
 	Length int
 	//过期时间
@@ -29,7 +30,7 @@ type OwlRequest struct {
 //request to string
 func (req *OwlRequest) String() string {
 	return fmt.Sprintf("{OwlRequest cmd=%s , key='%s' , value='%v' , length='%d' , expires='%v' , pass='%s' , token='%s' ,bodylen=%d }",
-		req.Cmd, req.Key, req.Value, req.Length, req.Expires, req.Pass, req.Token, len(req.Value.(string)))
+		req.Cmd, req.Key, req.Value, req.Length, req.Expires, req.Pass, req.Token, int64(len(req.Value)))
 }
 
 //过滤接收数据中的\r\n
@@ -53,28 +54,32 @@ func (req *OwlRequest) TCPReceive(connstr string) {
 	command := CommandType(params[0])
 
 	switch command {
-	case SET:
-		req.Cmd = command
-		req.Key = req.TrimSpace(params[1])
-		req.Value = req.Slicetostring(params[2:])
-		req.Length = len(req.Value.(string))
-	case EXPIRE:
-		req.Cmd = command
-		req.Key = req.TrimSpace(params[1])
-		exptime, _ := time.ParseDuration(req.TrimSpace(params[2]) + "s")
-		req.Expires = exptime
 	case GET:
 		req.Cmd = command
 		req.Key = req.TrimSpace(params[1])
-	case DELETE:
-		req.Cmd = command
-		req.Key = req.TrimSpace(params[1])
+		if len(params) > 2 {
+			req.Value = []byte(req.TrimSpace(params[2]))
+		}
 	case EXIST:
 		req.Cmd = command
 		req.Key = req.TrimSpace(params[1])
-		//	case PASS:
-		//		req.Cmd = command
-		//		req.Pass = req.TrimSpace(params[1])
+	case SET:
+		req.Cmd = command
+		req.Key = req.TrimSpace(params[1])
+		if len(params) > 2 {
+			req.Value = []byte(req.Slicetostring(params[2:]))
+			req.Length = len(req.Value)
+		}
+	case EXPIRE:
+		req.Cmd = command
+		req.Key = req.TrimSpace(params[1])
+		if len(params) > 2 {
+			exptime, _ := time.ParseDuration(req.TrimSpace(params[2]) + "s")
+			req.Expires = exptime
+		}
+	case DELETE:
+		req.Cmd = command
+		req.Key = req.TrimSpace(params[1])
 	}
 
 }
@@ -84,8 +89,6 @@ func (req *OwlRequest) HTTPReceive(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm() //解析参数
 	//fmt.Println(r.Form)
-	//fmt.Println("path", r.URL.Path)
-	//fmt.Println("scheme", r.URL.Scheme)
 
 	//判断是否开启Urlcache的快捷访问
 	if owlconfig.OwlConfigModel.Open_Urlcache == "1" && owlconfig.OwlConfigModel.Urlcache_Request_Easy == "1" && len(r.FormValue("key")) < 1 {
@@ -100,26 +103,28 @@ func (req *OwlRequest) HTTPReceive(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req.Cmd = CommandType(r.FormValue("cmd"))
-	req.Value = r.FormValue("valuedata")
-	req.Length = len(req.Value.(string))
+	req.Value = []byte(r.FormValue("valuedata"))
+	req.Length = len(r.FormValue("valuedata"))
 	exptime, _ := time.ParseDuration(req.TrimSpace(r.FormValue("exptime")) + "s")
 	req.Expires = exptime
 	req.Pass = r.FormValue("pass")
-	req.Token = r.FormValue("token")
 	//避免url cache模式开启时与url的token关键字冲突
-	if r.FormValue("owl_token") != "" {
+	if len(r.FormValue("owl_token")) > 0 {
 		req.Token = r.FormValue("owl_token")
+	} else {
+		req.Token = r.FormValue("token")
 	}
 
-	//fmt.Println(req)
-
+	//fmt.Println(req.String())
 }
 
 //将字符串切片转换成字符串
 func (req *OwlRequest) Slicetostring(slice []string) string {
-	var returnstr string
-	for _, v := range slice {
-		returnstr = returnstr + v + " "
+
+	var args_buffer bytes.Buffer
+	for i := 0; i < len(slice); i++ {
+		args_buffer.WriteString(slice[i])
 	}
-	return returnstr
+	return args_buffer.String()
+
 }

@@ -8,11 +8,11 @@ type ResStatus int
 
 const (
 	GET    CommandType = "get"
+	EXIST  CommandType = "exist"
 	SET    CommandType = "set"
+	EXPIRE CommandType = "expire"
 	DELETE CommandType = "delete"
 	PASS   CommandType = "pass"
-	EXPIRE CommandType = "expire"
-	EXIST  CommandType = "exist"
 )
 
 //response 状态

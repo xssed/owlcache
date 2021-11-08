@@ -65,7 +65,7 @@ func listenGossipQueue() {
 				switch result["cmd"] {
 				case "set":
 					exptime, _ := time.ParseDuration(result["expire"] + "s")
-					ok := BaseCacheDB.Set(result["key"], result["val"], exptime)
+					ok := BaseCacheDB.Set(result["key"], []byte(result["val"]), exptime)
 					if !ok {
 						owllog.OwlLogHttp.Println("gossip:set error " + " key:" + result["key"])
 					}

@@ -31,7 +31,7 @@ func (owlhandler *OwlHandler) GeUrlCacheData(w http.ResponseWriter, r *http.Requ
 	//执行K/V数据查询后，查询到具有缓存数据
 	if owlhandler.owlresponse.Data != nil {
 		w.WriteHeader(200)
-		print = []byte(owlhandler.owlresponse.Data.([]byte))
+		print = owlhandler.owlresponse.Data
 		return w, print
 	} else {
 		//未查询到数据后去请求URL数据缓存到本地
@@ -76,11 +76,10 @@ func (owlhandler *OwlHandler) GeUrlCacheData(w http.ResponseWriter, r *http.Requ
 		owlhandler.Transmit(SUCCESS)
 		owlhandler.owlresponse.Key = key
 		owlhandler.owlresponse.Data = body
-		owlhandler.owlresponse.ContentType = resp.Header.Get("Content-Type")
 
 		if owlhandler.owlresponse.Data != nil {
 			w.WriteHeader(200)
-			print = []byte(owlhandler.owlresponse.Data.([]byte))
+			print = owlhandler.owlresponse.Data
 			//将数据存储到内存数据库
 			//设置站点配置信息
 			site := owlconfig.OwlUCConfigModel.SiteList[site_index]

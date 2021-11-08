@@ -97,7 +97,7 @@ func (owlhandler *OwlHandler) bubbleSortContent(kvlist *group.Servergroup) []Owl
 }
 
 //封装返回数据
-func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []map[string]interface{} {
+func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []byte {
 
 	var response_list []map[string]interface{}
 
@@ -116,8 +116,10 @@ func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []map[s
 
 	}
 
-	//data, _ := json.Marshal(response_list)
-	//string(data)
-	return response_list
+	data, err := json.Marshal(response_list)
+	if err != nil {
+		data = []byte("")
+	}
+	return data
 
 }

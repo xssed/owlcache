@@ -1,6 +1,7 @@
 package network
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/xssed/owlcache/group"
@@ -107,7 +108,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) CheckAuth(r *http.Request) b
 	ip := tools.RemoteAddr2IPAddr(r.RemoteAddr)
 	v, found := BaseAuth.Get(token)
 	if found == true {
-		if v == ip {
+		if string(v) == ip {
 			return true
 		}
 		return false
@@ -338,4 +339,11 @@ func (owlservergrouphandler *OwlServerGroupHandler) Gget() {
 		owlservergrouphandler.Transmit(group.NOT_FOUND)
 	}
 
+}
+
+//将数据转换成json
+func (owlservergrouphandler *OwlServerGroupHandler) HttpGroupGetKeyInfoToString(w http.ResponseWriter) (http.ResponseWriter, []byte) {
+	data, _ := json.Marshal(owlservergrouphandler.owlserveggroupresponse)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	return w, data
 }

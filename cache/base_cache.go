@@ -19,14 +19,14 @@ type BaseCache struct {
 }
 
 //增加一条内容
-func (baseCache *BaseCache) Set(key interface{}, value interface{}, lifeTime time.Duration) bool {
+func (baseCache *BaseCache) Set(key string, value []byte, lifeTime time.Duration) bool {
 	baseCache.KvStoreItems.Store(key, newKvStore(key, value, lifeTime))
 	return true
 }
 
 //给一个key设置(或更新)过期
 //返回否 代表这个key的内容不存在  正 代表成功
-func (baseCache *BaseCache) Expire(key interface{}, lifeTime time.Duration) bool {
+func (baseCache *BaseCache) Expire(key string, lifeTime time.Duration) bool {
 	v, ok := baseCache.KvStoreItems.Load(key)
 	//如果存在
 	if ok {
@@ -38,13 +38,13 @@ func (baseCache *BaseCache) Expire(key interface{}, lifeTime time.Duration) bool
 }
 
 //删除一条内容
-func (baseCache *BaseCache) Delete(key interface{}) bool {
+func (baseCache *BaseCache) Delete(key string) bool {
 	baseCache.KvStoreItems.Delete(key)
 	return true
 }
 
 //获取一条内容
-func (baseCache *BaseCache) Get(key interface{}) (interface{}, bool) {
+func (baseCache *BaseCache) Get(key string) ([]byte, bool) {
 	v, ok := baseCache.KvStoreItems.Load(key)
 	//如果存在
 	if ok {
@@ -61,7 +61,7 @@ func (baseCache *BaseCache) Get(key interface{}) (interface{}, bool) {
 }
 
 //获取一条内容
-func (baseCache *BaseCache) GetKvStore(key interface{}) (interface{}, bool) {
+func (baseCache *BaseCache) GetKvStore(key string) (interface{}, bool) {
 	v, ok := baseCache.KvStoreItems.Load(key)
 	//如果存在
 	if ok {
@@ -96,7 +96,7 @@ func (baseCache *BaseCache) GetKvStoreSlice() []*KvStore {
 }
 
 //判断一个key是否存在
-func (baseCache *BaseCache) Exists(key interface{}) bool {
+func (baseCache *BaseCache) Exists(key string) bool {
 	_, ok := baseCache.Get(key)
 	return ok
 }
@@ -106,7 +106,7 @@ func (baseCache *BaseCache) Flush() bool {
 
 	baseCache.KvStoreItems.Range(func(k, v interface{}) bool {
 		//删除
-		baseCache.Delete(k)
+		baseCache.Delete(k.(string))
 		return true
 	})
 
@@ -117,7 +117,7 @@ func (baseCache *BaseCache) Flush() bool {
 func (baseCache *BaseCache) ClearExpireData() bool {
 
 	baseCache.KvStoreItems.Range(func(k, v interface{}) bool {
-		baseCache.Get(k)
+		baseCache.Get(k.(string))
 		return true
 	})
 

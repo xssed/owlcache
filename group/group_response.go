@@ -1,9 +1,5 @@
 package group
 
-import (
-	"encoding/json"
-)
-
 type OwlServerGroupResponse struct {
 	//请求命令
 	Cmd GroupCommandType
@@ -15,11 +11,4 @@ type OwlServerGroupResponse struct {
 	Address string
 	//返回内容
 	Data interface{}
-}
-
-//将数据转换成json
-func (p *OwlServerGroupResponse) ConvertToString() string {
-	data, _ := json.Marshal(p)
-	s := string(data)
-	return s
 }
