@@ -16,7 +16,7 @@ type server struct {
 func (s *server) Listen() {
 	listener, err := net.Listen("tcp", s.address)
 	if err != nil {
-		owllog.OwlLogRun.Fatal("Error starting TCP server.")
+		owllog.OwlLogRun.Info("TCPserver: Error starting TCP server.")
 	}
 
 	defer listener.Close()
@@ -33,7 +33,7 @@ func (s *server) Listen() {
 }
 
 func New(address string) *server {
-	owllog.OwlLogRun.Info("Creating TCP server with address", address)
+	owllog.OwlLogRun.Info("TCPserver: Creating TCP server with address", address)
 	server := &server{
 		address: address,
 	}
