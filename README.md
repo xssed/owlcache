@@ -128,14 +128,41 @@ http://127.0.0.1:7721/data/?cmd=get&key=hello
 
 Response result example:
 ~~~shell
+world
+~~~
+
+## Single node to get the Key value info
+* TCP
+command: `get <key> info\n`
+~~~shell
+get hello info\n
+~~~
+
+* HTTP
+Note: HTTP access data is not verified by password, only other operations that change data require authentication.
+
+
+|Request parameter        | Parameter value         | 
+| ------------- |:-------------: |
+| cmd           |  get           | 
+| key           |  key name        | 
+| valuedata           |  value       | 
+
+~~~shell
+http://127.0.0.1:7721/data/?cmd=get&key=hello&valuedata=info
+~~~
+<br>
+
+Response result example:
+~~~shell
 {
     "Cmd": "get",
     "Status": 200,
     "Results": "SUCCESS",
     "Key": "hello",
-    "Data": "world",
+    "Data": "",
     "ResponseHost": "127.0.0.1:7721",
-    "KeyCreateTime": "2019-04-24T18:05:10.9132377+08:00"
+    "KeyCreateTime": "2021-11-09T14:12:36.8431596+08:00"
 }
 ~~~
 

@@ -128,14 +128,41 @@ http://127.0.0.1:7721/data/?cmd=get&key=hello
 
 响应结果例子:
 ~~~shell
+world
+~~~
+
+## 单节点获取Key值的信息
+* TCP
+命令: `get <key> info\n`
+~~~shell
+get hello info\n
+~~~
+
+* HTTP
+注意:HTTP获取数据不用密码验证，只有其他更改数据的操作需要验证身份。
+
+
+|请求参数        | 参数值        | 
+| ------------- |:-------------: |
+| cmd           |  get           | 
+| key           |  key名称        | 
+| valuedata           |  info       | 
+
+~~~shell
+http://127.0.0.1:7721/data/?cmd=get&key=hello&valuedata=info
+~~~
+<br>
+
+响应结果例子:
+~~~shell
 {
     "Cmd": "get",
     "Status": 200,
     "Results": "SUCCESS",
     "Key": "hello",
-    "Data": "world",
+    "Data": "",
     "ResponseHost": "127.0.0.1:7721",
-    "KeyCreateTime": "2019-04-24T18:05:10.9132377+08:00"
+    "KeyCreateTime": "2021-11-09T14:12:36.8431596+08:00"
 }
 ~~~
 
