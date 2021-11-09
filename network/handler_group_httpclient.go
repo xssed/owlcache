@@ -22,7 +22,7 @@ func (owlhandler *OwlHandler) getHttpData() []OwlResponse {
 	list := ServerGroupList.Values()
 	//fmt.Println(list)
 
-	//count := ServerGroupList.Count() //count 表示活动的协程个数
+	//count := ServerGroupList.Count()
 	//fmt.Println("count:", count)
 
 	//服务器集群信息存储列表
@@ -54,14 +54,13 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 
 	defer wg.Done()
 
-	s := HttpClient.GetValue(address, key)
+	s := HttpClient.GetValueInfo(address, key)
 	if s != "" {
 		var resbody OwlResponse
 		if err := json.Unmarshal([]byte(s), &resbody); err != nil {
-			owllog.OwlLogHttp.Fatalf("OwlHandler parseContent JSON unmarshling failed: %s", err)
+			owllog.OwlLogHttp.Info("OwlHandler parseContent JSON unmarshling failed: " + err.Error())
 		}
 		kvlist.Add(resbody)
-		//kvlist.Add(s)
 		//fmt.Println(resbody)
 	}
 
@@ -108,8 +107,8 @@ func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []byte 
 		if oldresponse.Status == 200 {
 			temp_map := make(map[string]interface{})
 			temp_map["Address"] = oldresponse.ResponseHost
+			temp_map["Key"] = oldresponse.Key
 			temp_map["Status"] = oldresponse.Status
-			temp_map["Data"] = oldresponse.Data
 			temp_map["KeyCreateTime"] = oldresponse.KeyCreateTime
 			response_list = append(response_list, temp_map)
 		}

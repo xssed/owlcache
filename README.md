@@ -146,7 +146,7 @@ Note: HTTP access data is not verified by password, only other operations that c
 | ------------- |:-------------: |
 | cmd           |  get           | 
 | key           |  key name        | 
-| valuedata           |  value       | 
+| valuedata           |  info       | 
 
 ~~~shell
 http://127.0.0.1:7721/data/?cmd=get&key=hello&valuedata=info
@@ -165,6 +165,8 @@ Response result example:
     "KeyCreateTime": "2021-11-09T14:12:36.8431596+08:00"
 }
 ~~~
+
+**Attention to the HTTP Status code returned by the HTTP Request. please refer to the "Protocol" chapter.  **
 
 ## The cluster obtains the Key value.
 * Suppose there are now three owlcache services: 127.0.0.1: 7721, 127.0.0.1:7723, 127.0.0.1:7725. Each service has a data called **Key** called **hello**.
