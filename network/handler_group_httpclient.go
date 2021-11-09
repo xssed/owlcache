@@ -2,6 +2,7 @@ package network
 
 import (
 	"encoding/json"
+	"net/http"
 	"sync"
 
 	"github.com/xssed/owlcache/group"
@@ -9,7 +10,7 @@ import (
 )
 
 //发起请求获取集合数据
-func (owlhandler *OwlHandler) GetGroupData() {
+func (owlhandler *OwlHandler) GetGroupData(r *http.Request) {
 
 	owlhandler.Transmit(SUCCESS)
 	owlhandler.owlresponse.Data = owlhandler.conversionContent(owlhandler.getHttpData())

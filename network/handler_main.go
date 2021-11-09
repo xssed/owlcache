@@ -89,7 +89,7 @@ func (owlhandler *OwlHandler) HTTPGroupDataHandle(w http.ResponseWriter, r *http
 	switch command {
 	case GET:
 		//HttpClient
-		owlhandler.GetGroupData()
+		owlhandler.GetGroupData(r)
 	default:
 		owlhandler.Transmit(UNKNOWN_COMMAND)
 	}
@@ -130,11 +130,10 @@ func (owlhandler *OwlHandler) Transmit(resstatus ResStatus) {
 
 }
 
-//将数据转换成json
+//将数据转换成json(单节点)
 func (owlhandler *OwlHandler) ToHttp(w http.ResponseWriter) (http.ResponseWriter, []byte) {
 
-	//设置响应状态
-	w.WriteHeader(int(owlhandler.owlresponse.Status))
+	w.Header().Set("KeyCreateTime", owlhandler.owlresponse.KeyCreateTime.String())
 	//GET请求优先处理
 	if owlhandler.owlrequest.Cmd == GET {
 		if string(owlhandler.owlrequest.Value) != "info" {
@@ -143,9 +142,16 @@ func (owlhandler *OwlHandler) ToHttp(w http.ResponseWriter) (http.ResponseWriter
 		owlhandler.owlresponse.Data = []byte("")
 	}
 	owlhandler.owlresponse.ResponseHost = owlconfig.OwlConfigModel.ResponseHost + ":" + owlconfig.OwlConfigModel.Httpport
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8;")
 	data, _ := json.Marshal(owlhandler.owlresponse)
 	return w, data
+
+}
+
+//将数据转换成json(集群)
+func (owlhandler *OwlHandler) ToGroupHttp(w http.ResponseWriter) (http.ResponseWriter, []byte) {
+
+	return w, owlhandler.owlresponse.Data
 
 }
 
