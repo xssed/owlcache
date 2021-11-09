@@ -145,7 +145,8 @@ func (owlhandler *OwlHandler) ToHttp(w http.ResponseWriter) (http.ResponseWriter
 	owlhandler.owlresponse.ResponseHost = owlconfig.OwlConfigModel.ResponseHost + ":" + owlconfig.OwlConfigModel.Httpport
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	data, _ := json.Marshal(owlhandler.owlresponse)
-	return w, []byte(data)
+	return w, data
+
 }
 
 //TCP服务将数据进行转换输出

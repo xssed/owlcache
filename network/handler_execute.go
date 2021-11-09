@@ -50,7 +50,7 @@ func (owlhandler *OwlHandler) getfrommemcache() {
 		if err == nil {
 			//找到数据了
 			exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.Get_memcache_data_set_expire_time + "s")
-			ok := BaseCacheDB.Set(string(result.Key), []byte(result.Value), exptime)
+			ok := BaseCacheDB.Set(string(result.Key), result.Value, exptime)
 			//设置数据时出错
 			if !ok {
 				owllog.OwlLogRun.Println("Get_data_from_memcache:set error " + " key:" + owlhandler.owlrequest.Key)
@@ -116,6 +116,8 @@ func (owlhandler *OwlHandler) Set() {
 	ok := BaseCacheDB.Set(owlhandler.owlrequest.Key, owlhandler.owlrequest.Value, owlhandler.owlrequest.Expires)
 	if ok {
 		owlhandler.Transmit(SUCCESS)
+		owlhandler.owlresponse.Data = []byte("")
+		owlhandler.owlresponse.KeyCreateTime = time.Now()
 	} else {
 		owlhandler.Transmit(ERROR)
 	}
@@ -177,6 +179,7 @@ func (owlhandler *OwlHandler) Pass(r *http.Request) {
 		BaseAuth.Set(token, []byte(ip), expiration)
 		//在返回值中添加UUID返回
 		owlhandler.owlresponse.Data = []byte(token)
+		owlhandler.owlresponse.KeyCreateTime = time.Now()
 		owlhandler.Transmit(SUCCESS)
 	} else {
 		owlhandler.Transmit(ERROR)
@@ -187,7 +190,7 @@ func (owlhandler *OwlHandler) Pass(r *http.Request) {
 //验证权限
 func (owlhandler *OwlHandler) CheckAuth(r *http.Request) bool {
 
-	token := owlhandler.owlrequest.Token
+	token := string(owltools.Base64Decode(owlhandler.owlrequest.Token, "url"))
 	ip := owltools.RemoteAddr2IPAddr(r.RemoteAddr)
 	v, found := BaseAuth.Get(token)
 	if found == true {
