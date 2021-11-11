@@ -74,7 +74,9 @@ func GroupExe(w http.ResponseWriter, r *http.Request) {
 	owlhandler.owlrequest.HTTPReceive(w, r)
 	owlhandler.HTTPGroupDataHandle(w, r) //执行数据
 	var print []byte
-	w, print = owlhandler.ToGroupHttp(w)
+	w, print = owlhandler.ToGroupHttp(w, r) //数据转换
+	//设置响应状态
+	w.WriteHeader(int(owlhandler.owlresponse.Status))
 	w.Write(print) //输出到客户端的信息
 
 }

@@ -4,16 +4,44 @@ import (
 	"encoding/json"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/xssed/owlcache/group"
 	owllog "github.com/xssed/owlcache/log"
 )
 
 //发起请求获取集合数据
-func (owlhandler *OwlHandler) GetGroupData(r *http.Request) {
+func (owlhandler *OwlHandler) GetGroupData(w http.ResponseWriter, r *http.Request) {
 
+	//如果valuedata不是字符串info则输出集群第一个
+	if string(owlhandler.owlrequest.Value) != "info" {
+		//默认是同时去请求集群数据，所有数据请求完毕(超时则中止请求)，再返回数据
+		resmap := owlhandler.conversionContent(owlhandler.getHttpData())
+		//如果没有在集群中取到值
+		if len(resmap) == 0 {
+			owlhandler.Transmit(NOT_FOUND)
+			owlhandler.owlresponse.Data = []byte("")
+			return
+		}
+		//取出集群第一个最新的数据
+		owlhandler.Transmit(SUCCESS)
+		owlhandler.owlresponse.Data = resmap[0]["Data"].([]byte)
+		return
+
+	}
+	//查询info类型
+	resmap := owlhandler.conversionContentInfo(owlhandler.getHttpData())
+	//如果没有在集群中取到值
+	if len(resmap) == 0 {
+		owlhandler.Transmit(NOT_FOUND)
+		owlhandler.owlresponse.Data = []byte("")
+		return
+	}
 	owlhandler.Transmit(SUCCESS)
-	owlhandler.owlresponse.Data = owlhandler.conversionContent(owlhandler.getHttpData())
+	w.Header().Set("Content-Type", "application/json; charset=utf-8;")
+	data, _ := json.Marshal(&resmap)
+	owlhandler.owlresponse.Data = data
+	return
 
 }
 
@@ -55,14 +83,27 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 
 	defer wg.Done()
 
-	s := HttpClient.GetValueInfo(address, key)
-	if s != "" {
+	s := HttpClient.GetValue(address, key)
+	if s != nil {
+
 		var resbody OwlResponse
-		if err := json.Unmarshal([]byte(s), &resbody); err != nil {
-			owllog.OwlLogHttp.Info("OwlHandler parseContent JSON unmarshling failed: " + err.Error())
+
+		resbody.Status = ResStatus(s.StatusCode)
+		resbody.Key = s.Header.Get("Key")
+		resbody.Data = s.Byte()
+		//时间处理部分
+		tkt := s.Header.Get("Keycreatetime")
+		if len(tkt) > 37 {
+			tkt = tkt[0:37]
 		}
+		t, terr := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", tkt)
+		if terr != nil {
+			owllog.OwlLogHttp.Info("OwlHandler parseContent Keycreatetime time.Parse failed: " + terr.Error())
+		}
+		resbody.KeyCreateTime = t
+		resbody.ResponseHost = s.Header.Get("Responsehost")
 		kvlist.Add(resbody)
-		//fmt.Println(resbody)
+
 	}
 
 }
@@ -89,21 +130,21 @@ func (owlhandler *OwlHandler) bubbleSortContent(kvlist *group.Servergroup) []Owl
 				array[i], array[i+1] = array[i+1], array[i]
 			}
 		}
-		//fmt.Println(array)
 	}
 
 	return array
 
 }
 
-//封装返回数据
-func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []byte {
+//封装返回key集合信息
+func (owlhandler *OwlHandler) conversionContentInfo(res_slice []OwlResponse) []map[string]interface{} {
 
 	var response_list []map[string]interface{}
 
 	for index := range res_slice {
 
 		oldresponse := res_slice[index]
+		//fmt.Println(oldresponse)
 		//只接受存在的数据（响应内容状态为200）
 		if oldresponse.Status == 200 {
 			temp_map := make(map[string]interface{})
@@ -116,10 +157,27 @@ func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []byte 
 
 	}
 
-	data, err := json.Marshal(response_list)
-	if err != nil {
-		data = []byte("")
+	return response_list
+
+}
+
+//封装返回key集合数据
+func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []map[string]interface{} {
+
+	var response_list []map[string]interface{}
+
+	for index := range res_slice {
+
+		oldresponse := res_slice[index]
+		//只接受存在的数据（响应内容状态为200）
+		if oldresponse.Status == 200 {
+			temp_map := make(map[string]interface{})
+			temp_map["Data"] = oldresponse.Data
+			response_list = append(response_list, temp_map)
+		}
+
 	}
-	return data
+
+	return response_list
 
 }
