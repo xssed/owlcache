@@ -128,7 +128,7 @@ func ErrorSliceJoinToString(args []error) string {
 	return args_buffer.String()
 }
 
-//将[]byte数据进行base64编码转换为字符串
+//将[]byte数据进行base64编码转换为加密后字符串
 //URL和文件名安全方式是标准方式的变体，其输出用于URL和文件名。因为+和/字符是标准Base64字符对URL和文件名编码不安全，变体即使用-代替+，_（下划线）代替/。
 func Base64Encode(input []byte, mode string) string {
 	if mode == "url" {
@@ -137,7 +137,7 @@ func Base64Encode(input []byte, mode string) string {
 	return base64.StdEncoding.EncodeToString(input)
 }
 
-//将字符串数据进行base64解码为[]byte,转换错误将返回空[]byte
+//将base64加密字符串数据进行base64解码为[]byte,转换错误将返回空[]byte
 //URL和文件名安全方式是标准方式的变体，其输出用于URL和文件名。因为+和/字符是标准Base64字符对URL和文件名编码不安全，变体即使用-代替+，_（下划线）代替/。
 func Base64Decode(input string, mode string) []byte {
 	if mode == "url" {

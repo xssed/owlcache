@@ -3,6 +3,7 @@ package network
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -94,7 +95,8 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 		//时间处理部分
 		tkt := s.Header.Get("Keycreatetime")
 		if len(tkt) > 37 {
-			tkt = tkt[0:37]
+			//截取字符串的固定长度格式，并把前后两端的空格过滤
+			tkt = strings.TrimSpace(tkt[0:37])
 		}
 		t, terr := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", tkt)
 		if terr != nil {
