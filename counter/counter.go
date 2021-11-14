@@ -22,13 +22,17 @@ func (c *Counter) Add(name string, max int64, lt time.Duration) int {
 		return -1
 	}
 
+	//去查找计数器之前是否有这个name存进来
 	if v, ok := c.sm.Load(name); ok {
 		//存在这个Key
 		bc := v.(*BaseCounter)
-		if bc.IsUse() {
-			bc.AddOne()
-			return bc.CurrentNum()
+		//是否超过最大值
+		if bc.IsBad() {
+			//没有超过
+			bc.AddOne()            //+1
+			return bc.CurrentNum() //返回当前数
 		} else {
+			//超过最大值，重置
 			if bc.CurrentStatus() == 0 {
 				bc.ReTime()
 				bc.ReStatusOff()
@@ -44,10 +48,10 @@ func (c *Counter) Add(name string, max int64, lt time.Duration) int {
 	}
 
 	//不存在这个Key
-	nb := NewBaseCounter(max, lt)
-	nb.AddOne()
-	c.sm.Store(name, nb)
-	return nb.CurrentNum()
+	// nb := NewBaseCounter(max, lt)
+	// nb.AddOne()
+	// c.sm.Store(name, nb)
+	// return nb.CurrentNum()
 
 }
 
@@ -62,6 +66,7 @@ func (c *Counter) Reset(name string) {
 		//存在这个Key
 		bc := v.(*BaseCounter)
 		bc.Reset()
+		bc.ReTime()
 	}
 
 }

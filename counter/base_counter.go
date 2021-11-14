@@ -7,7 +7,7 @@ import (
 
 //创建
 func NewBaseCounter(max int64, lt time.Duration) *BaseCounter {
-	return &BaseCounter{maxNum: max, lifeTime: lt, status: 0}
+	return &BaseCounter{maxNum: max, lifeTime: lt, status: 0, createTime: time.Now()}
 }
 
 //定义计数器
@@ -108,7 +108,7 @@ func (c *BaseCounter) IsBad() bool {
 
 //判断可用性
 func (c *BaseCounter) IsUse() bool {
-	if !c.IsBad() { //&& !c.IsExpired()
+	if !c.IsBad() && !c.IsExpired() {
 		return true
 	} else {
 		return false
