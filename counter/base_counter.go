@@ -108,7 +108,7 @@ func (c *BaseCounter) IsBad() bool {
 
 //判断可用性
 func (c *BaseCounter) IsUse() bool {
-	if !c.IsBad() && !c.IsExpired() {
+	if c.IsBad() || !c.IsExpired() {
 		return true
 	} else {
 		return false
