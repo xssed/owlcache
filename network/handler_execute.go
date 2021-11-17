@@ -1,7 +1,6 @@
 package network
 
 import (
-	//"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -28,13 +27,19 @@ func (owlhandler *OwlHandler) baseget() {
 		//NOT_FOUND状态下是否从memcache中查询数据
 		if owlconfig.OwlConfigModel.Get_data_from_memcache == "1" {
 			//请求优化部分
-			mcrts_exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.MemcacheClient_Request_Timeout_Sleeptime + "s") //睡眠时间
-			mrmen_maxnum, _ := strconv.Atoi(owlconfig.OwlConfigModel.MemcacheClient_Request_Max_Error_Number)               //最大请求数
-			if MemcacheClientRequestErrorCounter.Add(owlhandler.owlrequest.Key, int64(mrmen_maxnum-1), mcrts_exptime) > 0 {
+			temp_mcrts_exptime := owltools.DoubleNumberStringSubToString(owlconfig.OwlConfigModel.MemcacheClient_Request_Timeout_Sleeptime, "1") //字符串相减
+			mcrts_exptime, _ := time.ParseDuration(owltools.JoinString(temp_mcrts_exptime, "s"))                                                 //拼接字符串转化为时间，请求失败的睡眠时间
+			mrmen_maxnum, _ := strconv.Atoi(owlconfig.OwlConfigModel.MemcacheClient_Request_Max_Error_Number)                                    //最大错误请求数，超过该数就进入睡眠
+			k := MemcacheClientRequestErrorCounter.Exe(owlhandler.owlrequest.Key, int64(mrmen_maxnum-1), mcrts_exptime)
+			if k > 0 {
 				//请求数据
-				owllog.OwlLogRun.Info("memcacheclient:get key " + " key:" + owlhandler.owlrequest.Key)
+				//owllog.OwlLogRun.Info("memcacheclient:get key " + " key:" + owlhandler.owlrequest.Key)
 				result, err := memcacheclient.Get(owlhandler.owlrequest.Key)
 				if err == nil {
+
+					//执行成功-1
+					MemcacheClientRequestErrorCounter.Dec(owlhandler.owlrequest.Key)
+
 					//找到数据了，存入owlcache中
 					exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.Get_memcache_data_set_expire_time + "s")
 					ok := BaseCacheDB.Set(string(result.Key), result.Value, exptime)
@@ -47,39 +52,42 @@ func (owlhandler *OwlHandler) baseget() {
 						owlhandler.owlresponse.KeyCreateTime = time.Now()
 						return
 					}
-				} else {
-					//memcache中也没有找到数据
-					owllog.OwlLogRun.Info("Get_data_from_memcache:Error get data from memcache, " + " key:" + owlhandler.owlrequest.Key)
 				}
 			}
 		}
 		//NOT_FOUND状态下是否从redis中查询数据
 		if owlconfig.OwlConfigModel.Get_data_from_redis == "1" {
+
 			//请求优化部分
-			rcrts_exptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.RedisClient_Request_Timeout_Sleeptime + "s") //睡眠时间
-			rcrmen_maxnum, _ := strconv.Atoi(owlconfig.OwlConfigModel.RedisClient_Request_Max_Error_Number)              //最大请求数
-			if RedisClientRequestErrorCounter.Add(owlhandler.owlrequest.Key, int64(rcrmen_maxnum-1), rcrts_exptime) > 0 {
+			temp_rcrts_exptime := owltools.DoubleNumberStringSubToString(owlconfig.OwlConfigModel.RedisClient_Request_Timeout_Sleeptime, "1") //字符串相减
+			rcrts_exptime, _ := time.ParseDuration(owltools.JoinString(temp_rcrts_exptime, "s"))                                              //拼接字符串转化为时间，请求失败的睡眠时间
+			rcrmen_maxnum, _ := strconv.Atoi(owlconfig.OwlConfigModel.RedisClient_Request_Max_Error_Number)                                   //最大错误请求数，超过该数就进入睡眠
+			k := RedisClientRequestErrorCounter.Exe(owlhandler.owlrequest.Key, int64(rcrmen_maxnum-1), rcrts_exptime)
+			if k > 0 {
 				//请求数据
+				//owllog.OwlLogRun.Info("redisclient:get key " + " key:" + owlhandler.owlrequest.Key)
 				rcres, err := redisclient.Get(owlhandler.owlrequest.Key)
 				if err == nil {
-					//找到数据了
+
+					//执行成功-1
+					RedisClientRequestErrorCounter.Dec(owlhandler.owlrequest.Key)
+
+					//找到数据了，存入owlcache中
 					rcexptime, _ := time.ParseDuration(owlconfig.OwlConfigModel.Get_redis_data_set_expire_time + "s")
 					ok := BaseCacheDB.Set(owlhandler.owlrequest.Key, []byte(rcres), rcexptime)
 					//设置数据时出错
 					if !ok {
-						owllog.OwlLogRun.Info("Get_data_from_redis:set error " + " key:" + owlhandler.owlrequest.Key)
+						owllog.OwlLogRun.Info("Get_data_from_redis:Store data to owlcache error" + " key:" + owlhandler.owlrequest.Key)
 					} else {
 						owlhandler.Transmit(SUCCESS)
 						owlhandler.owlresponse.Data = []byte(rcres)
 						owlhandler.owlresponse.KeyCreateTime = time.Now()
 						return
 					}
-				} else {
-					//redis中也没有找到数据
-					owllog.OwlLogRun.Info("Get_data_from_redis:get error " + " key:" + owlhandler.owlrequest.Key)
 				}
 			}
 		}
+
 		owlhandler.Transmit(NOT_FOUND)
 		return
 	}

@@ -3,12 +3,15 @@ package network
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
+	owlconfig "github.com/xssed/owlcache/config"
 	"github.com/xssed/owlcache/group"
 	owllog "github.com/xssed/owlcache/log"
+	owltools "github.com/xssed/owlcache/tools"
 )
 
 //发起请求获取集合数据
@@ -84,28 +87,41 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 
 	defer wg.Done()
 
-	s := HttpClient.GetValue(address, key)
-	if s != nil {
+	//请求优化部分
+	temp_hrts_exptime := owltools.DoubleNumberStringSubToString(owlconfig.OwlConfigModel.HttpClient_Request_Timeout_Sleeptime, "1") //字符串相减
+	hrts_exptime, _ := time.ParseDuration(owltools.JoinString(temp_hrts_exptime, "s"))                                              //拼接字符串转化为时间，请求失败的睡眠时间
+	hr_maxnum, _ := strconv.Atoi(owlconfig.OwlConfigModel.HttpClient_Request_Max_Error_Number)                                      //最大错误请求数，超过该数就进入睡眠
+	address_key := owltools.JoinString(address, owlhandler.owlrequest.Key)                                                          //定义计数器Http_client的统计Key
+	k := HttpClientRequestErrorCounter.Exe(address_key, int64(hr_maxnum-1), hrts_exptime)
+	if k > 0 {
+		//请求数据
+		//owllog.OwlLogRun.Info(owltools.JoinString("httpclient:get key", " key:", owlhandler.owlrequest.Key, " address:", address))
+		s := HttpClient.GetValue(address, key)
+		if s != nil {
 
-		var resbody OwlResponse
+			//执行成功-1
+			HttpClientRequestErrorCounter.Dec(address_key)
 
-		resbody.Status = ResStatus(s.StatusCode)
-		resbody.Key = s.Header.Get("Key")
-		resbody.Data = s.Byte()
-		//时间处理部分
-		tkt := s.Header.Get("Keycreatetime")
-		if len(tkt) > 37 {
-			//截取字符串的固定长度格式，并把前后两端的空格过滤
-			tkt = strings.TrimSpace(tkt[0:37])
+			var resbody OwlResponse
+
+			resbody.Status = ResStatus(s.StatusCode)
+			resbody.Key = s.Header.Get("Key")
+			resbody.Data = s.Byte()
+			//时间处理部分
+			tkt := s.Header.Get("Keycreatetime")
+			if len(tkt) > 37 {
+				//截取字符串的固定长度格式，并把前后两端的空格过滤
+				tkt = strings.TrimSpace(tkt[0:37])
+			}
+			t, terr := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", tkt)
+			if terr != nil {
+				owllog.OwlLogHttp.Info("OwlHandler parseContent Keycreatetime time.Parse failed: " + terr.Error())
+			}
+			resbody.KeyCreateTime = t
+			resbody.ResponseHost = s.Header.Get("Responsehost")
+			kvlist.Add(resbody)
+
 		}
-		t, terr := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", tkt)
-		if terr != nil {
-			owllog.OwlLogHttp.Info("OwlHandler parseContent Keycreatetime time.Parse failed: " + terr.Error())
-		}
-		resbody.KeyCreateTime = t
-		resbody.ResponseHost = s.Header.Get("Responsehost")
-		kvlist.Add(resbody)
-
 	}
 
 }
