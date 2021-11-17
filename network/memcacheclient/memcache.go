@@ -9,6 +9,7 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 	owlconfig "github.com/xssed/owlcache/config"
 	owllog "github.com/xssed/owlcache/log"
+	owltools "github.com/xssed/owlcache/tools"
 )
 
 var mc *memcache.Client
@@ -29,7 +30,7 @@ func Start() {
 func Get(key string) (*memcache.Item, error) {
 	it, err := mc.Get(key)
 	if err != nil {
-		owllog.OwlLogRun.Info("Memcache Client Get() error:", err)
+		owllog.OwlLogRun.Info(owltools.JoinString("Memcache Client Get() error:[", err.Error(), "] Key:", key))
 		return nil, err
 	}
 	return it, nil
