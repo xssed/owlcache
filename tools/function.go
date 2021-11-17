@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"math"
 	"os"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -152,4 +153,18 @@ func Base64Decode(input string, mode string) []byte {
 		return []byte("")
 	}
 	return uDec
+}
+
+//两个字符串数字进行相减，将得到的数字再转换为字符串返回
+func DoubleNumberStringSubToString(sub1 string, sub2 string) string {
+	num1, err1 := strconv.Atoi(sub1)
+	if err1 != nil {
+		return ""
+	}
+	num2, err2 := strconv.Atoi(sub2)
+	if err2 != nil {
+		return ""
+	}
+	num3 := num1 - num2
+	return strconv.Itoa(num3)
 }
