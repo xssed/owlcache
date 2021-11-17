@@ -7,6 +7,7 @@ import (
 	"github.com/go-redis/redis"
 	owlconfig "github.com/xssed/owlcache/config"
 	owllog "github.com/xssed/owlcache/log"
+	owltools "github.com/xssed/owlcache/tools"
 )
 
 var rc *redis.Client
@@ -23,7 +24,7 @@ func Start() {
 	})
 	pong, err := rc.Ping().Result()
 	if err != nil && pong != "PONG" {
-		owllog.OwlLogRun.Println("owlcache failed to connect to redis:", err)
+		owllog.OwlLogRun.Info("owlcache failed to connect to redis:", err.Error())
 		owllog.OwlLogRun.Println("Please alter the redis password & address.Set the <Redis_Addr> <Redis_Password> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
 		os.Exit(0)
 	}
@@ -34,7 +35,7 @@ func Get(key string) (string, error) {
 
 	val, err := rc.Get(key).Result()
 	if err != nil {
-		owllog.OwlLogRun.Println("Redis Client Get() error:", err)
+		owllog.OwlLogRun.Info(owltools.JoinString("Redis Client Get() error:[", err.Error(), "] Key:", key))
 		return "", err
 	}
 	return val, nil
