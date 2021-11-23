@@ -28,6 +28,18 @@ func CheckGossipConfig() {
 			owllog.OwlLogRun.Println("Password cannot be only numbers.Set the <GossipDataSyncAuthKey> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
 			os.Exit(0)
 		}
+		//校验Gossip端口
+		_, atio_err := strconv.Atoi(owlconfig.OwlConfigModel.Gossipport)
+		if atio_err != nil {
+			owllog.OwlLogRun.Println("The configuration file <Gossipport> option is not a valid number!")
+			os.Exit(0)
+		}
+		//检测能否正确获取主机名
+		_, get_hostname_err := os.Hostname()
+		if get_hostname_err != nil {
+			owllog.OwlLogRun.Println("When starting the gossip service, getting the Hostname failed! Please check the execution permission of owlcache!")
+			os.Exit(0)
+		}
 	}
 
 }

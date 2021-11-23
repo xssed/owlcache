@@ -1,12 +1,10 @@
 package gossip
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 
 	"github.com/hashicorp/memberlist"
-	//owlconfig "github.com/xssed/owlcache/config"
 	owllog "github.com/xssed/owlcache/log"
 	"github.com/xssed/owlcache/tools"
 )
@@ -30,18 +28,8 @@ func (h *Handler) StartService(str_addresslist []string, passWord string, bindAd
 		h.Password = passWord
 	}
 
-	bindport, atio_err := strconv.Atoi(bindPort)
-	if atio_err != nil {
-		owllog.OwlLogRun.Println("The configuration file <Gossipport> option is not a valid number!")
-		os.Exit(0)
-	}
-
-	hostname, get_hostname_err := os.Hostname()
-	if get_hostname_err != nil {
-		owllog.OwlLogRun.Println("When starting the gossip service, getting the Hostname failed! Please check the execution permission of owlcache!")
-		os.Exit(0)
-	}
-
+	bindport, _ := strconv.Atoi(bindPort)
+	hostname, _ := os.Hostname()
 	c := memberlist.DefaultLocalConfig()
 	c.Delegate = &delegate{}
 	c.Name = hostname + "-" + tools.GetUUIDString()
@@ -64,7 +52,6 @@ func (h *Handler) StartService(str_addresslist []string, passWord string, bindAd
 		RetransmitMult: 2,
 	}
 	node := m.LocalNode()
-	fmt.Printf("Local Gossip Server Node Running... : local member %s:%d\n", node.Addr, node.Port)
 	owllog.OwlLogRun.Info("Local Gossip Server Node Running... : local member", node.Addr, ":", node.Port)
 	return nil
 }
