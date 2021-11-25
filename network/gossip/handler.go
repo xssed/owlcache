@@ -6,7 +6,7 @@ import (
 
 	"github.com/hashicorp/memberlist"
 	owllog "github.com/xssed/owlcache/log"
-	"github.com/xssed/owlcache/tools"
+	owltools "github.com/xssed/owlcache/tools"
 )
 
 type Handler struct {
@@ -32,7 +32,7 @@ func (h *Handler) StartService(str_addresslist []string, passWord string, bindAd
 	hostname, _ := os.Hostname()
 	c := memberlist.DefaultLocalConfig()
 	c.Delegate = &delegate{}
-	c.Name = hostname + "-" + tools.GetUUIDString()
+	c.Name = hostname + "-" + owltools.GetUUIDString()
 	c.BindAddr = bindAddress
 	c.BindPort = bindport
 	m, err := memberlist.Create(c)
@@ -52,7 +52,8 @@ func (h *Handler) StartService(str_addresslist []string, passWord string, bindAd
 		RetransmitMult: 2,
 	}
 	node := m.LocalNode()
-	owllog.OwlLogRun.Info("Local Gossip Server Node Running... : local member", node.Addr, ":", node.Port)
+	nodeport := string(strconv.Itoa(int(node.Port)))
+	owllog.OwlLogRun.Info(owltools.JoinString("Local Gossip Server Node Running... : local member ", node.Addr.String(), ":", nodeport))
 	return nil
 }
 

@@ -4,6 +4,7 @@ import (
 	"net"
 
 	owllog "github.com/xssed/owlcache/log"
+	owltools "github.com/xssed/owlcache/tools"
 )
 
 type server struct {
@@ -33,7 +34,7 @@ func (s *server) Listen() {
 }
 
 func New(address string) *server {
-	owllog.OwlLogRun.Info("TCPserver: Creating TCP server with address", address)
+	owllog.OwlLogRun.Info(owltools.JoinString("TCPserver: Creating TCP server with address", address))
 	server := &server{
 		address: address,
 	}
