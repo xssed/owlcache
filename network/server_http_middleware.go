@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	owlconfig "github.com/xssed/owlcache/config"
-	//owllog "github.com/xssed/owlcache/log"
 	owlsystem "github.com/xssed/owlcache/system"
 )
 
@@ -19,12 +18,6 @@ func (se *ServerEntity) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if owlconfig.OwlConfigModel.Cors == "1" {
 		w.Header().Set("Access-Control-Allow-Origin", owlconfig.OwlConfigModel.Access_Control_Allow_Origin)
 	}
-	// else if owlconfig.OwlConfigModel.Cors == "0" {
-	// 	owllog.OwlLogRun.Info("The configuration file Cors value is '0'. 'Access-Control-Allow-Origin' not set.")
-	// } else {
-	// 	//检测到配置书写异常强制退出
-	// 	owllog.OwlLogRun.Fatal(ErrorCors)
-	// }
 	//继续传递信息
 	se.handler.ServeHTTP(w, r)
 }
