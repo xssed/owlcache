@@ -3,14 +3,16 @@ package network
 import (
 	"encoding/json"
 	"fmt"
+	"net"
+	"os"
 	"time"
 
 	owlconfig "github.com/xssed/owlcache/config"
 	"github.com/xssed/owlcache/group"
 	"github.com/xssed/owlcache/network/gossip"
 
-	//"github.com/xssed/owlcache/tools"
 	owllog "github.com/xssed/owlcache/log"
+	owltools "github.com/xssed/owlcache/tools"
 )
 
 func startGossip() {
@@ -23,6 +25,17 @@ func startGossip() {
 		val, ok := list[k].(group.OwlServerGroupRequest)
 		if ok {
 			if val.Address != "" {
+				//加载初始化时校验配置文件中gossip服务地址能否连接
+				conn, err := net.DialTimeout("tcp", val.Address, 3*time.Second)
+				if err != nil {
+					owllog.OwlLogHttp.Println(owltools.JoinString("gossip:start error ", err.Error()))
+					os.Exit(0)
+				} else {
+					if conn != nil {
+						_ = conn.Close()
+					}
+				}
+				//将节点添加进入集群信息
 				str_addresslist = append(str_addresslist, val.Address)
 			}
 		}
@@ -33,7 +46,7 @@ func startGossip() {
 	passWord := owlconfig.OwlConfigModel.GossipDataSyncAuthKey //交互密码
 
 	if err := gossip.H.StartService(str_addresslist, passWord, bindAddress, bindPort); err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 	}
 
 	go listenGossipQueue()
@@ -57,29 +70,18 @@ func listenGossipQueue() {
 				if convert_ok {
 					//fmt.Println("string:", v)
 					if err := json.Unmarshal([]byte(v), &result); err != nil {
-						fmt.Println(err)
+						fmt.Println(err.Error())
 					}
 					//fmt.Println("json to map ", result)
 				}
 
 				switch result["cmd"] {
 				case "set":
-					exptime, _ := time.ParseDuration(result["expire"] + "s")
-					ok := BaseCacheDB.Set(result["key"], []byte(result["val"]), exptime)
-					if !ok {
-						owllog.OwlLogHttp.Println("gossip:set error " + " key:" + result["key"])
-					}
+					go gossip_set(result["key"], result["val"], result["expire"])
 				case "expire":
-					exptime, _ := time.ParseDuration(result["expire"] + "s")
-					ok := BaseCacheDB.Expire(result["key"], exptime)
-					if !ok {
-						owllog.OwlLogHttp.Println("gossip:expire error " + " key:" + result["key"])
-					}
+					go gossip_expire(result["key"], result["expire"])
 				case "del":
-					ok := BaseCacheDB.Delete(result["key"])
-					if !ok {
-						owllog.OwlLogHttp.Println("gossip:del error " + " key:" + result["key"])
-					}
+					go gossip_del(result["key"])
 				}
 
 			}
