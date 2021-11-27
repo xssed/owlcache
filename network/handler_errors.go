@@ -12,4 +12,5 @@ var (
 	ErrorGroupDataSync         = errors.New("Configuration file GroupDataSync filled in error")
 	ErrorCors                  = errors.New("Configuration file Cors filled in error")
 	ErrorUCMaxStorageLimitOver = errors.New("The urlcache request succee, but the response data exceed the maximum value of the <max_storage_limit> configuration parameter.")
+	ErrorGossipGetUrlData      = errors.New("Gossip get url data error.")
 )

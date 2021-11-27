@@ -21,6 +21,7 @@ type BaseCache struct {
 //增加一条内容
 func (baseCache *BaseCache) Set(key string, value []byte, lifeTime time.Duration) bool {
 	baseCache.KvStoreItems.Store(key, newKvStore(key, value, lifeTime))
+	//_, ok := baseCache.Get(key)
 	return true
 }
 
