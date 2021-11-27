@@ -76,7 +76,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		GroupDataSync:                            "0",
 		Gossipport:                               "0",
 		GossipDataSyncAuthKey:                    "",
-		GossipHttpClientRequestTimeout:           "2",
+		GossipHttpClientRequestTimeout:           "2000",
 		Task_DataBackup:                          "1",
 		Task_DataAuthBackup:                      "1",
 		Task_ClearExpireData:                     "1",
