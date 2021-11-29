@@ -40,7 +40,7 @@ func (c *OwlClient) GetValue(address, key string) *Response {
 
 	owlclient := NewOwlHttpClient(c.OwlTransport)
 	owlclient.PostForm(address + "/data")
-	owlclient.SetTimeout(c.HCRequestTimeout * time.Second)
+	owlclient.SetTimeout(c.HCRequestTimeout * time.Millisecond)
 	owlclient.Query.Add("cmd", "get")
 	owlclient.Query.Add("key", key)
 	res, err := owlclient.Do()

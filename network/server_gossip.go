@@ -49,7 +49,8 @@ func startGossip() {
 		fmt.Println(err.Error())
 	}
 
-	go listenGossipQueue()
+	//监听队列
+	listenGossipQueue()
 
 }
 
