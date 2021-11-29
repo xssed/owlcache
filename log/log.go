@@ -35,7 +35,7 @@ func LogInit() {
 //注册全局应用日志
 func OwlLogRunRegister(logFilePath string) {
 	//日志文件
-	formatLogFileName := "owl_run_" + time.Now().Format("20060102_150405") + ".log"
+	formatLogFileName := "owl_run_" + time.Now().Format("150405") + ".log"
 	//创建资源
 	OwlLogRun = NewOwlLog(logFilePath, formatLogFileName)
 }
@@ -43,7 +43,7 @@ func OwlLogRunRegister(logFilePath string) {
 //注册全局HTTP日志
 func OwlLogHttpRegister(logFilePath string) {
 	//日志文件
-	formatLogFileName := "owl_http_" + time.Now().Format("20060102_150405") + ".log"
+	formatLogFileName := "owl_http_" + time.Now().Format("150405") + ".log"
 	//创建资源
 	OwlLogHttp = NewOwlLog(logFilePath, formatLogFileName)
 }
@@ -51,7 +51,7 @@ func OwlLogHttpRegister(logFilePath string) {
 //注册全局UrlCache日志
 func OwlLogUCRegister(logFilePath string) {
 	//日志文件
-	formatLogFileName := "owl_uc_" + time.Now().Format("20060102_150405") + ".log"
+	formatLogFileName := "owl_uc_" + time.Now().Format("150405") + ".log"
 	//创建资源
 	OwlLogUC = NewOwlLog(logFilePath, formatLogFileName)
 }

@@ -21,8 +21,8 @@ type BaseCache struct {
 //增加一条内容
 func (baseCache *BaseCache) Set(key string, value []byte, lifeTime time.Duration) bool {
 	baseCache.KvStoreItems.Store(key, newKvStore(key, value, lifeTime))
-	//_, ok := baseCache.Get(key)
-	return true
+	_, ok := baseCache.Get(key)
+	return ok
 }
 
 //给一个key设置(或更新)过期
@@ -41,7 +41,8 @@ func (baseCache *BaseCache) Expire(key string, lifeTime time.Duration) bool {
 //删除一条内容
 func (baseCache *BaseCache) Delete(key string) bool {
 	baseCache.KvStoreItems.Delete(key)
-	return true
+	_, ok := baseCache.Get(key)
+	return ok
 }
 
 //获取一条内容

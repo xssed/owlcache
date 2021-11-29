@@ -1,6 +1,8 @@
 package log
 
 import (
+	"time"
+
 	"github.com/xssed/owlcache/logger"
 )
 
@@ -11,7 +13,9 @@ type OwlLog struct {
 func NewOwlLog(logFilePath, formatLogFileName string) *OwlLog {
 
 	log := logger.New()
-	LoggerModel := logger.NewCutFileHandler(logFilePath, formatLogFileName, 7*1024*1024) //7M
+	datestr := time.Now().Format("2006_01_02")
+	logFilePath = logFilePath + "/" + datestr
+	LoggerModel := logger.NewCutFileHandler(logFilePath, formatLogFileName, 5*1024*1024) //5M
 	log.SetHandlers(logger.Console, LoggerModel)
 	log.SetFlags(0) //log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile
 	//log.SetLevel(logger.INFO)
