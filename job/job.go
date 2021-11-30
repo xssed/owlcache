@@ -36,7 +36,7 @@ func DataBackup() {
 
 	task_databackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_DataBackup)
 	if err != nil {
-		owllog.OwlLogRun.Info(owltools.JoinString("Config File Task_DataBackup Parse error:", err.Error())) //日志记录
+		owllog.OwlLogTask.Info(owltools.JoinString("Config File Task_DataBackup Parse error:", err.Error())) //日志记录
 		os.Exit(0)
 	}
 
@@ -46,7 +46,7 @@ func DataBackup() {
 			//fmt.Printf("ticked at %v", time.Now())//调试
 			err := owlnetwork.BaseCacheDB.SaveToFile(owlconfig.OwlConfigModel.DBfile, "owlcache.db")
 			if err != nil {
-				owllog.OwlLogRun.Info(owltools.JoinString("Task: DataBackup() error ", err.Error()))
+				owllog.OwlLogTask.Info(owltools.JoinString("Task: DataBackup() error ", err.Error()))
 			}
 		}
 	}()
@@ -58,7 +58,7 @@ func DataAuthBackup() {
 
 	task_dataauthbackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_DataAuthBackup)
 	if err != nil {
-		owllog.OwlLogRun.Info("Config File Task_DataAuthBackup Parse error:" + err.Error()) //日志记录
+		owllog.OwlLogTask.Info("Config File Task_DataAuthBackup Parse error:" + err.Error()) //日志记录
 		os.Exit(0)
 	}
 
@@ -67,7 +67,7 @@ func DataAuthBackup() {
 		for _ = range ticker.C {
 			err := owlnetwork.BaseAuth.SaveToFile(owlconfig.OwlConfigModel.DBfile, "auth.db")
 			if err != nil {
-				owllog.OwlLogRun.Info(owltools.JoinString("Task: DataAuthBackup() error ", err.Error()))
+				owllog.OwlLogTask.Info(owltools.JoinString("Task: DataAuthBackup() error ", err.Error()))
 			}
 		}
 	}()
@@ -79,7 +79,7 @@ func ClearExpireData() {
 
 	task_clearexpiredata, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_ClearExpireData)
 	if err != nil {
-		owllog.OwlLogRun.Info("Config File Task_ClearExpireData Parse error:" + err.Error()) //日志记录
+		owllog.OwlLogTask.Info("Config File Task_ClearExpireData Parse error:" + err.Error()) //日志记录
 		os.Exit(0)
 	}
 
@@ -97,7 +97,7 @@ func ServerListBackup() {
 
 	task_serverlistbackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_ServerListBackup)
 	if err != nil {
-		owllog.OwlLogRun.Info("Config File Task_ServerListBackup Parse error:" + err.Error()) //日志记录
+		owllog.OwlLogTask.Info("Config File Task_ServerListBackup Parse error:" + err.Error()) //日志记录
 		os.Exit(0)
 	}
 
@@ -106,7 +106,7 @@ func ServerListBackup() {
 		for _ = range ticker.C {
 			err := owlnetwork.ServerGroupList.SaveToFile(owlconfig.OwlConfigModel.DBfile, "server_group_config.json")
 			if err != nil {
-				owllog.OwlLogRun.Info(owltools.JoinString("Task: ServerListBackup() error ", err.Error()))
+				owllog.OwlLogTask.Info(owltools.JoinString("Task: ServerListBackup() error ", err.Error()))
 			}
 		}
 	}()
@@ -118,7 +118,7 @@ func ServerGossipListBackup() {
 
 	task_servergossiplistbackup, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_ServerGossipListBackup)
 	if err != nil {
-		owllog.OwlLogRun.Info("Config File Task_ServerGossipListBackup Parse error:" + err.Error()) //日志记录
+		owllog.OwlLogTask.Info("Config File Task_ServerGossipListBackup Parse error:" + err.Error()) //日志记录
 		os.Exit(0)
 	}
 
@@ -127,7 +127,7 @@ func ServerGossipListBackup() {
 		for _ = range ticker.C {
 			err := owlnetwork.ServerGroupGossipList.SaveToFile(owlconfig.OwlConfigModel.DBfile, "server_group_gossip_config.json")
 			if err != nil {
-				owllog.OwlLogRun.Info(owltools.JoinString("Task: ServerGossipListBackup() error ", err.Error()))
+				owllog.OwlLogTask.Info(owltools.JoinString("Task: ServerGossipListBackup() error ", err.Error()))
 			}
 		}
 	}()
@@ -139,14 +139,14 @@ func MemoryInfoToLog() {
 
 	task_memoryinfotolog, err := strconv.Atoi(owlconfig.OwlConfigModel.Task_MemoryInfoToLog)
 	if err != nil {
-		owllog.OwlLogRun.Info("Config File Task_MemoryInfoToLog Parse error:" + err.Error()) //日志记录
+		owllog.OwlLogTask.Info("Config File Task_MemoryInfoToLog Parse error:" + err.Error()) //日志记录
 		os.Exit(0)
 	}
 
 	ticker := time.NewTicker(time.Minute * time.Duration(task_memoryinfotolog))
 	go func() {
 		for _ = range ticker.C {
-			owllog.OwlLogRun.Info(owlsystem.MemStats())
+			owllog.OwlLogSystemResource.Info(owlsystem.MemStats())
 		}
 	}()
 
@@ -165,10 +165,13 @@ func TimerToCreateLogerInBeforeDawn() {
 			//计算当前时间到凌晨的时间间隔，设置一个定时器
 			sub := next.Sub(now)
 			t := time.NewTimer(sub)
+			//输出响应
 			fmt.Println(owltools.JoinString("owlcache  will create a new log directory at ", next.String(), " after ", sub.String()))
 			<-t.C
 			//重新初始化创建新的一天的日志
 			owllog.LogInit()
+			//日志记录
+			owllog.OwlLogTask.Info("Create a new log directory.")
 		}
 	}()
 }

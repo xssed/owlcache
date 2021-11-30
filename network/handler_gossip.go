@@ -17,17 +17,17 @@ func gossip_set(key, val, expire string) {
 
 	data, err := gossip_getUrlData(key, val)
 	if err != nil {
-		owllog.OwlLogHttp.Info(err.Error()) //日志记录
+		owllog.OwlLogGossip.Info(err.Error()) //日志记录
 	}
 	//请求成功
-	owllog.OwlLogHttp.Info(owltools.JoinString("Gossip get url data success: key:", key, " url:", val)) //日志记录
+	owllog.OwlLogGossip.Info(owltools.JoinString("Gossip get url data success: key:", key, " url:", val)) //日志记录
 
 	exptime, _ := time.ParseDuration(owltools.JoinString(expire, "s"))
 	ok := BaseCacheDB.Set(key, data, exptime)
 	if !ok {
-		owllog.OwlLogHttp.Info(owltools.JoinString("gossip:set error key:", key))
+		owllog.OwlLogGossip.Info(owltools.JoinString("gossip:set error key:", key))
 	}
-	owllog.OwlLogHttp.Info(owltools.JoinString("gossip:set key success:", key)) //日志记录
+	owllog.OwlLogGossip.Info(owltools.JoinString("gossip:set key success:", key)) //日志记录
 
 }
 
@@ -35,7 +35,7 @@ func gossip_set(key, val, expire string) {
 func gossip_del(key string) {
 	ok := BaseCacheDB.Delete(key)
 	if !ok {
-		owllog.OwlLogHttp.Info(owltools.JoinString("gossip:del error key:", key))
+		owllog.OwlLogGossip.Info(owltools.JoinString("gossip:del error key:", key))
 	}
 }
 
@@ -44,7 +44,7 @@ func gossip_expire(key, expire string) {
 	exptime, _ := time.ParseDuration(owltools.JoinString(expire, "s"))
 	ok := BaseCacheDB.Expire(key, exptime)
 	if !ok {
-		owllog.OwlLogHttp.Info(owltools.JoinString("gossip:expire error key:", key))
+		owllog.OwlLogGossip.Info(owltools.JoinString("gossip:expire error key:", key))
 	}
 }
 

@@ -28,7 +28,7 @@ func startGossip() {
 				//加载初始化时校验配置文件中gossip服务地址能否连接
 				conn, err := net.DialTimeout("tcp", val.Address, 3*time.Second)
 				if err != nil {
-					owllog.OwlLogHttp.Println(owltools.JoinString("gossip:start error ", err.Error()))
+					owllog.OwlLogGossip.Info(owltools.JoinString("gossip:start error ", err.Error()))
 					os.Exit(0)
 				} else {
 					if conn != nil {

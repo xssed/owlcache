@@ -129,7 +129,7 @@ func newRequest(method, Url string) *http.Request {
 
 	if err != nil {
 		//panic(err.Error())
-		owllog.OwlLogHttp.Info(err.Error())
+		owllog.OwlLogHttpG.Info(err.Error())
 	}
 	if u.Scheme == "" {
 		u.Scheme = "http"

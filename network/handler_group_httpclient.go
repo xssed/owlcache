@@ -95,7 +95,7 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 	k := HttpClientRequestErrorCounter.Exe(address_key, int64(hr_maxnum-1), hrts_exptime)
 	if k > 0 {
 		//请求数据
-		//owllog.OwlLogRun.Info(owltools.JoinString("httpclient:get key", " key:", owlhandler.owlrequest.Key, " address:", address))
+		//owllog.OwlLogHttpG.Info(owltools.JoinString("httpclient:get key", " key:", owlhandler.owlrequest.Key, " address:", address))
 		s := HttpClient.GetValue(address, key)
 		if s != nil {
 
@@ -115,7 +115,7 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 			}
 			t, terr := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", tkt)
 			if terr != nil {
-				owllog.OwlLogHttp.Info("OwlHandler parseContent Keycreatetime time.Parse failed: " + terr.Error())
+				owllog.OwlLogHttpG.Info("OwlHandler parseContent Keycreatetime time.Parse failed: " + terr.Error())
 			}
 			resbody.KeyCreateTime = t
 			resbody.ResponseHost = s.Header.Get("Responsehost")

@@ -17,7 +17,7 @@ type server struct {
 func (s *server) Listen() {
 	listener, err := net.Listen("tcp", s.address)
 	if err != nil {
-		owllog.OwlLogRun.Info("TCPserver: Error starting TCP server.")
+		owllog.OwlLogTcp.Info("TCPserver: Error starting TCP server.")
 	}
 
 	defer listener.Close()
@@ -48,7 +48,7 @@ func New(address string) *server {
 
 //日志打印
 func (s *server) Log(message string) {
-	owllog.OwlLogRun.Info(message)
+	owllog.OwlLogTcp.Info(message)
 }
 
 //当客户端连接进来时

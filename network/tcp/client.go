@@ -15,7 +15,7 @@ type Client struct {
 
 func (c *Client) listen() {
 
-	owllog.OwlLogRun.Info("TCPserver: New connection from ", c.conn.RemoteAddr().String())
+	owllog.OwlLogTcp.Info("TCPserver: New connection from ", c.conn.RemoteAddr().String())
 	defer c.conn.Close()
 	reader := bufio.NewReader(c.conn)
 	for {
@@ -24,11 +24,11 @@ func (c *Client) listen() {
 			c.conn.Close()
 
 			if err == io.EOF {
-				owllog.OwlLogRun.Info("TCPserver: Client closed the connection ", c.conn.RemoteAddr().String())
+				owllog.OwlLogTcp.Info("TCPserver: Client closed the connection ", c.conn.RemoteAddr().String())
 			} else {
-				owllog.OwlLogRun.Info("TCPserver: Some problem with reading from client ", c.conn.RemoteAddr().String())
+				owllog.OwlLogTcp.Info("TCPserver: Some problem with reading from client ", c.conn.RemoteAddr().String())
 			}
-			owllog.OwlLogRun.Info("TCPserver: Done serving ", c.conn.RemoteAddr().String())
+			owllog.OwlLogTcp.Info("TCPserver: Done serving ", c.conn.RemoteAddr().String())
 
 			c.Server.onClientConnectionClosed(c, err)
 			return

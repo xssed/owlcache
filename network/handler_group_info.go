@@ -171,7 +171,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Ofind(address string) (int32
 
 		defer func() {
 			if err := recover(); err != nil {
-				owllog.OwlLogHttp.Panicln(err)
+				owllog.OwlLogRun.Info(err)
 			}
 		}()
 
@@ -283,7 +283,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Gfind(address string) (int32
 
 		defer func() {
 			if err := recover(); err != nil {
-				owllog.OwlLogHttp.Panicln(err)
+				owllog.OwlLogRun.Info(err)
 			}
 		}()
 
