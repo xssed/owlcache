@@ -26,7 +26,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 * ⚔️Authentication
 * 📝Logging
 * 🔭**Support both TCP and HTTP/HTTPS connections**  
-* 🍻**Support Memcache, Redis data import(String)**  
+* 🍻**Support Memcache、 Redis(String)、Url data import**  
 
 
 ## Documentation  
@@ -130,6 +130,11 @@ Response result example:
 ~~~shell
 world
 ~~~
+If it is an HTTP request, there will be Key details in the response message.
+Key: hello
+Keycreatetime: 2021-11-26 18:12:45.1932019 +0800 CST
+Responsehost: 127.0.0.1:7721
+
 
 ## Single node to get the Key value info
 * TCP
@@ -185,37 +190,42 @@ http://127.0.0.1:7721/group_data/?cmd=get&key=hello
 
 Response result example:   
 ~~~shell
-{
-    "Cmd": "get",
-    "Status": 200,
-    "Results": "SUCCESS",
-    "Key": "hello",
-    "Data": [
-        {
-            "Address": "127.0.0.1:7723",
-            "Data": "world7723",
-            "KeyCreateTime": "2019-04-10T13:43:01.6576413+08:00",
-            "Status": 200
-        },
-        {
-            "Address": "127.0.0.1:7721",
-            "Data": "world7721",
-            "KeyCreateTime": "2019-04-09T17:50:59.458104+08:00",
-            "Status": 200
-        },
-        {
-            "Address": "127.0.0.1:7725",
-            "Data": "world7725",
-            "KeyCreateTime": "2019-04-08T14:32:20.6934487+08:00",
-            "Status": 200
-        }
-    ],
-    "ResponseHost": "127.0.0.1:7721",
-    "KeyCreateTime": "0001-01-01T00:00:00Z"
-}
+world
+~~~
+The result obtained is the latest value of the update time in the cluster query.
+
+
+## The cluster obtains the key value information
+~~~shell
+http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info
+~~~
+<br>
+
+Response result example:   
+~~~shell
+[
+    {
+        "Address": "127.0.0.1:7721",
+        "Key": "hello",
+        "KeyCreateTime": "2021-11-26T18:12:45.1932019+08:00",
+        "Status": 200
+    },
+    {
+        "Address": "127.0.0.1:7723",
+        "Key": "hello",
+        "KeyCreateTime": "2021-11-12T11:34:53.0952566+08:00",
+        "Status": 200
+    },
+    {
+        "Address": "127.0.0.1:7725",
+        "Key": "hello",
+        "KeyCreateTime": "2021-11-11T11:34:53.0952522+08:00",
+        "Status": 200
+    }
+]
 
 ~~~
-
+The result is information about which node participates in the cluster query.
 
 
 

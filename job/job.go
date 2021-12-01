@@ -168,10 +168,14 @@ func TimerToCreateLogerInBeforeDawn() {
 			//输出响应
 			fmt.Println(owltools.JoinString("owlcache  will create a new log directory at ", next.String(), " after ", sub.String()))
 			<-t.C
-			//重新初始化创建新的一天的日志
-			owllog.LogInit()
-			//日志记录
-			owllog.OwlLogTask.Info("Create a new log directory.")
+			//校验
+			cnow := time.Now()
+			if cnow.Hour() == 0 && cnow.Minute() == 0 && cnow.Second() == 0 {
+				//重新初始化创建新的一天的日志
+				owllog.LogInit()
+				//日志记录
+				owllog.OwlLogTask.Info("Create a new log directory.")
+			}
 		}
 	}()
 }
