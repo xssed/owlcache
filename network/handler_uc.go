@@ -37,15 +37,19 @@ func (owlhandler *OwlHandler) GeUrlCacheData(w http.ResponseWriter, r *http.Requ
 		//未查询到数据后去请求URL数据缓存到本地
 
 		//站点索引值
-		var site_index int = 0
+		var site_index *int
 		//处理查找的站点索引值
 		//未设置初始值，错误参数，超出索引边界都将设置为默认值0
 		if (r.FormValue("uc_site")) != "" {
-			site_index, cerr := strconv.Atoi(r.FormValue("uc_site"))
+			temp_index, cerr := strconv.Atoi(r.FormValue("uc_site"))
 			//参数错误,超出索引边界
-			if cerr != nil || site_index+1 > len(owlconfig.OwlUCConfigModel.SiteList) {
-				site_index = 0
+			if cerr != nil || temp_index+1 > len(owlconfig.OwlUCConfigModel.SiteList) {
+				temp_index = 0
 			}
+			site_index = &temp_index
+		} else {
+			var temp_index int = 0
+			site_index = &temp_index
 		}
 		//使用gorequest类库发起http client请求获取数据
 		resp, _, errs := owlhandler.getUrlData(site_index, key, r)
@@ -82,7 +86,7 @@ func (owlhandler *OwlHandler) GeUrlCacheData(w http.ResponseWriter, r *http.Requ
 			print = owlhandler.owlresponse.Data
 			//将数据存储到内存数据库
 			//设置站点配置信息
-			site := owlconfig.OwlUCConfigModel.SiteList[site_index]
+			site := owlconfig.OwlUCConfigModel.SiteList[*site_index]
 			//先判断是否要验证tonken
 			if site.CheckToken == 1 {
 				if !owlhandler.CheckAuth(r) {
@@ -110,10 +114,10 @@ func (owlhandler *OwlHandler) GeUrlCacheData(w http.ResponseWriter, r *http.Requ
 //使用gorequest类库发起http client请求获取数据
 //请求 站点的索引值:index,需要查找的key值或者Uri:key,*http.Request
 //返回 gorequest.Response，http响应的byte数据，http请求的错误信息
-func (owlhandler *OwlHandler) getUrlData(index int, key string, r *http.Request) (gorequest.Response, []byte, []error) {
+func (owlhandler *OwlHandler) getUrlData(index *int, key string, r *http.Request) (gorequest.Response, []byte, []error) {
 
 	//设置站点配置
-	site := owlconfig.OwlUCConfigModel.SiteList[index]
+	site := owlconfig.OwlUCConfigModel.SiteList[*index]
 	//定义url地址
 	var url string = owltools.JoinString(site.Host, key)
 	//创建http client
@@ -161,16 +165,6 @@ func (owlhandler *OwlHandler) getUrlData(index int, key string, r *http.Request)
 	r_res, r_byte_slices, r_err_slices := grsa.EndBytes()
 	//判断请求的响应数据是否超过本地允许的最大值
 	if r_err_slices == nil {
-		// ct := r_res.Header.Get("Content-Length")
-		// if ct != "" {
-		// 	rct, parerr := strconv.ParseUint(ct, 0, 64)
-		// 	if parerr != nil {
-		// 		fmt.Println(parerr)
-		// 	}
-		// 	if rct > site.MaxStorageLimit {
-		// 		r_err_slices = append(r_err_slices, ErrorUCMaxStorageLimitOver)
-		// 	}
-		// }
 		if uint64(len(r_byte_slices)) > site.MaxStorageLimit {
 			r_err_slices = append(r_err_slices, ErrorUCMaxStorageLimitOver)
 		}
