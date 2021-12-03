@@ -104,7 +104,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Transmit(resstatus group.Res
 //验证权限
 func (owlservergrouphandler *OwlServerGroupHandler) CheckAuth(r *http.Request) bool {
 
-	token := owlservergrouphandler.owlservergrouprequest.Token
+	token := string(tools.Base64Decode(owlservergrouphandler.owlservergrouprequest.Token, "url"))
 	ip := tools.RemoteAddr2IPAddr(r.RemoteAddr)
 	v, found := BaseAuth.Get(token)
 	if found == true {
