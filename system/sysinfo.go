@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	VERSION      string = "0.3.4.3-beta"
-	VERSION_DATE string = "2021-10-19"
+	VERSION      string = "0.4.0-beta"
+	VERSION_DATE string = "2021-12-07"
 )
 
 //程序启动欢迎信息
