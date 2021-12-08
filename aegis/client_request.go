@@ -11,23 +11,9 @@ import (
 //检查客户端请求优化参数
 func CheckClientRequest() {
 
-	hrts, hrts_err := strconv.Atoi(owlconfig.OwlConfigModel.HttpClient_Request_Timeout_Sleeptime)
+	_, hrts_err := strconv.Atoi(owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime)
 	if hrts_err != nil {
-		owllog.OwlLogRun.Println("The value of HttpClient_Request_Timeout_Sleeptime is not an integer.Set the <HttpClient_Request_Timeout_Sleeptime> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-	if hrts < 2 {
-		owllog.OwlLogRun.Println("The value of HttpClient_Request_Timeout_Sleeptime cannot be less than 2.Set the <HttpClient_Request_Timeout_Sleeptime> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-
-	hrmen, hrmen_err := strconv.Atoi(owlconfig.OwlConfigModel.HttpClient_Request_Max_Error_Number)
-	if hrmen_err != nil {
-		owllog.OwlLogRun.Println("The value of HttpClient_Request_Max_Error_Number is not an integer.Set the <HttpClient_Request_Max_Error_Number> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-	if hrmen < 2 {
-		owllog.OwlLogRun.Println("The value of HttpClient_Request_Max_Error_Number cannot be less than 2.Set the <HttpClient_Request_Max_Error_Number> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
+		owllog.OwlLogRun.Println("The value of HttpClientRequestLocalCacheLifeTime is not an integer.Set the <HttpClientRequestLocalCacheLifeTime> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
 		os.Exit(0)
 	}
 

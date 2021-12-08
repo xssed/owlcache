@@ -24,6 +24,7 @@ type OwlConfig struct {
 	Tcpport                                  string //Tcp监听端口
 	Httpport                                 string //Http监听端口
 	HttpClientRequestTimeout                 string //集群互相通信时的请求超时时间
+	HttpClientRequestLocalCacheLifeTime      string //Http客户端请求优化设置。请求得到得数据将会短时间缓存在本地,避免同一个Key在高并发状态下反复对其他节点疯狂查询。适当的延迟查询有助于性能和效率得优化。单位毫秒，默认这个缓存生命周期为5000毫秒。
 	GroupDataSync                            string //是否开启集群数据同步。0表示不开启。1表示开启。默认不开启。
 	Gossipport                               string //启用Gossip服务该项才会生效。Gossip监听端口，默认值为0(系统自动监听一个端口并在启动信息输出该端口)。
 	GossipDataSyncAuthKey                    string //启用Gossip服务该项才会生效。集群中通过Gossip协议交换数据的令牌。整个集群需要统一的令牌。
@@ -49,8 +50,6 @@ type OwlConfig struct {
 	CloseTcp                                 string //是否关闭Tcp服务(因为TCP模式下无密码认证)  值为"1"(开启)和"0"(关闭)。默认为1开启服务。
 	Cors                                     string //是否开启跨域
 	Access_Control_Allow_Origin              string //设置指定的域
-	HttpClient_Request_Timeout_Sleeptime     string //http客户端请求设置。请求的睡眠时间。单位是整数。
-	HttpClient_Request_Max_Error_Number      string //http客户端Max_Error_Number超过限定值时，http客户端请求将“暂停”Sleeptime值，来优化程序响应速度。
 	MemcacheClient_Request_Timeout_Sleeptime string //MemcacheClient客户端请求设置。请求的睡眠时间。单位是整数。
 	MemcacheClient_Request_Max_Error_Number  string //MemcacheClient客户端Max_Error_Number超过限定值时，MemcacheClient请求将“暂停”Sleeptime值，来优化程序响应速度。
 	RedisClient_Request_Timeout_Sleeptime    string //RedisClient客户端请求设置。请求的睡眠时间。单位是整数。
@@ -73,6 +72,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		Tcpport:                                  "7720",
 		Httpport:                                 "7721",
 		HttpClientRequestTimeout:                 "2700",
+		HttpClientRequestLocalCacheLifeTime:      "5000",
 		GroupDataSync:                            "0",
 		Gossipport:                               "0",
 		GossipDataSyncAuthKey:                    "",
@@ -98,8 +98,6 @@ func NewDefaultOwlConfig() *OwlConfig {
 		CloseTcp:                                 "1",
 		Cors:                                     "0",
 		Access_Control_Allow_Origin:              "*",
-		HttpClient_Request_Timeout_Sleeptime:     "2",
-		HttpClient_Request_Max_Error_Number:      "2",
 		MemcacheClient_Request_Timeout_Sleeptime: "2",
 		MemcacheClient_Request_Max_Error_Number:  "2",
 		RedisClient_Request_Timeout_Sleeptime:    "2",
@@ -207,6 +205,9 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	if len(config["HttpClientRequestTimeout"]) >= 1 {
 		param.HttpClientRequestTimeout = config["HttpClientRequestTimeout"]
 	}
+	if len(config["HttpClientRequestLocalCacheLifeTime"]) >= 1 {
+		param.HttpClientRequestLocalCacheLifeTime = config["HttpClientRequestLocalCacheLifeTime"]
+	}
 	if len(config["GroupDataSync"]) >= 1 {
 		param.GroupDataSync = config["GroupDataSync"]
 	}
@@ -281,12 +282,6 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["Access_Control_Allow_Origin"]) >= 1 {
 		param.Access_Control_Allow_Origin = config["Access_Control_Allow_Origin"]
-	}
-	if len(config["HttpClient_Request_Timeout_Sleeptime"]) >= 1 {
-		param.HttpClient_Request_Timeout_Sleeptime = config["HttpClient_Request_Timeout_Sleeptime"]
-	}
-	if len(config["HttpClient_Request_Max_Error_Number"]) >= 1 {
-		param.HttpClient_Request_Max_Error_Number = config["HttpClient_Request_Max_Error_Number"]
 	}
 	if len(config["MemcacheClient_Request_Timeout_Sleeptime"]) >= 1 {
 		param.MemcacheClient_Request_Timeout_Sleeptime = config["MemcacheClient_Request_Timeout_Sleeptime"]
