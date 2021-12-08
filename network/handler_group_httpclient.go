@@ -3,11 +3,11 @@ package network
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/xssed/owlcache/cache"
 	owlconfig "github.com/xssed/owlcache/config"
 	"github.com/xssed/owlcache/group"
 	owllog "github.com/xssed/owlcache/log"
@@ -87,23 +87,36 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 
 	defer wg.Done()
 
-	//请求优化部分
-	temp_hrts_exptime := owltools.DoubleNumberStringSubToString(owlconfig.OwlConfigModel.HttpClient_Request_Timeout_Sleeptime, "1") //字符串相减
-	hrts_exptime, _ := time.ParseDuration(owltools.JoinString(temp_hrts_exptime, "s"))                                              //拼接字符串转化为时间，请求失败的睡眠时间
-	hr_maxnum, _ := strconv.Atoi(owlconfig.OwlConfigModel.HttpClient_Request_Max_Error_Number)                                      //最大错误请求数，超过该数就进入睡眠
-	address_key := owltools.JoinString(address, owlhandler.owlrequest.Key)                                                          //定义计数器Http_client的统计Key
-	k := HttpClientRequestErrorCounter.Exe(address_key, int64(hr_maxnum-1), hrts_exptime)
-	if k > 0 {
-		//请求数据
+	//HttpClient缓存优化
+	bhgc_key := owltools.JoinString(address, ":", key)
+	bhgc_key_responsehost := owltools.JoinString(address, ":", key, ":", "Responsehost")
+	//查询缓存中是否有数据
+	if v, found := BaseHttpGroupCache.GetKvStore(bhgc_key); found {
+		//本地查询到缓存数据
+		var resbody OwlResponse
+		resbody.Status = ResStatus(200)
+		resbody.Key = key
+		resbody.Data = v.(*cache.KvStore).Value
+		resbody.KeyCreateTime = v.(*cache.KvStore).CreateTime
+		//设置响应主机
+		if v2, found2 := BaseHttpGroupCache.GetKvStore(bhgc_key_responsehost); found2 {
+			resbody.ResponseHost = string(v2.(*cache.KvStore).Value)
+		} else {
+			resbody.ResponseHost = ""
+		}
+		kvlist.Add(resbody)
+		return
+
+	} else {
+
+		//没有在本地缓存中找到数据
+		//请求数据，日志记录
 		//owllog.OwlLogHttpG.Info(owltools.JoinString("httpclient:get key", " key:", owlhandler.owlrequest.Key, " address:", address))
+		//请求http数据
 		s := HttpClient.GetValue(address, key)
 		if s != nil {
-
-			//执行成功-1
-			HttpClientRequestErrorCounter.Dec(address_key)
-
+			//将获取得数据封装
 			var resbody OwlResponse
-
 			resbody.Status = ResStatus(s.StatusCode)
 			resbody.Key = s.Header.Get("Key")
 			resbody.Data = s.Byte()
@@ -121,7 +134,15 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 			resbody.ResponseHost = s.Header.Get("Responsehost")
 			kvlist.Add(resbody)
 
+			//请求优化，缓存记录,配置参数值为0，则不进行缓存(适合并发量小，数据实时性要求高的场景)。
+			if owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime != "0" {
+				exptime, _ := time.ParseDuration(owltools.JoinString(owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime, "ms"))
+				BaseHttpGroupCache.Set(bhgc_key, resbody.Data, exptime)
+				BaseHttpGroupCache.Set(bhgc_key_responsehost, []byte(resbody.ResponseHost), exptime)
+			}
 		}
+		return
+
 	}
 
 }

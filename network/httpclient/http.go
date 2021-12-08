@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"time"
 
@@ -18,8 +17,8 @@ import (
 )
 
 const (
-	MaxIdleConnections int = 20
-	RequestTimeout     int = 2 //初始默认值，在配置文件中已经定义。如果调用OwlHttp.SetTimeout()可以在使用时再次更改
+	MaxIdleConnections int = 1000
+	RequestTimeout     int = 2700 //初始默认值，在配置文件中已经定义。如果调用OwlHttp.SetTimeout()可以在使用时再次更改
 )
 
 //var OwlTransport *http.Transport
@@ -33,8 +32,7 @@ func NewOwlTransport() *http.Transport {
 	} else if owlconfig.OwlConfigModel.HttpsClient_InsecureSkipVerify == "0" {
 		skipverify = &tls.Config{InsecureSkipVerify: false}
 	} else {
-		fmt.Println(ErrorHttpsClientInsecureSkipVerify)
-		os.Exit(0)
+		owllog.OwlLogHttpG.Info(ErrorHttpsClientInsecureSkipVerify.Error())
 	}
 
 	//创建Transport
@@ -58,7 +56,7 @@ func NewOwlHttpClient(OwlTransport *http.Transport) *OwlHttp {
 
 	client := &http.Client{
 		Transport: OwlTransport,
-		Timeout:   time.Duration(RequestTimeout) * time.Second,
+		Timeout:   time.Duration(RequestTimeout) * time.Millisecond,
 	}
 
 	return &OwlHttp{Client: client, Query: url.Values{}, Param: url.Values{}}

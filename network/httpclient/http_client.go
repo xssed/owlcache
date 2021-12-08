@@ -26,7 +26,6 @@ func NewOwlClient() *OwlClient {
 	if err != nil {
 		//强制异常，退出
 		owllog.OwlLogHttpG.Info("Config File HttpClientRequestTimeout Parse error:" + err.Error()) //日志记录
-		//fmt.Println("Config File HttpClientRequestTimeout Parse error:" + err.Error())
 		os.Exit(0)
 	}
 
@@ -39,7 +38,7 @@ func NewOwlClient() *OwlClient {
 func (c *OwlClient) GetValue(address, key string) *Response {
 
 	owlclient := NewOwlHttpClient(c.OwlTransport)
-	owlclient.PostForm(address + "/data")
+	owlclient.PostForm(address + "/data/")
 	owlclient.SetTimeout(c.HCRequestTimeout * time.Millisecond)
 	owlclient.Query.Add("cmd", "get")
 	owlclient.Query.Add("key", key)

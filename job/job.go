@@ -86,7 +86,12 @@ func ClearExpireData() {
 	ticker := time.NewTicker(time.Minute * time.Duration(task_clearexpiredata))
 	go func() {
 		for _ = range ticker.C {
+			//清理数据库过期数据
 			owlnetwork.BaseCacheDB.ClearExpireData()
+			//如果HttpGroup的请求缓存开启，则对其过期数据进行清理
+			if owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime != "0" {
+				owlnetwork.BaseHttpGroupCache.ClearExpireData()
+			}
 		}
 	}()
 

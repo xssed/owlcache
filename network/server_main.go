@@ -19,6 +19,9 @@ var BaseCacheDB *cache.BaseCache
 //创建一个全局的身份认证缓存
 var BaseAuth *cache.BaseCache
 
+//创建一个全局的HttpGroup缓存(用来缓解短时高并发HttpClient请求次数,提高访问效率)
+var BaseHttpGroupCache *cache.BaseCache
+
 //创建一个全局的服务器集群信息存储列表
 var ServerGroupList *group.Servergroup
 
@@ -27,9 +30,6 @@ var ServerGroupGossipList *group.Servergroup
 
 //创建一个全局的HttpClient客户端
 var HttpClient *httpclient.OwlClient
-
-//创建一个全局的HttpClient错误请求控制计数器
-var HttpClientRequestErrorCounter *counter.Counter
 
 //创建一个全局的MemcacheClient错误请求控制计数器
 var MemcacheClientRequestErrorCounter *counter.Counter
@@ -55,6 +55,11 @@ func BaseCacheDBInit() {
 	//加载之前缓存本地的DB数据
 	BaseAuth.LoadFromFile(owlconfig.OwlConfigModel.DBfile + "auth.db")
 
+	//创建HttpGroupCache
+	//存储内容: key=address+":"+key  value:value
+	//存储内容: key=address+":"+key+":"+Responsehost  value:value
+	BaseHttpGroupCache = cache.NewCache("HttpGroup")
+
 	//初始化服务器集群信息存储列表
 	ServerGroupList = group.NewServergroup()
 
@@ -69,9 +74,6 @@ func BaseCacheDBInit() {
 
 	//初始化HttpClient客户端
 	HttpClient = httpclient.NewOwlClient()
-
-	//初始化HttpClient错误请求控制计数器
-	HttpClientRequestErrorCounter = counter.NewCounter()
 
 	//初始化MemcacheClient错误请求控制计数器
 	MemcacheClientRequestErrorCounter = counter.NewCounter()
