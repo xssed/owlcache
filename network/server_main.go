@@ -8,7 +8,6 @@ import (
 	"github.com/xssed/owlcache/counter"
 	"github.com/xssed/owlcache/group"
 	owllog "github.com/xssed/owlcache/log"
-	"github.com/xssed/owlcache/network/httpclient"
 	"github.com/xssed/owlcache/network/memcacheclient"
 	"github.com/xssed/owlcache/network/redisclient"
 )
@@ -27,9 +26,6 @@ var ServerGroupList *group.Servergroup
 
 //创建一个全局的Gossip服务的集群信息存储列表
 var ServerGroupGossipList *group.Servergroup
-
-//创建一个全局的HttpClient客户端
-var HttpClient *httpclient.OwlClient
 
 //创建一个全局的MemcacheClient错误请求控制计数器
 var MemcacheClientRequestErrorCounter *counter.Counter
@@ -71,9 +67,6 @@ func BaseCacheDBInit() {
 
 	//加载之前缓存本地的服务器集群信息
 	ServerGroupGossipList.LoadFromFile(owlconfig.OwlConfigModel.DBfile, "server_group_gossip_config.json")
-
-	//初始化HttpClient客户端
-	HttpClient = httpclient.NewOwlClient()
 
 	//初始化MemcacheClient错误请求控制计数器
 	MemcacheClientRequestErrorCounter = counter.NewCounter()

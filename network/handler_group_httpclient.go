@@ -11,6 +11,7 @@ import (
 	owlconfig "github.com/xssed/owlcache/config"
 	"github.com/xssed/owlcache/group"
 	owllog "github.com/xssed/owlcache/log"
+	"github.com/xssed/owlcache/network/httpclient"
 	owltools "github.com/xssed/owlcache/tools"
 )
 
@@ -112,6 +113,11 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 		//没有在本地缓存中找到数据
 		//请求数据，日志记录
 		//owllog.OwlLogHttpG.Info(owltools.JoinString("httpclient:get key", " key:", owlhandler.owlrequest.Key, " address:", address))
+
+		//创建一个的HttpClient客户端
+		var HttpClient *httpclient.OwlClient
+		//初始化HttpClient客户端
+		HttpClient = httpclient.NewOwlClient()
 		//请求http数据
 		s := HttpClient.GetValue(address, key)
 		if s != nil {

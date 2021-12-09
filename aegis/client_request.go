@@ -16,6 +16,11 @@ func CheckClientRequest() {
 		owllog.OwlLogRun.Println("The value of HttpClientRequestLocalCacheLifeTime is not an integer.Set the <HttpClientRequestLocalCacheLifeTime> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
 		os.Exit(0)
 	}
+	_, hqto_err := strconv.Atoi(owlconfig.OwlConfigModel.HttpClientRequestTimeout)
+	if hqto_err != nil {
+		owllog.OwlLogRun.Println("The value of HttpClientRequestTimeout is not an integer.Set the <HttpClientRequestTimeout> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
+		os.Exit(0)
+	}
 
 	mrts, mrts_err := strconv.Atoi(owlconfig.OwlConfigModel.MemcacheClient_Request_Timeout_Sleeptime)
 	if mrts_err != nil {

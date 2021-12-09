@@ -1,44 +1,43 @@
 package httpclient
 
 import (
-	"net/http"
-	"os"
-	"strconv"
 	"time"
+
+	"github.com/parnurzeal/gorequest"
 
 	owlconfig "github.com/xssed/owlcache/config"
 	owllog "github.com/xssed/owlcache/log"
+	owltools "github.com/xssed/owlcache/tools"
 )
 
 //定义HTTP客户端结构
 type OwlClient struct {
-	OwlTransport     *http.Transport
-	HCRequestTimeout time.Duration
+	*OwlHttp
 }
 
-//创建一个HTTP客户端
+//创建HttpClient实体
 func NewOwlClient() *OwlClient {
-	//创建Transport()
-	owltransport := NewOwlTransport()
-	//从配置中取出集群互相通信时的请求超时时间
-	//hcrequesttimeout, err := time.ParseDuration(owlconfig.OwlConfigModel.HttpClientRequestTimeout + "s")//bug
-	hcrequesttimeout, err := strconv.Atoi(owlconfig.OwlConfigModel.HttpClientRequestTimeout)
-	if err != nil {
-		//强制异常，退出
-		owllog.OwlLogHttpG.Info("Config File HttpClientRequestTimeout Parse error:" + err.Error()) //日志记录
-		os.Exit(0)
-	}
 
-	owlhttpclient := &OwlClient{OwlTransport: owltransport, HCRequestTimeout: time.Duration(hcrequesttimeout)}
+	return &OwlClient{NewOwlHttpClient()}
 
-	return owlhttpclient
 }
 
 //获取Key值
 func (c *OwlClient) GetValue(address, key string) *Response {
 
-	owlclient := NewOwlHttpClient(c.OwlTransport)
-	owlclient.PostForm(address + "/data/")
+	//判断集群之间是否开启HTTPS安全通道
+	if owlconfig.OwlConfigModel.HttpsClient_InsecureSkipVerify == "0" {
+		return c.primitive_get(address, key)
+	}
+	return c.modern_get(address, key)
+
+}
+
+//获取Key值-自己的HttpClient封装包
+func (c *OwlClient) primitive_get(address, key string) *Response {
+
+	owlclient := c
+	owlclient.PostForm(owltools.JoinString(address, "/data/"))
 	owlclient.SetTimeout(c.HCRequestTimeout * time.Millisecond)
 	owlclient.Query.Add("cmd", "get")
 	owlclient.Query.Add("key", key)
@@ -47,9 +46,36 @@ func (c *OwlClient) GetValue(address, key string) *Response {
 		owllog.OwlLogHttpG.Info("owlclient method GetValue error:" + err.Error()) //日志记录
 	}
 	//owllog.OwlLogHttpG.Info("HTTP request OK："+address, key) //日志记录
-	owlclient.Claer() //清空查询数据
+	owlclient.Claer() //清空数据
 	if res != nil && res.StatusCode == 200 {
 		return res
+	} else {
+		return nil
+	}
+
+}
+
+//获取Key值-开源的HttpClient封装包gorequest
+func (c *OwlClient) modern_get(address, key string) *Response {
+
+	var grsa *gorequest.SuperAgent
+	grsa = gorequest.New()
+
+	grsa.Timeout(c.HCRequestTimeout * time.Millisecond)
+	grsa.Get(owltools.JoinString(address, "/data/"))
+	grsa.Param("cmd", "get")
+	grsa.Param("key", key)
+
+	//发送请求获取数据
+	r_res, _, r_err_slices := grsa.EndBytes()
+	//判断请求的响应数据是否超过本地允许的最大值
+	if r_err_slices != nil {
+		owllog.OwlLogHttpG.Info(owltools.JoinString("owlclient method GetValue error:", owltools.ErrorSliceJoinToString(r_err_slices))) //日志记录
+	}
+	//清理资源
+	grsa.ClearSuperAgent()
+	if r_res != nil && r_res.StatusCode == 200 {
+		return &Response{r_res}
 	} else {
 		return nil
 	}

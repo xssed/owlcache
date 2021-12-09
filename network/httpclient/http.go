@@ -2,13 +2,13 @@ package httpclient
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -16,50 +16,25 @@ import (
 	owllog "github.com/xssed/owlcache/log"
 )
 
-const (
-	MaxIdleConnections int = 1000
-	RequestTimeout     int = 2700 //初始默认值，在配置文件中已经定义。如果调用OwlHttp.SetTimeout()可以在使用时再次更改
-)
-
-//var OwlTransport *http.Transport
-
-func NewOwlTransport() *http.Transport {
-
-	//动态配置InsecureSkipVerify方式
-	var skipverify *tls.Config
-	if owlconfig.OwlConfigModel.HttpsClient_InsecureSkipVerify == "1" {
-		skipverify = &tls.Config{InsecureSkipVerify: true}
-	} else if owlconfig.OwlConfigModel.HttpsClient_InsecureSkipVerify == "0" {
-		skipverify = &tls.Config{InsecureSkipVerify: false}
-	} else {
-		owllog.OwlLogHttpG.Info(ErrorHttpsClientInsecureSkipVerify.Error())
-	}
-
-	//创建Transport
-	OwlTransport := &http.Transport{
-		MaxIdleConnsPerHost: MaxIdleConnections,
-		TLSClientConfig:     skipverify,
-	}
-	return OwlTransport
-
-}
-
 type OwlHttp struct {
-	Request *http.Request
-	Client  *http.Client
-	Query   url.Values //QueryString。url.Values结构是map[string][]string非并发安全
-	Param   url.Values //PostFromParams。url.Values结构是map[string][]string非并发安全
+	Request          *http.Request
+	Client           *http.Client
+	HCRequestTimeout time.Duration
+	Query            url.Values //QueryString。url.Values结构是map[string][]string非并发安全
+	Param            url.Values //PostFromParams。url.Values结构是map[string][]string非并发安全
 }
 
 //创建HttpClient实体
-func NewOwlHttpClient(OwlTransport *http.Transport) *OwlHttp {
+func NewOwlHttpClient() *OwlHttp {
 
+	//从配置中取出集群互相通信时的请求超时时间
+	hcrequesttimeout, _ := strconv.Atoi(owlconfig.OwlConfigModel.HttpClientRequestTimeout)
+	//创建客户端
 	client := &http.Client{
-		Transport: OwlTransport,
-		Timeout:   time.Duration(RequestTimeout) * time.Millisecond,
+		Timeout: time.Duration(hcrequesttimeout) * time.Millisecond,
 	}
 
-	return &OwlHttp{Client: client, Query: url.Values{}, Param: url.Values{}}
+	return &OwlHttp{Client: client, HCRequestTimeout: time.Duration(hcrequesttimeout), Query: url.Values{}, Param: url.Values{}}
 
 }
 
@@ -167,8 +142,10 @@ func (h *OwlHttp) PostForm(Url string) {
 	}
 }
 
-//清空查询数据
+//清空数据
 func (h *OwlHttp) Claer() *OwlHttp {
+	h.Request = &http.Request{}
+	h.Client = &http.Client{}
 	h.Query = url.Values{}
 	h.Param = url.Values{}
 	return h
