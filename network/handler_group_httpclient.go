@@ -91,7 +91,8 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 	//HttpClient缓存优化
 	bhgc_key := owltools.JoinString(address, ":", key)
 	bhgc_key_responsehost := owltools.JoinString(address, ":", key, ":", "Responsehost")
-	//查询缓存中是否有数据
+	bhgc_key_state := owltools.JoinString(address, ":", key, ":", "State")
+	//查询二级缓存中是否有数据
 	if v, found := BaseHttpGroupCache.GetKvStore(bhgc_key); found {
 		//本地查询到缓存数据
 		var resbody OwlResponse
@@ -113,6 +114,16 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 		//没有在本地缓存中找到数据
 		//请求数据，日志记录
 		//owllog.OwlLogHttpG.Info(owltools.JoinString("httpclient:get key", " key:", owlhandler.owlrequest.Key, " address:", address))
+
+		//二级缓存的缓存生命周期
+		exptime, _ := time.ParseDuration(owltools.JoinString(owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime, "ms"))
+
+		//判断上次请求状态 1为能正确获得数据  0为未能正确获取数据 0则跳过http请求
+		if v3, found3 := BaseHttpGroupCache.GetKvStore(bhgc_key_state); found3 {
+			if string(v3.(*cache.KvStore).Value) == "0" {
+				return
+			}
+		}
 
 		//创建一个的HttpClient客户端
 		var HttpClient *httpclient.OwlClient
@@ -142,11 +153,18 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 
 			//请求优化，缓存记录,配置参数值为0，则不进行缓存(适合并发量小，数据实时性要求高的场景)。
 			if owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime != "0" {
-				exptime, _ := time.ParseDuration(owltools.JoinString(owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime, "ms"))
-				BaseHttpGroupCache.Set(bhgc_key, resbody.Data, exptime)
+				BaseHttpGroupCache.Set(bhgc_key_state, []byte("1"), exptime)
 				BaseHttpGroupCache.Set(bhgc_key_responsehost, []byte(resbody.ResponseHost), exptime)
+				BaseHttpGroupCache.Set(bhgc_key, resbody.Data, exptime)
 			}
+			return
 		}
+		//请求优化，缓存记录,配置参数值为0，则不进行缓存(适合并发量小，数据实时性要求高的场景)。
+		if owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime != "0" {
+			//请求失败
+			BaseHttpGroupCache.Set(bhgc_key_state, []byte("0"), exptime)
+		}
+
 		return
 
 	}
