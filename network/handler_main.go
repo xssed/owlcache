@@ -36,6 +36,8 @@ func (owlhandler *OwlHandler) TCPHandle() {
 		owlhandler.Expire()
 	case DELETE:
 		owlhandler.Delete()
+	case PING:
+		owlhandler.Ping()
 	default:
 		owlhandler.Transmit(UNKNOWN_COMMAND)
 	}
@@ -74,6 +76,8 @@ func (owlhandler *OwlHandler) HTTPHandle(w http.ResponseWriter, r *http.Request)
 		owlhandler.Delete()
 	case PASS:
 		owlhandler.Pass(r)
+	case PING:
+		owlhandler.Ping()
 	default:
 		owlhandler.Transmit(UNKNOWN_COMMAND)
 	}
@@ -139,8 +143,8 @@ func (owlhandler *OwlHandler) ToHttp(w http.ResponseWriter) (http.ResponseWriter
 	w.Header().Set("ResponseHost", owlhandler.owlresponse.ResponseHost)
 	w.Header().Set("Key", owlhandler.owlresponse.Key)
 	w.Header().Set("KeyCreateTime", owlhandler.owlresponse.KeyCreateTime.String())
-	//GET请求优先处理
-	if owlhandler.owlrequest.Cmd == GET {
+	//GET、PING命令请求优先处理
+	if owlhandler.owlrequest.Cmd == GET || owlhandler.owlrequest.Cmd == PING {
 		return w, owlhandler.owlresponse.Data
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8;")
@@ -170,6 +174,10 @@ func (owlhandler *OwlHandler) ToTcp() []byte {
 			return owlhandler.owlresponse.Data
 		}
 		owlhandler.owlresponse.Data = []byte("")
+	}
+	//PING命令
+	if owlhandler.owlrequest.Cmd == PING {
+		return owlhandler.owlresponse.Data
 	}
 	owlhandler.owlresponse.ResponseHost = owlconfig.OwlConfigModel.ResponseHost + ":" + owlconfig.OwlConfigModel.Tcpport
 	data, _ := json.Marshal(owlhandler.owlresponse)

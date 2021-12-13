@@ -44,11 +44,15 @@ func (req *OwlRequest) TrimSpace(str string) string {
 //将socket请求内容 解析为一个OwlRequest对象
 func (req *OwlRequest) TCPReceive(connstr string) {
 
-	params := strings.Split(connstr, " ") //strings.Fields(connstr)
-
-	//判断空字符串请求
-	if len(params) <= 1 && strings.TrimSpace(params[0]) == "" {
-		return
+	params := []string{}
+	if strings.TrimSpace(connstr) == "ping" {
+		params = append(params, "ping")
+	} else {
+		params = strings.Split(connstr, " ") //strings.Fields(connstr)
+		//判断空字符串请求
+		if len(params) <= 1 && strings.TrimSpace(params[0]) == "" {
+			return
+		}
 	}
 
 	command := CommandType(params[0])
@@ -67,7 +71,7 @@ func (req *OwlRequest) TCPReceive(connstr string) {
 		req.Cmd = command
 		req.Key = req.TrimSpace(params[1])
 		if len(params) > 2 {
-			req.Value = []byte(req.Slicetostring(params[2:]))
+			req.Value = []byte(req.TrimSpace(req.Slicetostring(params[2:])))
 			req.Length = len(req.Value)
 		}
 	case EXPIRE:
@@ -80,6 +84,15 @@ func (req *OwlRequest) TCPReceive(connstr string) {
 	case DELETE:
 		req.Cmd = command
 		req.Key = req.TrimSpace(params[1])
+	case PING:
+		req.Cmd = command
+		if len(params) > 1 {
+			req.Value = []byte(req.TrimSpace(req.Slicetostring(params[1:])))
+			req.Length = len(req.Value)
+		} else {
+			req.Value = []byte("")
+			req.Length = 0
+		}
 	}
 
 }
@@ -105,7 +118,7 @@ func (req *OwlRequest) HTTPReceive(w http.ResponseWriter, r *http.Request) {
 	req.Cmd = CommandType(r.FormValue("cmd"))
 	req.Value = []byte(r.FormValue("valuedata"))
 	req.Length = len(r.FormValue("valuedata"))
-	exptime, _ := time.ParseDuration(req.TrimSpace(r.FormValue("exptime")) + "s")
+	exptime, _ := time.ParseDuration(owltools.JoinString(req.TrimSpace(r.FormValue("exptime")), "s"))
 	req.Expires = exptime
 	req.Pass = r.FormValue("pass")
 	//避免url cache模式开启时与url的token关键字冲突
@@ -121,6 +134,6 @@ func (req *OwlRequest) HTTPReceive(w http.ResponseWriter, r *http.Request) {
 //将字符串切片转换成字符串
 func (req *OwlRequest) Slicetostring(slice []string) string {
 
-	return owltools.StringSliceJoinToString(slice)
+	return strings.Join(slice, " ")
 
 }

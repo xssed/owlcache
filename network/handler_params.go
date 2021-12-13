@@ -13,6 +13,7 @@ const (
 	EXPIRE CommandType = "expire"
 	DELETE CommandType = "delete"
 	PASS   CommandType = "pass"
+	PING   CommandType = "ping"
 )
 
 //response 状态
@@ -22,10 +23,6 @@ const (
 	NOT_FOUND       ResStatus = 404
 	UNKNOWN_COMMAND ResStatus = 501
 	NOT_PASS        ResStatus = 401
-	//STORED
-	//NOT_STORED
-	//END
-	//DELETED
 )
 
 //status to string

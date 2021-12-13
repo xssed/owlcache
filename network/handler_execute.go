@@ -204,3 +204,16 @@ func (owlhandler *OwlHandler) CheckAuth(r *http.Request) bool {
 	return false
 
 }
+
+//Ping 命令
+func (owlhandler *OwlHandler) Ping() {
+
+	owlhandler.Transmit(SUCCESS)
+	//判断有无输入字符串，有则返回该字符串，无则返回"PONG"
+	if owlhandler.owlrequest.Length > 0 {
+		owlhandler.owlresponse.Data = []byte(owlhandler.owlrequest.Value)
+	} else {
+		owlhandler.owlresponse.Data = []byte("PONG")
+	}
+
+}
