@@ -48,6 +48,7 @@ func DataBackup() {
 			if err != nil {
 				owllog.OwlLogTask.Info(owltools.JoinString("Task: DataBackup() error ", err.Error()))
 			}
+			owllog.OwlLogTask.Info("Task execute success: owlcache memory database backup. ") //日志记录
 		}
 	}()
 
@@ -69,6 +70,7 @@ func DataAuthBackup() {
 			if err != nil {
 				owllog.OwlLogTask.Info(owltools.JoinString("Task: DataAuthBackup() error ", err.Error()))
 			}
+			owllog.OwlLogTask.Info("Task execute success: owlcache Tonken database backup. ") //日志记录
 		}
 	}()
 
@@ -92,6 +94,7 @@ func ClearExpireData() {
 			if owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime != "0" {
 				owlnetwork.BaseHttpGroupCache.ClearExpireData()
 			}
+			owllog.OwlLogTask.Info("Task execute success: clear up expired data. ") //日志记录
 		}
 	}()
 
@@ -113,6 +116,7 @@ func ServerListBackup() {
 			if err != nil {
 				owllog.OwlLogTask.Info(owltools.JoinString("Task: ServerListBackup() error ", err.Error()))
 			}
+			owllog.OwlLogTask.Info("Task execute success: serverlist data backup. ") //日志记录
 		}
 	}()
 
@@ -134,6 +138,7 @@ func ServerGossipListBackup() {
 			if err != nil {
 				owllog.OwlLogTask.Info(owltools.JoinString("Task: ServerGossipListBackup() error ", err.Error()))
 			}
+			owllog.OwlLogTask.Info("Task execute success: gossip server list data backup. ") //日志记录
 		}
 	}()
 

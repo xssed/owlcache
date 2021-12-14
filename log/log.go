@@ -38,8 +38,11 @@ func LogInit() {
 	logFilePath := owlconfig.OwlConfigModel.Logfile
 	//注册全局运行日志
 	OwlLogRunRegister(logFilePath)
-	//注册全局TCP日志
-	OwlLogTcpRegister(logFilePath)
+	//判断是否开启TCP
+	if owlconfig.OwlConfigModel.CloseTcp == "1" {
+		//注册全局TCP日志
+		OwlLogTcpRegister(logFilePath)
+	}
 	//注册全局HTTP单节点日志
 	OwlLogHttpSingleNodeRegister(logFilePath)
 	//注册全局HTTP集群日志

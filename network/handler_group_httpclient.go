@@ -90,7 +90,7 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 
 	//HttpClient缓存优化
 	bhgc_key := owltools.JoinString(address, ":", key)
-	bhgc_key_responsehost := owltools.JoinString(address, ":", key, ":", "Responsehost")
+	bhgc_key_RHKCT := owltools.JoinString(address, ":", key, ":", "RHKCT") //RHKCT="Responsehost"+"KeyCreateTime"缩写
 	bhgc_key_state := owltools.JoinString(address, ":", key, ":", "State")
 	//查询二级缓存中是否有数据
 	if v, found := BaseHttpGroupCache.GetKvStore(bhgc_key); found {
@@ -99,12 +99,18 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 		resbody.Status = ResStatus(200)
 		resbody.Key = key
 		resbody.Data = v.(*cache.KvStore).Value
-		resbody.KeyCreateTime = v.(*cache.KvStore).CreateTime
 		//设置响应主机
-		if v2, found2 := BaseHttpGroupCache.GetKvStore(bhgc_key_responsehost); found2 {
-			resbody.ResponseHost = string(v2.(*cache.KvStore).Value)
+		if v2, found2 := BaseHttpGroupCache.GetKvStore(bhgc_key_RHKCT); found2 {
+			infos := strings.Split(string(v2.(*cache.KvStore).Value), "|") //text=Responsehost+"|"+KeyCreateTime，现在分割它还原数据
+			resbody.ResponseHost = infos[0]
+			cache_t, cterr := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", infos[1])
+			if cterr != nil {
+				owllog.OwlLogHttpG.Info("OwlHandler parseContent Keycreatetime time.Parse failed: " + cterr.Error())
+			}
+			resbody.KeyCreateTime = cache_t
 		} else {
 			resbody.ResponseHost = ""
+			resbody.KeyCreateTime = v.(*cache.KvStore).CreateTime
 		}
 		kvlist.Add(resbody)
 		return
@@ -154,7 +160,8 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 			//请求优化，缓存记录,配置参数值为0，则不进行缓存(适合并发量小，数据实时性要求高的场景)。
 			if owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime != "0" {
 				BaseHttpGroupCache.Set(bhgc_key_state, []byte("1"), exptime)
-				BaseHttpGroupCache.Set(bhgc_key_responsehost, []byte(resbody.ResponseHost), exptime)
+				rhkct_text := []byte(owltools.JoinString(resbody.ResponseHost, "|", tkt)) //rhkct_text=Responsehost+"|"+KeyCreateTime
+				BaseHttpGroupCache.Set(bhgc_key_RHKCT, rhkct_text, exptime)
 				BaseHttpGroupCache.Set(bhgc_key, resbody.Data, exptime)
 			}
 			return

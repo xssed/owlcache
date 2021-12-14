@@ -144,19 +144,10 @@ get hello info\n
 ~~~
 
 * HTTP
-Note: HTTP access data is not verified by password, only other operations that change data require authentication.
+>owlcache version >= 0.4.2, http no longer supports 'info'
 
+~~http://127.0.0.1:7721/data/?cmd=get&key=hello&valuedata=info~~
 
-|Request parameter        | Parameter value         | 
-| ------------- |:-------------: |
-| cmd           |  get           | 
-| key           |  key name        | 
-| valuedata           |  info       | 
-
-~~~shell
-http://127.0.0.1:7721/data/?cmd=get&key=hello&valuedata=info
-~~~
-<br>
 
 Response result example:
 ~~~shell
