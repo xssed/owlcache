@@ -162,7 +162,7 @@ Response result example:
 }
 ~~~
 
-**Attention to the HTTP Status code returned by the HTTP Request. please refer to the "Protocol" chapter.  **
+**Attention to the HTTP Status code returned by the HTTP Request. please refer to the "Protocol" chapter.**
 
 ## The cluster obtains the Key value.
 * Suppose there are now three owlcache HTTP services: 127.0.0.1: 7721, 127.0.0.1:7723, 127.0.0.1:7725. Each service has a data called **Key** called **hello**.
