@@ -31,6 +31,12 @@ var OwlLogTask *OwlLog
 //创建一个全局系统资源日志
 var OwlLogSystemResource *OwlLog
 
+//创建一个全局Websocket服务器运行日志
+var OwlLogWebsocketServer *OwlLog
+
+//创建一个全局Websocket客户端运行日志
+var OwlLogWebsocketClient *OwlLog
+
 func LogInit() {
 	//执行步骤信息
 	fmt.Println("owlcache  logger running...")
@@ -61,6 +67,11 @@ func LogInit() {
 	OwlLogTaskRegister(logFilePath)
 	//注册一个全局系统资源日志
 	OwlLogSystemResourceRegister(logFilePath)
+	//判断是否开启Websocket_Server
+	if owlconfig.OwlConfigModel.Open_Websocket_Server == "1" {
+		OwlLogWebsocketServerRegister(logFilePath)
+		OwlLogWebsocketClientRegister(logFilePath)
+	}
 }
 
 //注册全局运行日志
@@ -125,4 +136,20 @@ func OwlLogSystemResourceRegister(logFilePath string) {
 	formatLogFileName := "owl_system_resource_" + time.Now().Format("150405") + ".log"
 	//创建资源
 	OwlLogSystemResource = NewOwlLog(logFilePath, formatLogFileName)
+}
+
+//注册一个全局系统资源日志
+func OwlLogWebsocketServerRegister(logFilePath string) {
+	//日志文件
+	formatLogFileName := "owl_websocket_server_" + time.Now().Format("150405") + ".log"
+	//创建资源
+	OwlLogWebsocketServer = NewOwlLog(logFilePath, formatLogFileName)
+}
+
+//注册一个全局系统资源日志
+func OwlLogWebsocketClientRegister(logFilePath string) {
+	//日志文件
+	formatLogFileName := "owl_websocket_client_" + time.Now().Format("150405") + ".log"
+	//创建资源
+	OwlLogWebsocketClient = NewOwlLog(logFilePath, formatLogFileName)
 }

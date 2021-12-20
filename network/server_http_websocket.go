@@ -3,7 +3,7 @@ package network
 import (
 	//"flag"
 	//"io/ioutil"
-	"log"
+	//"log"
 	"net/http"
 
 	//"os"
@@ -11,7 +11,8 @@ import (
 
 	"github.com/gorilla/websocket"
 	// owlconfig "github.com/xssed/owlcache/config"
-	// owllog "github.com/xssed/owlcache/log"
+	owllog "github.com/xssed/owlcache/log"
+	owltools "github.com/xssed/owlcache/tools"
 	// owlsystem "github.com/xssed/owlcache/system"
 )
 
@@ -31,11 +32,11 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 	client, err := upgrader.Upgrade(w, r, nil)
 	//升级失败
 	if err != nil {
-		log.Println("Upgrade error:", err)
+		owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Upgrade error:", err.Error()))
 		return
 	}
 	//连接成功进来的客户端打印他的IP
-	log.Println("WebsocketServer: New client connection:" + r.RemoteAddr)
+	owllog.OwlLogWebsocketServer.Info(owltools.JoinString("WebsocketServer: New client connection:", r.RemoteAddr))
 
 	defer client.Close() //请求结束时资源释放
 
@@ -50,13 +51,13 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 	for {
 		messageType, payload, err := client.ReadMessage()
 		if err != nil {
-			log.Println("Read error:", err)
+			owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Read error:", err.Error()))
 			break
 		}
-		log.Printf("Received message type=%d, payload=\"%s\"\n", messageType, payload)
+		owllog.OwlLogWebsocketServer.Printf("Received message type=%d, payload=\"%s\"\n", messageType, payload)
 
 		if err := client.WriteMessage(messageType, payload); err != nil {
-			log.Println("Write error:", err)
+			owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Write error:", err.Error()))
 			break
 		}
 	}
@@ -66,7 +67,7 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 func pongHandler(client *websocket.Conn) {
 	client.SetReadDeadline(time.Now().Add(pongWait)) //设置超时
 	client.SetPongHandler(func(string) error {
-		log.Println("Received pong.")
+		owllog.OwlLogWebsocketServer.Info("Received pong.")
 		client.SetReadDeadline(time.Now().Add(pongWait)) //设置超时
 		return nil
 	})
@@ -81,11 +82,10 @@ func pingTicker(client *websocket.Conn, done chan bool, remote_addr string) {
 		select {
 		case <-ticker.C:
 			if err := client.WriteControl(websocket.PingMessage, []byte{}, time.Now().Add(writeWait)); err != nil {
-				log.Println("To "+remote_addr+" sending ping command error:", err)
+				owllog.OwlLogWebsocketServer.Info(owltools.JoinString("To ", remote_addr, " sending ping command error:", err.Error()))
 			}
-			log.Println("To " + remote_addr + " sending ping command success.")
 		case <-done:
-			log.Println("Stopping ping goroutine.")
+			owllog.OwlLogWebsocketServer.Info("Stopping ping goroutine.")
 			return
 		}
 	}

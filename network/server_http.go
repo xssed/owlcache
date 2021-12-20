@@ -1,7 +1,7 @@
 package network
 
 import (
-	//"fmt"
+	"fmt"
 	"net/http"
 
 	owlconfig "github.com/xssed/owlcache/config"
@@ -21,6 +21,7 @@ func startHTTP() {
 	//判断是否开启Url Cache
 	if owlconfig.OwlConfigModel.Open_Urlcache == "1" {
 		//Url Cache数据执行信息
+		fmt.Println("owlcache  url cache service running...")
 		http.HandleFunc("/uc/", UCExe) //设置访问的路由
 	}
 	//设置服务器集群
@@ -28,6 +29,7 @@ func startHTTP() {
 	//判断是否开启Urlcache的快捷访问
 	if owlconfig.OwlConfigModel.Open_Urlcache == "1" && owlconfig.OwlConfigModel.Urlcache_Request_Easy == "1" {
 		//Url Cache数据执行信息
+		fmt.Println("owlcache  url cache easy access running...")
 		http.HandleFunc("/", UCExe) //设置访问的路由
 	} else {
 		//默认信息
