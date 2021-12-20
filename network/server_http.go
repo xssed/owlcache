@@ -34,6 +34,12 @@ func startHTTP() {
 		http.HandleFunc("/", IndexPage) //设置访问的路由
 	}
 
+	//判断是否开启Websocket_Server
+	if owlconfig.OwlConfigModel.Open_Websocket_Server == "1" {
+		//开启websocket
+		http.HandleFunc("/ws", serveWS)
+	}
+
 	//监听设置
 	var err error
 	if owlconfig.OwlConfigModel.Open_Https == "1" {
