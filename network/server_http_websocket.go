@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	//"os"
+	"fmt"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -24,7 +25,13 @@ const (
 	pongWait   = 10 * time.Second //等待接收ping返回信息的等待超时时间
 )
 
-var upgrader = websocket.Upgrader{} // 使用默认websocket配置项
+// 使用websocket配置项
+var upgrader = websocket.Upgrader{
+	// 解决跨域问题
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
 
 //开启websocket
 func serveWS(w http.ResponseWriter, r *http.Request) {
@@ -40,17 +47,6 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 
 	defer client.Close() //请求结束时资源释放
 
-	//=========================
-	owlhandler := NewOwlHandler()
-	owlhandler.owlrequest.HTTPReceive(w, r)
-	owlhandler.HTTPHandle(w, r) //执行数据
-	var print []byte
-	w, print = owlhandler.ToHttp(w)
-	//设置响应状态
-	w.WriteHeader(int(owlhandler.owlresponse.Status))
-	w.Write(print) //输出到客户端的信息
-	//=========================
-
 	//服务端监听pong
 	pongHandler(client)
 
@@ -65,9 +61,14 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 			owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Read error:", err.Error()))
 			break
 		}
+
+		//处理接收到的数据
+		res := WebsocketExe(w, r, string(payload))
+		fmt.Println("res:" + string(res))
+
 		owllog.OwlLogWebsocketServer.Printf("Received message type=%d, payload=\"%s\"\n", messageType, payload)
 
-		if err := client.WriteMessage(messageType, payload); err != nil {
+		if err := client.WriteMessage(messageType, res); err != nil { //payload
 			owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Write error:", err.Error()))
 			break
 		}
@@ -103,15 +104,13 @@ func pingTicker(client *websocket.Conn, done chan bool, remote_addr string) {
 }
 
 //Websocket数据执行信息
-func WebsocketExe(w http.ResponseWriter, r *http.Request, connstr string) {
-
+func WebsocketExe(w http.ResponseWriter, r *http.Request, connstr string) []byte {
+	fmt.Println("WebsocketExe:" + connstr)
 	owlhandler := NewOwlHandler()
 	owlhandler.owlrequest.WebsocketReceive(w, r, connstr)
 	owlhandler.WebsocketHandle(w, r)
 	var print []byte
-	w, print = owlhandler.ToHttp(w)
-	//设置响应状态
-	w.WriteHeader(int(owlhandler.owlresponse.Status))
-	w.Write(print) //输出到客户端的信息
+	print = owlhandler.ToWebsocket()
+	return print //输出到客户端的信息
 
 }

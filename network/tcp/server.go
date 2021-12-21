@@ -34,7 +34,7 @@ func (s *server) Listen() {
 }
 
 func New(address string) *server {
-	owllog.OwlLogRun.Info(owltools.JoinString("TCPserver: Creating TCP server with address", address))
+	owllog.OwlLogRun.Info(owltools.JoinString("TCPserver: Creating TCP server with address:", address))
 	server := &server{
 		address: address,
 	}

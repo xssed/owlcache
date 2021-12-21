@@ -41,6 +41,13 @@ func (req *OwlRequest) TrimSpace(str string) string {
 	return ""
 }
 
+//将字符串切片转换成字符串
+func (req *OwlRequest) Slicetostring(slice []string) string {
+
+	return strings.Join(slice, " ")
+
+}
+
 //将socket请求内容 解析为一个OwlRequest对象
 func (req *OwlRequest) TCPReceive(connstr string) {
 
@@ -131,25 +138,14 @@ func (req *OwlRequest) HTTPReceive(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(req.String())
 }
 
-//将字符串切片转换成字符串
-func (req *OwlRequest) Slicetostring(slice []string) string {
-
-	return strings.Join(slice, " ")
-
-}
-
 //将Websocket请求内容 解析为一个OwlRequest对象
 func (req *OwlRequest) WebsocketReceive(w http.ResponseWriter, r *http.Request, connstr string) {
 
 	params := []string{}
-	if strings.TrimSpace(connstr) == "ping" {
-		params = append(params, "ping")
-	} else {
-		params = strings.Split(connstr, " ") //strings.Fields(connstr)
-		//判断空字符串请求
-		if len(params) <= 1 && strings.TrimSpace(params[0]) == "" {
-			return
-		}
+	params = strings.Split(connstr, " ") //strings.Fields(connstr)
+	//判断空字符串请求
+	if len(params) <= 1 && strings.TrimSpace(params[0]) == "" {
+		return
 	}
 
 	command := CommandType(params[0])
@@ -160,15 +156,6 @@ func (req *OwlRequest) WebsocketReceive(w http.ResponseWriter, r *http.Request, 
 		req.Key = req.TrimSpace(params[1])
 		if len(params) > 2 {
 			req.Value = []byte(req.TrimSpace(params[2]))
-		}
-	case PING:
-		req.Cmd = command
-		if len(params) > 1 {
-			req.Value = []byte(req.TrimSpace(req.Slicetostring(params[1:])))
-			req.Length = len(req.Value)
-		} else {
-			req.Value = []byte("")
-			req.Length = 0
 		}
 	}
 

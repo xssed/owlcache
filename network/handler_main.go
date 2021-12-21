@@ -1,11 +1,7 @@
 package network
 
 import (
-	"encoding/json"
 	"net/http"
-
-	owlconfig "github.com/xssed/owlcache/config"
-	owltools "github.com/xssed/owlcache/tools"
 )
 
 //一个请求只产生一个 OwlHandler
@@ -118,15 +114,13 @@ func (owlhandler *OwlHandler) WebsocketHandle(w http.ResponseWriter, r *http.Req
 
 	switch command {
 	case GET:
-		if req.Value == "data" {
+		if string(req.Value) == "data" {
 			owlhandler.Get()
-		} else if req.Value == "group_data" {
+		} else if string(req.Value) == "group_data" {
 			owlhandler.GetGroupData(w, r)
 		} else {
 			owlhandler.Transmit(UNKNOWN_COMMAND)
 		}
-	case PING:
-		owlhandler.Ping()
 	default:
 		owlhandler.Transmit(UNKNOWN_COMMAND)
 	}
@@ -156,74 +150,5 @@ func (owlhandler *OwlHandler) Transmit(resstatus ResStatus) {
 
 	owlhandler.owlresponse.Cmd = owlhandler.owlrequest.Cmd
 	owlhandler.owlresponse.Key = owlhandler.owlrequest.Key
-
-}
-
-//将数据转换成json(单节点)
-func (owlhandler *OwlHandler) ToHttp(w http.ResponseWriter) (http.ResponseWriter, []byte) {
-
-	owlhandler.owlresponse.ResponseHost = owltools.JoinString(owlconfig.OwlConfigModel.ResponseHost, ":", owlconfig.OwlConfigModel.Httpport) //设置响应的主机信息
-	//设置Ke的响应信息
-	w.Header().Set("ResponseHost", owlhandler.owlresponse.ResponseHost)
-	w.Header().Set("Key", owlhandler.owlresponse.Key)
-	w.Header().Set("KeyCreateTime", owlhandler.owlresponse.KeyCreateTime.String())
-	//GET、PING命令请求优先处理
-	if owlhandler.owlrequest.Cmd == GET || owlhandler.owlrequest.Cmd == PING {
-		return w, owlhandler.owlresponse.Data
-	}
-	w.Header().Set("Content-Type", "application/json; charset=utf-8;")
-	data, _ := json.Marshal(owlhandler.owlresponse)
-	return w, data
-
-}
-
-//将数据转换成json(集群)
-func (owlhandler *OwlHandler) ToGroupHttp(w http.ResponseWriter, r *http.Request) (http.ResponseWriter, []byte) {
-
-	//如果valuedata不是字符串info则输出集群第一个
-	if string(owlhandler.owlrequest.Value) != "info" {
-		return w, owlhandler.owlresponse.Data
-	}
-	//查询info类型
-	w.Header().Set("Content-Type", "application/json; charset=utf-8;")
-	return w, owlhandler.owlresponse.Data
-
-}
-
-//TCP服务将数据进行转换输出
-func (owlhandler *OwlHandler) ToTcp() []byte {
-
-	if owlhandler.owlrequest.Cmd == GET {
-		if string(owlhandler.owlrequest.Value) != "info" {
-			return owlhandler.owlresponse.Data
-		}
-		owlhandler.owlresponse.Data = []byte("")
-	}
-	//PING命令
-	if owlhandler.owlrequest.Cmd == PING {
-		return owlhandler.owlresponse.Data
-	}
-	owlhandler.owlresponse.ResponseHost = owlconfig.OwlConfigModel.ResponseHost + ":" + owlconfig.OwlConfigModel.Tcpport
-	data, _ := json.Marshal(owlhandler.owlresponse)
-	return data
-
-}
-
-//Websocket服务将数据进行转换输出
-func (owlhandler *OwlHandler) ToTcp() []byte {
-
-	if owlhandler.owlrequest.Cmd == GET {
-		if string(owlhandler.owlrequest.Value) != "info" {
-			return owlhandler.owlresponse.Data
-		}
-		owlhandler.owlresponse.Data = []byte("")
-	}
-	//PING命令
-	if owlhandler.owlrequest.Cmd == PING {
-		return owlhandler.owlresponse.Data
-	}
-	owlhandler.owlresponse.ResponseHost = owlconfig.OwlConfigModel.ResponseHost + ":" + owlconfig.OwlConfigModel.Tcpport
-	data, _ := json.Marshal(owlhandler.owlresponse)
-	return data
 
 }
