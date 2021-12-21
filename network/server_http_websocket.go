@@ -40,6 +40,17 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 
 	defer client.Close() //请求结束时资源释放
 
+	//=========================
+	owlhandler := NewOwlHandler()
+	owlhandler.owlrequest.HTTPReceive(w, r)
+	owlhandler.HTTPHandle(w, r) //执行数据
+	var print []byte
+	w, print = owlhandler.ToHttp(w)
+	//设置响应状态
+	w.WriteHeader(int(owlhandler.owlresponse.Status))
+	w.Write(print) //输出到客户端的信息
+	//=========================
+
 	//服务端监听pong
 	pongHandler(client)
 
@@ -67,7 +78,7 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 func pongHandler(client *websocket.Conn) {
 	client.SetReadDeadline(time.Now().Add(pongWait)) //设置超时
 	client.SetPongHandler(func(string) error {
-		owllog.OwlLogWebsocketServer.Info("Received pong.")
+		//owllog.OwlLogWebsocketServer.Info("Received pong.")
 		client.SetReadDeadline(time.Now().Add(pongWait)) //设置超时
 		return nil
 	})
@@ -85,8 +96,22 @@ func pingTicker(client *websocket.Conn, done chan bool, remote_addr string) {
 				owllog.OwlLogWebsocketServer.Info(owltools.JoinString("To ", remote_addr, " sending ping command error:", err.Error()))
 			}
 		case <-done:
-			owllog.OwlLogWebsocketServer.Info("Stopping ping goroutine.")
+			owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Client:", remote_addr, " stopping ping goroutine."))
 			return
 		}
 	}
+}
+
+//Websocket数据执行信息
+func WebsocketExe(w http.ResponseWriter, r *http.Request, connstr string) {
+
+	owlhandler := NewOwlHandler()
+	owlhandler.owlrequest.WebsocketReceive(w, r, connstr)
+	owlhandler.WebsocketHandle(w, r)
+	var print []byte
+	w, print = owlhandler.ToHttp(w)
+	//设置响应状态
+	w.WriteHeader(int(owlhandler.owlresponse.Status))
+	w.Write(print) //输出到客户端的信息
+
 }

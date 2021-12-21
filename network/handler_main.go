@@ -109,6 +109,30 @@ func (owlhandler *OwlHandler) UCDataHandle(w http.ResponseWriter, r *http.Reques
 
 }
 
+//Websocket数据执行操作
+func (owlhandler *OwlHandler) WebsocketHandle(w http.ResponseWriter, r *http.Request) {
+
+	req := owlhandler.owlrequest
+
+	command := CommandType(req.Cmd)
+
+	switch command {
+	case GET:
+		if req.Value == "data" {
+			owlhandler.Get()
+		} else if req.Value == "group_data" {
+			owlhandler.GetGroupData(w, r)
+		} else {
+			owlhandler.Transmit(UNKNOWN_COMMAND)
+		}
+	case PING:
+		owlhandler.Ping()
+	default:
+		owlhandler.Transmit(UNKNOWN_COMMAND)
+	}
+
+}
+
 //解析response
 func (owlhandler *OwlHandler) Transmit(resstatus ResStatus) {
 
@@ -167,6 +191,25 @@ func (owlhandler *OwlHandler) ToGroupHttp(w http.ResponseWriter, r *http.Request
 }
 
 //TCP服务将数据进行转换输出
+func (owlhandler *OwlHandler) ToTcp() []byte {
+
+	if owlhandler.owlrequest.Cmd == GET {
+		if string(owlhandler.owlrequest.Value) != "info" {
+			return owlhandler.owlresponse.Data
+		}
+		owlhandler.owlresponse.Data = []byte("")
+	}
+	//PING命令
+	if owlhandler.owlrequest.Cmd == PING {
+		return owlhandler.owlresponse.Data
+	}
+	owlhandler.owlresponse.ResponseHost = owlconfig.OwlConfigModel.ResponseHost + ":" + owlconfig.OwlConfigModel.Tcpport
+	data, _ := json.Marshal(owlhandler.owlresponse)
+	return data
+
+}
+
+//Websocket服务将数据进行转换输出
 func (owlhandler *OwlHandler) ToTcp() []byte {
 
 	if owlhandler.owlrequest.Cmd == GET {
