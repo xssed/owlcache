@@ -117,7 +117,7 @@ func (owlhandler *OwlHandler) WebsocketHandle(w http.ResponseWriter, r *http.Req
 		if string(req.Value) == "data" {
 			owlhandler.Get()
 		} else if string(req.Value) == "group_data" {
-			owlhandler.GetGroupData(w, r)
+			//do some
 		} else {
 			owlhandler.Transmit(UNKNOWN_COMMAND)
 		}

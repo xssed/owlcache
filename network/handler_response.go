@@ -79,10 +79,11 @@ func (owlhandler *OwlHandler) ToTcp() []byte {
 //Websocket服务将数据进行转换输出
 func (owlhandler *OwlHandler) ToWebsocket() []byte {
 
-	if owlhandler.owlrequest.Cmd == GET {
+	if owlhandler.owlrequest.Cmd == GET && string(owlhandler.owlrequest.Value) != "" {
 		return owlhandler.owlresponse.Data
 	}
 	owlhandler.owlresponse.Data = []byte("")
-	return owlhandler.owlresponse.Data
+	data, _ := json.Marshal(owlhandler.owlresponse)
+	return data
 
 }

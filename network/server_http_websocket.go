@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	//"os"
-	"fmt"
+	//"fmt"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -56,22 +56,18 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 	go pingTicker(client, done, r.RemoteAddr)
 
 	for {
+
+		//监听读取消息
 		messageType, payload, err := client.ReadMessage()
 		if err != nil {
 			owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Read error:", err.Error()))
 			break
 		}
+		//owllog.OwlLogWebsocketServer.Printf("Received message type=%d, payload=\"%s\"\n", messageType, payload)
 
 		//处理接收到的数据
-		res := WebsocketExe(w, r, string(payload))
-		fmt.Println("res:" + string(res))
+		go WebsocketExe(w, r, string(payload), messageType, client)
 
-		owllog.OwlLogWebsocketServer.Printf("Received message type=%d, payload=\"%s\"\n", messageType, payload)
-
-		if err := client.WriteMessage(messageType, res); err != nil { //payload
-			owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Write error:", err.Error()))
-			break
-		}
 	}
 }
 
@@ -104,13 +100,17 @@ func pingTicker(client *websocket.Conn, done chan bool, remote_addr string) {
 }
 
 //Websocket数据执行信息
-func WebsocketExe(w http.ResponseWriter, r *http.Request, connstr string) []byte {
-	fmt.Println("WebsocketExe:" + connstr)
+func WebsocketExe(w http.ResponseWriter, r *http.Request, connstr string, messageType int, client *websocket.Conn) {
+
+	//fmt.Println("WebsocketExe:" + connstr)
 	owlhandler := NewOwlHandler()
 	owlhandler.owlrequest.WebsocketReceive(w, r, connstr)
 	owlhandler.WebsocketHandle(w, r)
 	var print []byte
 	print = owlhandler.ToWebsocket()
-	return print //输出到客户端的信息
+
+	if err := client.WriteMessage(messageType, print); err != nil {
+		owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Write error:", err.Error()))
+	}
 
 }
