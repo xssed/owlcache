@@ -38,8 +38,12 @@ func startHTTP() {
 
 	//判断是否开启Websocket_Server
 	if owlconfig.OwlConfigModel.Open_Websocket_Server == "1" {
-		//开启websocket
+		//开启websocket server
+		fmt.Println("owlcache  websocket server running...")
 		http.HandleFunc("/ws", serveWS)
+		//开启websocket client service
+		fmt.Println("owlcache  websocket client running...")
+		startWebSocketClient()
 	}
 
 	//监听设置

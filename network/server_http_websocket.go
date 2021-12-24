@@ -1,12 +1,7 @@
 package network
 
 import (
-	//"flag"
-	//"io/ioutil"
-	//"log"
 	"net/http"
-
-	//"os"
 	//"fmt"
 	"time"
 
