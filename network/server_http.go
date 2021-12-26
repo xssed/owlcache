@@ -44,6 +44,7 @@ func startHTTP() {
 		//开启websocket client service
 		fmt.Println("owlcache  websocket client running...")
 		startWebSocketClient()
+		test()
 	}
 
 	//监听设置

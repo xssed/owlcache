@@ -32,7 +32,7 @@ func NewWebSocketClient(address string) *OwlWebSocketClient {
 		// 写超时
 		WriteWait: 10 * time.Second,
 		// 支持接受的消息最大长度，默认512字节
-		MaxMessageSize: 200000,
+		MaxMessageSize: 7000000,
 		// 最小重连时间间隔
 		MinRecTime: 2 * time.Second,
 		// 最大重连时间间隔
