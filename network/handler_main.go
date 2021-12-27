@@ -114,11 +114,11 @@ func (owlhandler *OwlHandler) WebsocketHandle(w http.ResponseWriter, r *http.Req
 
 	switch command {
 	case GET:
-		if string(req.Value) == "data" {
-			owlhandler.Get()
-		} else {
-			owlhandler.Transmit(UNKNOWN_COMMAND)
-		}
+		// if string(req.Value) == "data" {
+		owlhandler.Get()
+		// } else {
+		// 	owlhandler.Transmit(UNKNOWN_COMMAND)
+		// }
 	default:
 		owlhandler.Transmit(UNKNOWN_COMMAND)
 	}

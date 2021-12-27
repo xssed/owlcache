@@ -154,8 +154,13 @@ func (req *OwlRequest) WebsocketReceive(w http.ResponseWriter, r *http.Request, 
 	case GET:
 		req.Cmd = command
 		req.Key = req.TrimSpace(params[1])
+		//存储字符串"info"
 		if len(params) > 2 {
 			req.Value = []byte(req.TrimSpace(params[2]))
+		}
+		//存储客户端传过来的字符串,建议是唯一标识，例如UUID
+		if len(params) > 3 && len(req.TrimSpace(params[3])) > 0 {
+			req.Pass = owltools.JoinString(req.Key, "@", req.TrimSpace(params[3])) //params[3]是客户端传过来的字符串,建议是唯一标识，例如UUID
 		}
 	}
 

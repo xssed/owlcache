@@ -64,7 +64,7 @@ func (owlhandler *OwlHandler) ToTcp() []byte {
 		if string(owlhandler.owlrequest.Value) != "info" {
 			return owlhandler.owlresponse.Data
 		}
-		owlhandler.owlresponse.Data = []byte("")
+		//owlhandler.owlresponse.Data = []byte("") //V0.4.3-beta之后将恢复对内容的展示，方便使用。 起因是Data是byte类型，在Json转换时会消耗较多性能。
 	}
 	//PING命令
 	if owlhandler.owlrequest.Cmd == PING {
@@ -79,10 +79,17 @@ func (owlhandler *OwlHandler) ToTcp() []byte {
 //Websocket服务将数据进行转换输出
 func (owlhandler *OwlHandler) ToWebsocket() []byte {
 
-	if owlhandler.owlrequest.Cmd == GET && string(owlhandler.owlrequest.Value) != "" {
-		return owlhandler.owlresponse.Data
+	if owlhandler.owlrequest.Cmd == GET {
+		if string(owlhandler.owlrequest.Value) != "info" {
+			return owlhandler.owlresponse.Data
+		}
+		//info类型
+		if len(owlhandler.owlrequest.Pass) > 0 {
+			owlhandler.owlresponse.Key = owlhandler.owlrequest.Pass
+		}
 	}
-	owlhandler.owlresponse.Data = []byte("")
+	//owlhandler.owlresponse.Data = []byte("")//V0.4.3-beta之后将恢复对内容的展示，方便使用。 起因是Data是byte类型，在Json转换时会消耗较多性能。
+	owlhandler.owlresponse.ResponseHost = owlconfig.OwlConfigModel.ResponseHost + ":" + owlconfig.OwlConfigModel.Tcpport
 	data, _ := json.Marshal(owlhandler.owlresponse)
 	return data
 

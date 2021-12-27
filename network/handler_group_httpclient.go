@@ -39,7 +39,7 @@ func (owlhandler *OwlHandler) GetGroupData(w http.ResponseWriter, r *http.Reques
 	//如果没有在集群中取到值
 	if len(resmap) == 0 {
 		owlhandler.Transmit(NOT_FOUND)
-		owlhandler.owlresponse.Data = []byte("")
+		//owlhandler.owlresponse.Data = []byte("")//V0.4.3-beta之后将恢复对内容的展示，方便使用。 起因是Data是byte类型，在Json转换时会消耗较多性能。
 		return
 	}
 	owlhandler.Transmit(SUCCESS)
@@ -220,6 +220,7 @@ func (owlhandler *OwlHandler) conversionContentInfo(res_slice []OwlResponse) []m
 			temp_map := make(map[string]interface{})
 			temp_map["Address"] = oldresponse.ResponseHost
 			temp_map["Key"] = oldresponse.Key
+			temp_map["Data"] = oldresponse.Data //V0.4.3-beta之后将恢复对内容的展示，方便使用。 起因是Data是byte类型，在Json转换时会消耗较多性能。
 			temp_map["Status"] = oldresponse.Status
 			temp_map["KeyCreateTime"] = oldresponse.KeyCreateTime
 			response_list = append(response_list, temp_map)
