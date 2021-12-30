@@ -100,6 +100,10 @@ func ClearExpireData() {
 			if owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime != "0" {
 				owlnetwork.BaseHttpGroupCache.ClearExpireData()
 			}
+			//如果WebSocketClient开启，则对其过期交换数据进行清理
+			if owlconfig.OwlConfigModel.GroupData_Mode == "Websocket" {
+				owlnetwork.BaseWSCGroupCache.ClearExpireData()
+			}
 			//判断是否要把Task执行成功日志输出
 			if owlconfig.OwlConfigModel.Task_OutputSuccessLog == "1" {
 				owllog.OwlLogTask.Info("Task execute success: clear up expired data. ") //日志记录

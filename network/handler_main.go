@@ -2,6 +2,8 @@ package network
 
 import (
 	"net/http"
+
+	owlconfig "github.com/xssed/owlcache/config"
 )
 
 //一个请求只产生一个 OwlHandler
@@ -89,8 +91,15 @@ func (owlhandler *OwlHandler) HTTPGroupDataHandle(w http.ResponseWriter, r *http
 
 	switch command {
 	case GET:
-		//HttpClient
-		owlhandler.GetGroupData(w, r)
+		if owlconfig.OwlConfigModel.GroupData_Mode == "Http" {
+			//HttpClient
+			owlhandler.GetGroupData(w, r)
+		} else if owlconfig.OwlConfigModel.GroupData_Mode == "Websocket" {
+			//WebsocketClient
+			owlhandler.GetWCGroupData(w, r)
+		} else {
+			owlhandler.Transmit(UNKNOWN_COMMAND)
+		}
 	default:
 		owlhandler.Transmit(UNKNOWN_COMMAND)
 	}

@@ -159,8 +159,9 @@ func (req *OwlRequest) WebsocketReceive(w http.ResponseWriter, r *http.Request, 
 			req.Value = []byte(req.TrimSpace(params[2]))
 		}
 		//存储客户端传过来的字符串,建议是唯一标识，例如UUID
+		//客户端发送过来的命令格式 get "key_name" info "Handshake_string"
 		if len(params) > 3 && len(req.TrimSpace(params[3])) > 0 {
-			req.Pass = owltools.JoinString(req.Key, "@", req.TrimSpace(params[3])) //params[3]是客户端传过来的字符串,建议是唯一标识，例如UUID
+			req.Pass = owltools.JoinString(req.Key, "@", req.TrimSpace(params[3])) //params[3]是客户端传过来的字符串,建议是唯一标识，例如UUID。 handshake=uuid+“_”+address
 		}
 	}
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/xssed/owlcache/cache"
 	owlconfig "github.com/xssed/owlcache/config"
 	owllog "github.com/xssed/owlcache/log"
 	owlsystem "github.com/xssed/owlcache/system"
@@ -41,10 +42,14 @@ func startHTTP() {
 		//开启websocket server
 		fmt.Println("owlcache  websocket server running...")
 		http.HandleFunc("/ws", serveWS)
-		//开启websocket client service
-		fmt.Println("owlcache  websocket client running...")
-		startWebSocketClient()
-		test()
+
+		if owlconfig.OwlConfigModel.GroupData_Mode == "Websocket" {
+			//WebSocketClient返回数据临时存储数据库
+			BaseWSCGroupCache = cache.NewCache("WSCGroup")
+			//开启websocket client service
+			fmt.Println("owlcache  websocket client running...")
+			startWebSocketClient()
+		}
 	}
 
 	//监听设置

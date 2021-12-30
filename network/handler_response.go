@@ -6,6 +6,7 @@ import (
 	"time"
 
 	owlconfig "github.com/xssed/owlcache/config"
+	owllog "github.com/xssed/owlcache/log"
 	owltools "github.com/xssed/owlcache/tools"
 )
 
@@ -24,6 +25,18 @@ type OwlResponse struct {
 	ResponseHost string
 	//内容的创建时间
 	KeyCreateTime time.Time
+}
+
+//函数:将服务之间返回的字符串转换回结构体
+func JsonStrToOwlResponse(json_string string) OwlResponse {
+
+	var tmp OwlResponse
+	err := json.Unmarshal([]byte(json_string), &tmp)
+	if err != nil {
+		owllog.OwlLogRun.Info(owltools.JoinString("JsonStrToOwlResponse error:", err.Error()))
+	}
+	return tmp
+
 }
 
 //将数据转换成json(单节点)

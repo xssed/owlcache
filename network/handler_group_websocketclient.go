@@ -1,9 +1,11 @@
 package network
 
 import (
-	"strconv"
-	//"sync"
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
+	"sync"
 	"time"
 
 	//"github.com/xssed/owlcache/cache"
@@ -13,8 +15,10 @@ import (
 	owllog "github.com/xssed/owlcache/log"
 	"github.com/xssed/owlcache/network/websocketclient"
 	owltools "github.com/xssed/owlcache/tools"
+	"github.com/xssed/owlcache/tools/timeout"
 )
 
+//存储存活状态的websocketclient列表
 var WSClist *websocketclient.WSCList
 
 //开启Web Socket Client服务，连接到集群
@@ -78,6 +82,7 @@ func WebSocketClientConnToServer(address string) {
 	})
 	// 接受到Text消息回调
 	ws.OnTextMessageReceived(func(message string) {
+		OwlResponseToWSCGroupCache(message, JsonStrToOwlResponse(message))
 		owllog.OwlLogWebsocketClient.Info(owltools.JoinString(ws.WebSocket.Url, " OnTextMessageReceived: ", message))
 	})
 	// 接受到Binary消息回调
@@ -121,4 +126,123 @@ func test() {
 			}
 		}
 	}()
+}
+
+//发起请求获取集合数据
+func (owlhandler *OwlHandler) GetWCGroupData(w http.ResponseWriter, r *http.Request) {
+
+	//查询info类型
+	resmap := owlhandler.conversionContentInfo(owlhandler.getWSCData())
+
+	//如果valuedata不是字符串info则输出集群第一个
+	if string(owlhandler.owlrequest.Value) != "info" {
+		//如果没有在集群中取到值
+		if len(resmap) == 0 {
+			owlhandler.Transmit(NOT_FOUND)
+			owlhandler.owlresponse.Data = []byte("")
+			return
+		}
+		//取出集群第一个最新的数据
+		owlhandler.Transmit(SUCCESS)
+		owlhandler.owlresponse.Data = resmap[0]["Data"].([]byte)
+		return
+
+	}
+
+	//如果没有在集群中取到值
+	if len(resmap) == 0 {
+		owlhandler.Transmit(NOT_FOUND)
+		return
+	}
+	owlhandler.Transmit(SUCCESS)
+	w.Header().Set("Content-Type", "application/json; charset=utf-8;")
+	data, _ := json.Marshal(&resmap)
+	owlhandler.owlresponse.Data = data
+	return
+
+}
+
+//发起WebSocketClient请求获取数据
+func (owlhandler *OwlHandler) getWSCData() []OwlResponse {
+
+	list := WSClist.GetList()
+
+	//服务器集群信息存储列表
+	groupKVlist := group.NewServergroup()
+
+	var wg sync.WaitGroup
+
+	for _, ws := range list {
+		wg.Add(1)
+
+		wsccontent := NewWSCContent(owlhandler.owlrequest.Key, ws.WebSocket.Url) //定义客户端传输模型
+
+		go owlhandler.parseWSCContent(ws, wsccontent, groupKVlist, &wg)
+	}
+
+	wg.Wait()
+
+	fmt.Println(groupKVlist.Values())
+	//排序数据
+	bubblesortlist := owlhandler.bubbleSortContent(groupKVlist)
+	//fmt.Println(bubblesortlist)
+
+	return bubblesortlist
+
+}
+
+//解析内容
+func (owlhandler *OwlHandler) parseWSCContent(ws *websocketclient.OwlWebSocketClient, wsccontent WSCContent, kvlist *group.Servergroup, wg *sync.WaitGroup) {
+
+	//执行完毕自动解除锁定
+	defer wg.Done()
+
+	//向WebScoket Server服务器发送查询请求
+	//向服务端发送命令格式 get "key_name" info "Handshake_string"    //Handshake_string=uuid+“_”+address
+	sql := owltools.JoinString("get ", wsccontent.Key, " info ", wsccontent.Handshake_string)
+	err := ws.SendTextMessage(sql)
+	if err == wsc.CloseErr {
+		owllog.OwlLogWebsocketClient.Info(owltools.JoinString(ws.WebSocket.Url, " OnTextMessageSent error: ", err.Error()))
+		return
+	}
+
+	to := timeout.New()
+	str := owltools.JoinString(wsccontent.Key, "@", wsccontent.Handshake_string)
+	to.SetTimeout(str, time.Second*5)
+
+Loop:
+	for to.CheckTimeout(str) {
+		time.Sleep(time.Millisecond * 5)
+		v, b := WSCGroupCacheBurnAfterReading(str)
+		if b == true {
+			fmt.Println(string(v))
+			break Loop
+		}
+	}
+
+	// //请求http数据
+	// s := HttpClient.GetValue(address, key)
+	// if s != nil {
+	// 	//将获取得数据封装
+	// 	var resbody OwlResponse
+	// 	resbody.Status = ResStatus(s.StatusCode)
+	// 	resbody.Key = s.Header.Get("Key")
+	// 	resbody.Data = s.Byte()
+	// 	//时间处理部分
+	// 	tkt := s.Header.Get("Keycreatetime")
+	// 	if len(tkt) > 37 {
+	// 		//截取字符串的固定长度格式，并把前后两端的空格过滤
+	// 		tkt = strings.TrimSpace(tkt[0:37])
+	// 	}
+	// 	t, terr := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", tkt)
+	// 	if terr != nil {
+	// 		owllog.OwlLogHttpG.Info("OwlHandler parseContent Keycreatetime time.Parse failed: " + terr.Error())
+	// 	}
+	// 	resbody.KeyCreateTime = t
+	// 	resbody.ResponseHost = s.Header.Get("Responsehost")
+	// 	kvlist.Add(resbody)
+
+	// 	return
+	// }
+
 }

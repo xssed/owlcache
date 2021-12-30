@@ -21,6 +21,9 @@ var BaseAuth *cache.BaseCache
 //创建一个全局的HttpGroup缓存(用来缓解短时高并发HttpClient请求次数,提高访问效率)
 var BaseHttpGroupCache *cache.BaseCache
 
+//创建一个全局的WebSocketClient返回数据临时存储数据库
+var BaseWSCGroupCache *cache.BaseCache
+
 //创建一个全局的服务器集群信息存储列表
 var ServerGroupList *group.Servergroup
 
