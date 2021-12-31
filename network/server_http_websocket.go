@@ -3,6 +3,7 @@ package network
 import (
 	"net/http"
 	//"fmt"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -104,8 +105,12 @@ func WebsocketExe(w http.ResponseWriter, r *http.Request, connstr string, messag
 	var print []byte
 	print = owlhandler.ToWebsocket()
 
+	//发送消息，为了避免高并发下对client的竞争，这里加了锁   此处逻辑有问题  锁应该加在并发外  先是打个卡   后面修改 今天时2021.12.31今晚车队有跨年活动
+	var mu sync.Mutex
+	mu.Lock() //加锁
 	if err := client.WriteMessage(messageType, print); err != nil {
 		owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Write error:", err.Error()))
 	}
+	mu.Unlock() //发送完消息解锁
 
 }

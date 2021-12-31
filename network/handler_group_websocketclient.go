@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -82,8 +83,8 @@ func WebSocketClientConnToServer(address string) {
 	})
 	// 接受到Text消息回调
 	ws.OnTextMessageReceived(func(message string) {
-		OwlResponseToWSCGroupCache(message, JsonStrToOwlResponse(message))
-		owllog.OwlLogWebsocketClient.Info(owltools.JoinString(ws.WebSocket.Url, " OnTextMessageReceived: ", message))
+		OwlResponseToWSCGroupCache(message, JsonStrToOwlResponse(message)) //将服务端发送给客户端的数据放进临时存储数据库BaseWSCGroupCache
+		//owllog.OwlLogWebsocketClient.Info(owltools.JoinString(ws.WebSocket.Url, " OnTextMessageReceived: ", message))
 	})
 	// 接受到Binary消息回调
 	ws.OnBinaryMessageReceived(func(data []byte) {
@@ -182,7 +183,7 @@ func (owlhandler *OwlHandler) getWSCData() []OwlResponse {
 
 	wg.Wait()
 
-	fmt.Println(groupKVlist.Values())
+	//fmt.Println(groupKVlist.Values())
 	//排序数据
 	bubblesortlist := owlhandler.bubbleSortContent(groupKVlist)
 	//fmt.Println(bubblesortlist)
@@ -210,39 +211,23 @@ func (owlhandler *OwlHandler) parseWSCContent(ws *websocketclient.OwlWebSocketCl
 	str := owltools.JoinString(wsccontent.Key, "@", wsccontent.Handshake_string)
 	to.SetTimeout(str, time.Second*5)
 
+	//将获取得数据封装
+	var resbody OwlResponse
+
 Loop:
 	for to.CheckTimeout(str) {
-		time.Sleep(time.Millisecond * 5)
-		v, b := WSCGroupCacheBurnAfterReading(str)
+		time.Sleep(time.Millisecond * 7)
+		v, b := WSCGroupCacheBurnAfterReading(str) //BaseWSCGroupCache的数据阅后即焚
 		if b == true {
-			fmt.Println(string(v))
+			resbody = JsonStrToOwlResponse(string(v)) //将服务之间返回的字符串转换回结构体
+			resbody.Key = strings.TrimSpace(strings.Split(resbody.Key, "@")[0])
+			//fmt.Println(string(v))
 			break Loop
 		}
 	}
 
-	// //请求http数据
-	// s := HttpClient.GetValue(address, key)
-	// if s != nil {
-	// 	//将获取得数据封装
-	// 	var resbody OwlResponse
-	// 	resbody.Status = ResStatus(s.StatusCode)
-	// 	resbody.Key = s.Header.Get("Key")
-	// 	resbody.Data = s.Byte()
-	// 	//时间处理部分
-	// 	tkt := s.Header.Get("Keycreatetime")
-	// 	if len(tkt) > 37 {
-	// 		//截取字符串的固定长度格式，并把前后两端的空格过滤
-	// 		tkt = strings.TrimSpace(tkt[0:37])
-	// 	}
-	// 	t, terr := time.Parse("2006-01-02 15:04:05.999999999 -0700 MST", tkt)
-	// 	if terr != nil {
-	// 		owllog.OwlLogHttpG.Info("OwlHandler parseContent Keycreatetime time.Parse failed: " + terr.Error())
-	// 	}
-	// 	resbody.KeyCreateTime = t
-	// 	resbody.ResponseHost = s.Header.Get("Responsehost")
-	// 	kvlist.Add(resbody)
+	kvlist.Add(resbody)
 
-	// 	return
-	// }
+	return
 
 }
