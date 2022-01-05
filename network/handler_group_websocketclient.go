@@ -216,7 +216,7 @@ func (owlhandler *OwlHandler) parseWSCContent(ws *websocketclient.OwlWebSocketCl
 
 Loop:
 	for to.CheckTimeout(str) {
-		time.Sleep(time.Millisecond * 7)
+		time.Sleep(time.Millisecond * 2)
 		v, b := WSCGroupCacheBurnAfterReading(str) //BaseWSCGroupCache的数据阅后即焚
 		if b == true {
 			resbody = JsonStrToOwlResponse(string(v)) //将服务之间返回的字符串转换回结构体

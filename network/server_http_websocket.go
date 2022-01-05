@@ -29,6 +29,17 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+//定义一个控制服务端并发的安全ws链接模型
+type WssConn struct {
+	Conn *websocket.Conn
+	Mux  sync.RWMutex
+}
+
+//创建一个控制服务端并发的安全ws链接模型
+func NewWssConn(conn *websocket.Conn) WssConn {
+	return WssConn{Conn: conn}
+}
+
 //开启websocket
 func serveWS(w http.ResponseWriter, r *http.Request) {
 	//将Http协议升级为websocket
@@ -53,8 +64,12 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 
 	for {
 
+		//创建一个控制服务端并发的安全ws链接模型
+		wssconn := NewWssConn(client)
+		wssconn.Mux.Lock() //锁定
+
 		//监听读取消息
-		messageType, payload, err := client.ReadMessage()
+		messageType, payload, err := wssconn.Conn.ReadMessage()
 		if err != nil {
 			owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Read error:", err.Error()))
 			break
@@ -62,7 +77,7 @@ func serveWS(w http.ResponseWriter, r *http.Request) {
 		//owllog.OwlLogWebsocketServer.Printf("Received message type=%d, payload=\"%s\"\n", messageType, payload)
 
 		//处理接收到的数据
-		go WebsocketExe(w, r, string(payload), messageType, client)
+		WebsocketExe(w, r, string(payload), messageType, wssconn)
 
 	}
 }
@@ -96,7 +111,9 @@ func pingTicker(client *websocket.Conn, done chan bool, remote_addr string) {
 }
 
 //Websocket数据执行信息
-func WebsocketExe(w http.ResponseWriter, r *http.Request, connstr string, messageType int, client *websocket.Conn) {
+func WebsocketExe(w http.ResponseWriter, r *http.Request, connstr string, messageType int, client WssConn) {
+
+	defer client.Mux.Unlock() //处理完消息解锁
 
 	//fmt.Println("WebsocketExe:" + connstr)
 	owlhandler := NewOwlHandler()
@@ -105,12 +122,9 @@ func WebsocketExe(w http.ResponseWriter, r *http.Request, connstr string, messag
 	var print []byte
 	print = owlhandler.ToWebsocket()
 
-	//发送消息，为了避免高并发下对client的竞争，这里加了锁   此处逻辑有问题  锁应该加在并发外  先是打个卡   后面修改 今天时2021.12.31今晚车队有跨年活动
-	var mu sync.Mutex
-	mu.Lock() //加锁
-	if err := client.WriteMessage(messageType, print); err != nil {
+	//发送消息
+	if err := client.Conn.WriteMessage(messageType, print); err != nil {
 		owllog.OwlLogWebsocketServer.Info(owltools.JoinString("Write error:", err.Error()))
 	}
-	mu.Unlock() //发送完消息解锁
 
 }
