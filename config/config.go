@@ -50,6 +50,11 @@ type OwlConfig struct {
 	HttpsClient_InsecureSkipVerify           string //当开启HTTPS模式后，owlcache之间互相通讯时是否校验证书。值为0(关闭)、1(开启)。默认关闭。开启时不会校验证书合法性。
 	Open_Websocket_Server                    string //是否开启Websocket Server。值为0(关闭)、1(开启)。默认关闭。
 	GroupData_Mode                           string //owlcache集群方式，分为“Http”(短链接)和“Websocket”(长链接)，两个选项，默认是“Http”短链接。
+	Websocket_Client_WriteWait               string //客户端写超时。单位秒。默认10秒。
+	Websocket_Client_MaxMessageSize          string //客户端支持接受的消息最大长度，单位字节。默认7000000字节。
+	Websocket_Client_MinRecTime              string //客户端断开与服务端后最小重连时间间隔。单位秒。默认2秒。
+	Websocket_Client_MaxRecTime              string //客户端断开与服务端后最大重连时间间隔。单位秒。默认60秒。
+	Websocket_Client_MessageBufferSize       string //客户端消息发送缓冲池大小，单位字节。默认1024字节。
 	CloseTcp                                 string //是否关闭Tcp服务(因为TCP模式下无密码认证)  值为"1"(开启)和"0"(关闭)。默认为1开启服务。
 	Cors                                     string //是否开启跨域
 	Access_Control_Allow_Origin              string //设置指定的域
@@ -101,6 +106,11 @@ func NewDefaultOwlConfig() *OwlConfig {
 		HttpsClient_InsecureSkipVerify:           "0",
 		Open_Websocket_Server:                    "0",
 		GroupData_Mode:                           "Http",
+		Websocket_Client_WriteWait:               "10",
+		Websocket_Client_MaxMessageSize:          "7000000",
+		Websocket_Client_MinRecTime:              "2",
+		Websocket_Client_MaxRecTime:              "60",
+		Websocket_Client_MessageBufferSize:       "1024",
 		CloseTcp:                                 "1",
 		Cors:                                     "0",
 		Access_Control_Allow_Origin:              "*",
@@ -288,6 +298,21 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["GroupData_Mode"]) >= 1 {
 		param.GroupData_Mode = config["GroupData_Mode"]
+	}
+	if len(config["Websocket_Client_WriteWait"]) >= 1 {
+		param.Websocket_Client_WriteWait = config["Websocket_Client_WriteWait"]
+	}
+	if len(config["Websocket_Client_MaxMessageSize"]) >= 1 {
+		param.Websocket_Client_MaxMessageSize = config["Websocket_Client_MaxMessageSize"]
+	}
+	if len(config["Websocket_Client_MinRecTime"]) >= 1 {
+		param.Websocket_Client_MinRecTime = config["Websocket_Client_MinRecTime"]
+	}
+	if len(config["Websocket_Client_MaxRecTime"]) >= 1 {
+		param.Websocket_Client_MaxRecTime = config["Websocket_Client_MaxRecTime"]
+	}
+	if len(config["Websocket_Client_MessageBufferSize"]) >= 1 {
+		param.Websocket_Client_MessageBufferSize = config["Websocket_Client_MessageBufferSize"]
 	}
 	if len(config["CloseTcp"]) >= 1 {
 		param.CloseTcp = config["CloseTcp"]
