@@ -25,7 +25,7 @@
 * 🎨使用简单，操作命令只有几个
 * ⚔️身份认证
 * 📝日志记录
-* 🔭**同时支持TCP、HTTP/HTTPS两种方式连接**  
+* 🔭**支持TCP和HTTP/HTTPS、WebSocket(搜索)连接**  
 * 🍻**支持Memcache、Redis(String)、Url数据对接**  
 
 
