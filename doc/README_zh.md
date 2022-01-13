@@ -37,6 +37,9 @@
 - 📝[English](en/0.directory.md)
 
 ## 如何编译
+<details>
+<summary>Show</summary>  
+
 
 编译环境要求
 * golang >= 1.9
@@ -51,13 +54,13 @@ go get -u github.com/xssed/owlcache
 
 #### ⚠⚠⚠如果你的Go语言环境开启了`GOMOD`,你需要在电脑本地创建一个目录,进入该目录，再次执行`git clone https://github.com/xssed/owlcache.git`命令将源代码下载. 
 
-## 编译
+### 编译
 * 进入owlcache主目录执行编译命令(GOPATH模式下进入GOPATH目录的owlcache主目录，GOMOD模式则进入上一步提示中你自己创建的本地目录)
 ```shell
 go build
 ```
 
-## 运行
+### 运行
 * 注意owlcache.conf文件要跟主程序同目录（下面有介绍动态的设置owlcache.conf文件路径参数）。    
 * .conf配置文件必须是统一的UTF-8编码。    
 * 请先给在配置文件owlcache.conf中设置<Pass>选项。  
@@ -103,9 +106,11 @@ Usage of owlcache:
 ```shell
 owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/ -pass 1245!df2A
 ```
+</details>
 
-# 简单使用示例
-## 单节点获取Key值
+
+## 简单使用示例
+### 单节点获取Key值
 * TCP
 命令: `get <key>\n`
 ~~~shell
@@ -136,7 +141,7 @@ Keycreatetime: 2021-11-26 18:12:45.1932019 +0800 CST
 Responsehost: 127.0.0.1:7721  
 
 
-## 单节点获取Key值的信息
+### 单节点获取Key值的信息
 * TCP
 命令: `get <key> info\n`
 ~~~shell
@@ -163,7 +168,7 @@ get hello info\n
 
 **注意HTTP请求返回的HTTP状态码，解释请参考“通讯协议”章节。**
 
-## 集群获取Key值
+### 集群获取Key值
 * 假设现在有三个owlcache HTTP服务:127.0.0.1:7721、127.0.0.1:7723、127.0.0.1:7725。每个服务中都有一个Key名称叫hello的数据。
 
 
@@ -185,7 +190,7 @@ world
 得到的结果是集群查询中更新时间最新的那一个值。
 
 
-## 集群获取Key值的信息
+### 集群获取Key值的信息
 ~~~shell
 http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info
 ~~~

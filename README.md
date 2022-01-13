@@ -37,7 +37,10 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 - 📝[English](doc/en/0.directory.md)
 
 ## How to compile
+<details>
+<summary>Show</summary>  
 
+### How to compile
 Compilation environment requirements
 * golang >= 1.9
 
@@ -50,14 +53,14 @@ go get -u github.com/xssed/owlcache
 
 #### ⚠⚠⚠If 'go mod' is ON in your go locale, you need to create a directory locally on your computer, enter the directory, and execute ` git clone https://github.com/xssed/owlcache.git `Command to download the source code.
 
-## Build
+### Build
 * Enter the owlcache home directory and execute the compilation command (in gopath mode, enter the owlcache home directory of gopath directory, and in gomod mode, enter the local directory you created in the previous prompt) 
 
 ```shell
 go build
 ```
 
-## Run
+### Run
 * Note that the owlcache.conf file should be in the same directory as the main program.     
 * The .conf configuration file must be a uniform UTF-8 encoding.  
 * Set the <Pass> option in the configuration file owlcache.conf.     
@@ -103,9 +106,12 @@ Example with configuration parameter run
 ```shell
 owlcache -config /var/home/owl.conf -host 127.0.0.1 -log /var/log/ -pass 1245!df2A
 ```
+</details>
 
-# Simple use example
-## Single node to get the Key value
+
+
+## Simple use example
+### Single node to get the Key value
 * TCP
 command: `get <key>\n`
 ~~~shell
@@ -136,7 +142,7 @@ Keycreatetime: 2021-11-26 18:12:45.1932019 +0800 CST
 Responsehost: 127.0.0.1:7721  
 
 
-## Single node to get the Key value info
+### Single node to get the Key value info
 * TCP
 command: `get <key> info\n`
 ~~~shell
@@ -164,7 +170,7 @@ Response result example:
 
 **Attention to the HTTP Status code returned by the HTTP Request. please refer to the "Protocol" chapter.**
 
-## The cluster obtains the Key value.
+### The cluster obtains the Key value.
 * Suppose there are now three owlcache HTTP services: 127.0.0.1: 7721, 127.0.0.1:7723, 127.0.0.1:7725. Each service has a data called **Key** called **hello**.
 
 
@@ -186,7 +192,7 @@ world
 The result obtained is the latest value of the update time in the cluster query.
 
 
-## The cluster obtains the key value information
+### The cluster obtains the key value information
 ~~~shell
 http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info
 ~~~
