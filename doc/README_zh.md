@@ -227,8 +227,10 @@ http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info
 ## ......更多请参阅文档的详细说明
 
 ## 设计  
-
+<details>
+<summary>Show</summary> 
 ![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_zh.png?raw=true)
+</details>
 
 ## 开发与讨论(不接商业合作)
 - 联系我📪:xsser@xsser.cc
