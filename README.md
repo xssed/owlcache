@@ -231,8 +231,10 @@ The result is the information about which node in the cluster owns this Key.
 
 ## Design  
 <details>
-<summary>Show</summary> 
-![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_en.png?raw=true)
+<summary>Show</summary>   
+
+![Image text](https://github.com/xssed/owlcache/blob/master/doc/assets/works_en.png?raw=true)  
+
 </details>
 
 ## Development and discussion(not involved in business cooperation)
