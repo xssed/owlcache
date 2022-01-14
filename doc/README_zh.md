@@ -129,6 +129,13 @@ get hello\n
 ~~~shell
 http://127.0.0.1:7721/data/?cmd=get&key=hello
 ~~~
+
+* Websocket
+command: `get <key>`
+~~~shell
+get hello
+~~~
+
 <br>
 
 响应结果例子:
@@ -151,7 +158,17 @@ get hello info\n
 * HTTP
 >owlcache 版本 >= 0.4.2, Http不再支持 'info'
 
-~~http://127.0.0.1:7721/data/?cmd=get&key=hello&valuedata=info~~
+~~`http://127.0.0.1:7721/data/?cmd=get&key=hello&valuedata=info`~~
+
+* Websocket
+命令: `get <key> info <Custom return string (not necessary, such as UUID)>`
+~~~shell
+get hello info
+~~~
+或者
+~~~shell
+get hello info 5c9eff00-3bed-4113-a095-2f3c771683d9
+~~~
 
 响应结果例子:
 ~~~shell
@@ -160,7 +177,7 @@ get hello info\n
     "Status": 200,
     "Results": "SUCCESS",
     "Key": "hello",
-    "Data": "",
+    "Data": "d29ybGQ=",
     "ResponseHost": "127.0.0.1:7721",
     "KeyCreateTime": "2021-11-09T14:12:36.8431596+08:00"
 }
@@ -201,18 +218,21 @@ http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info
 [
     {
         "Address": "127.0.0.1:7721",
+        "Data": "d29ybGQ=",
         "Key": "hello",
         "KeyCreateTime": "2021-11-26T18:12:45.1932019+08:00",
         "Status": 200
     },
     {
         "Address": "127.0.0.1:7723",
+        "Data": "d29ybGQ=",
         "Key": "hello",
         "KeyCreateTime": "2021-11-12T11:34:53.0952566+08:00",
         "Status": 200
     },
     {
         "Address": "127.0.0.1:7725",
+        "Data": "d29ybGQ=",
         "Key": "hello",
         "KeyCreateTime": "2021-11-11T11:34:53.0952522+08:00",
         "Status": 200

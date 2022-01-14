@@ -130,6 +130,13 @@ Note: HTTP access data is not verified by password, only other operations that c
 ~~~shell
 http://127.0.0.1:7721/data/?cmd=get&key=hello
 ~~~
+
+* Websocket
+command: `get <key>`
+~~~shell
+get hello
+~~~
+
 <br>
 
 Response result example:
@@ -152,8 +159,17 @@ get hello info\n
 * HTTP
 >owlcache version >= 0.4.2, http no longer supports 'info'
 
-~~http://127.0.0.1:7721/data/?cmd=get&key=hello&valuedata=info~~
+~~`http://127.0.0.1:7721/data/?cmd=get&key=hello&valuedata=info`~~
 
+* Websocket
+command: `get <key> info <Custom return string (not necessary, such as UUID)>`
+~~~shell
+get hello info
+~~~
+or
+~~~shell
+get hello info 5c9eff00-3bed-4113-a095-2f3c771683d9
+~~~
 
 Response result example:
 ~~~shell
@@ -162,7 +178,7 @@ Response result example:
     "Status": 200,
     "Results": "SUCCESS",
     "Key": "hello",
-    "Data": "",
+    "Data": "d29ybGQ=",
     "ResponseHost": "127.0.0.1:7721",
     "KeyCreateTime": "2021-11-09T14:12:36.8431596+08:00"
 }
@@ -203,18 +219,21 @@ Response result example:
 [
     {
         "Address": "127.0.0.1:7721",
+        "Data": "d29ybGQ=",
         "Key": "hello",
         "KeyCreateTime": "2021-11-26T18:12:45.1932019+08:00",
         "Status": 200
     },
     {
         "Address": "127.0.0.1:7723",
+        "Data": "d29ybGQ=",
         "Key": "hello",
         "KeyCreateTime": "2021-11-12T11:34:53.0952566+08:00",
         "Status": 200
     },
     {
         "Address": "127.0.0.1:7725",
+        "Data": "d29ybGQ=",
         "Key": "hello",
         "KeyCreateTime": "2021-11-11T11:34:53.0952522+08:00",
         "Status": 200
