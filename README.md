@@ -70,6 +70,7 @@ Linux
 ./owlcache
 ```
 Windows (DOS)  
+* If you plan to use cmd.exe to run owlcache for a long time, please right-click and select [Properties]->[Options]->Close [Quick Edit Mode] and [Insert Mode] in the pop-up menu, otherwise long-running owlcache will appear Caton or dormancy phenomenon.     
 ```shell
 owlcache
 ```
