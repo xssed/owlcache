@@ -137,34 +137,49 @@ func (owlhandler *OwlHandler) Set() {
 
 func (owlhandler *OwlHandler) Expire() {
 
-	ok := BaseCacheDB.Expire(owlhandler.owlrequest.Key, owlhandler.owlrequest.Expires)
-	if ok {
-		owlhandler.Transmit(SUCCESS)
-	} else {
-		owlhandler.Transmit(ERROR)
-	}
+	//判断要设置过期的Key是否存在
+	exist := BaseCacheDB.Exists(owlhandler.owlrequest.Key)
+	if exist {
+		ok := BaseCacheDB.Expire(owlhandler.owlrequest.Key, owlhandler.owlrequest.Expires)
+		if ok {
+			owlhandler.Transmit(SUCCESS)
+		} else {
+			owlhandler.Transmit(ERROR)
+		}
 
-	//判断一致性数据同步-设置Key过期
-	if owlconfig.OwlConfigModel.GroupDataSync == "1" {
-		//发送数据到集群
-		gossip.Expire(owlhandler.owlrequest.Key, owlhandler.owlrequest.Expires)
+		//判断一致性数据同步-设置Key过期
+		if owlconfig.OwlConfigModel.GroupDataSync == "1" {
+			//发送数据到集群
+			gossip.Expire(owlhandler.owlrequest.Key, owlhandler.owlrequest.Expires)
+		}
+
+	} else {
+		owlhandler.Transmit(NOT_FOUND)
 	}
 
 }
 
 func (owlhandler *OwlHandler) Delete() {
 
-	ok := BaseCacheDB.Delete(owlhandler.owlrequest.Key)
-	if ok {
-		owlhandler.Transmit(SUCCESS)
-	} else {
-		owlhandler.Transmit(ERROR)
-	}
+	//判断要删除的Key是否存在
+	exist := BaseCacheDB.Exists(owlhandler.owlrequest.Key)
+	if exist {
+		//数据存在删除它
+		ok := BaseCacheDB.Delete(owlhandler.owlrequest.Key)
+		if !ok {
+			owlhandler.Transmit(SUCCESS)
+		} else {
+			owlhandler.Transmit(ERROR)
+		}
 
-	//判断一致性数据同步-删除Key
-	if owlconfig.OwlConfigModel.GroupDataSync == "1" {
-		//发送数据到集群
-		gossip.Delete(owlhandler.owlrequest.Key)
+		//判断一致性数据同步-删除Key
+		if owlconfig.OwlConfigModel.GroupDataSync == "1" {
+			//发送数据到集群
+			gossip.Delete(owlhandler.owlrequest.Key)
+		}
+
+	} else {
+		owlhandler.Transmit(NOT_FOUND)
 	}
 
 }
