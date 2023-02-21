@@ -39,6 +39,7 @@ func (baseCache *BaseCache) Expire(key string, lifeTime time.Duration) bool {
 }
 
 //删除一条内容
+//*注意这个方法执行删除Key后，返回的是查询这个Key还是否存在的结果!!!
 func (baseCache *BaseCache) Delete(key string) bool {
 	baseCache.KvStoreItems.Delete(key)
 	_, ok := baseCache.Get(key)
