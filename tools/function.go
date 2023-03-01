@@ -156,6 +156,12 @@ func Base64Decode(input string, mode string) []byte {
 	return uDec
 }
 
+//判断字符串是不是Base64编码
+func IsBase64(s string) bool {
+	_, err := base64.StdEncoding.DecodeString(s)
+	return err == nil
+}
+
 //两个字符串数字进行相减，将得到的数字再转换为字符串返回
 func DoubleNumberStringSubToString(sub1 string, sub2 string) string {
 	num1, err1 := strconv.Atoi(sub1)

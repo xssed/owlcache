@@ -19,6 +19,7 @@ type OwlConfig struct {
 	DBfile                                   string //数据库文件路径
 	Pass                                     string //owlcache密钥
 	Tonken_expire_time                       string //为Pass命令产生的Tonken值设置一个过期时间
+	Tonken_jwt_secret                        string //设置Tonken值的密钥
 	Host                                     string //主机地址
 	ResponseHost                             string //程序响应IP,在TCP、HTTP返回的响应结果Json字符串中使用
 	Tcpport                                  string //Tcp监听端口
@@ -75,6 +76,7 @@ func NewDefaultOwlConfig() *OwlConfig {
 		DBfile:                                   "",
 		Pass:                                     "",
 		Tonken_expire_time:                       "0",
+		Tonken_jwt_secret:                        "hello_owlcache",
 		Host:                                     "0.0.0.0",
 		ResponseHost:                             "127.0.0.1",
 		Tcpport:                                  "7720",
@@ -210,6 +212,9 @@ func ConfigBind(config map[string]string, param *OwlConfig) {
 	}
 	if len(config["Tonken_expire_time"]) > 1 {
 		param.Tonken_expire_time = config["Tonken_expire_time"]
+	}
+	if len(config["Tonken_jwt_secret"]) > 1 {
+		param.Tonken_jwt_secret = config["Tonken_jwt_secret"]
 	}
 	if len(config["Logfile"]) > 3 {
 		//!!!如果在命令行中启动服务时指定了Logfile值，而配置文件这里没有注释掉则会以配置文件为准

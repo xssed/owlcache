@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/armon/go-metrics v0.3.9 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/elazarl/goproxy v0.0.0-20210801061803-8e322dfb79c4 // indirect
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/gofrs/uuid v4.0.0+incompatible

@@ -13,6 +13,7 @@ import (
 	owlconfig "github.com/xssed/owlcache/config"
 	owllog "github.com/xssed/owlcache/log"
 	owltools "github.com/xssed/owlcache/tools"
+	owltoken "github.com/xssed/owlcache/tools/token"
 )
 
 //执行K/V数据查询,本地内存数据库->Memcache(如果开启)->Redis(如果开启）
@@ -188,13 +189,18 @@ func (owlhandler *OwlHandler) Delete() {
 func (owlhandler *OwlHandler) Pass(r *http.Request) {
 
 	if owlconfig.OwlConfigModel.Pass == owlhandler.owlrequest.Pass {
-		//token=md5(ip+uuid)
+		//token_id=md5(ip+uuid)
 		uuid := owltools.GetUUIDString()
 		ip := owltools.RemoteAddr2IPAddr(r.RemoteAddr)
-		token := owltools.GetMd5String(ip + uuid)
+		token_id := owltools.GetMd5String(ip + uuid)
 		expiration, _ := time.ParseDuration(owlconfig.OwlConfigModel.Tonken_expire_time + "s")
-		BaseAuth.Set(token, []byte(ip), expiration)
-		//在返回值中添加UUID返回
+		BaseAuth.Set(token_id, []byte(ip), expiration)
+		//创建JWT标准化token
+		token, generate_err := owltoken.GenerateToken(token_id)
+		if generate_err != nil {
+			owlhandler.Transmit(ERROR)
+			return
+		}
 		owlhandler.owlresponse.Data = []byte(token)
 		owlhandler.owlresponse.KeyCreateTime = time.Now()
 		owlhandler.Transmit(SUCCESS)
@@ -207,9 +213,23 @@ func (owlhandler *OwlHandler) Pass(r *http.Request) {
 //验证权限
 func (owlhandler *OwlHandler) CheckAuth(r *http.Request) bool {
 
-	token := string(owltools.Base64Decode(owlhandler.owlrequest.Token, "url"))
+	//先判断字符串是不是Base64编码如果是就解析
+	if owltools.IsBase64(owlhandler.owlrequest.Token) {
+		decode_token := string(owltools.Base64Decode(owlhandler.owlrequest.Token, "url"))
+		if string(decode_token) == "" {
+			return false
+		}
+		owlhandler.owlrequest.Token = decode_token //重新赋值
+	}
+
+	token, parse_err := owltoken.ParseToken(owlhandler.owlrequest.Token)
+	//解析出错或者token过期
+	if parse_err != nil || token == nil {
+		return false
+	}
+	token_id := token.TokenId
 	ip := owltools.RemoteAddr2IPAddr(r.RemoteAddr)
-	v, found := BaseAuth.Get(token)
+	v, found := BaseAuth.Get(token_id)
 	if found == true {
 		if string(v) == ip {
 			return true
