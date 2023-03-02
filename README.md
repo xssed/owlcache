@@ -11,7 +11,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 
 </div>
 
- 🦉owlcache is a lightweight, high-performance, non-centralized, distributed Key/Value in-memory Cache written in Go.It is a high-performance data middleware (both single-node and node clusters are applicable), and provides a variety of data get and import methods.You can query a node's key to get all the content with the same key in the node cluster. After operating the Key of a node, the data will be automatically synchronized to all node clusters.       
+ 🦉owlcache is a lightweight, high-performance, non-centralized, distributed Key/Value in-memory Cache written in Go.It is an independent process and high-performance data middleware, and provides a variety of data get and import methods.You can query a node's key to get all the content with the same key in the node cluster. After operating the Key of a node, the data will be automatically synchronized to all node clusters.       
 
 
 ## Highlights and features
