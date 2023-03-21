@@ -37,11 +37,10 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 - 📝[English](doc/en/0.directory.md)
 
 
-## Sub project     
+## Sub Project
 
-    🦌 deerfs:Using it, you can build a simple decentralized file system. Project address:<a href="https://github.com/xssed/deerfs" target="_blank"> deerfs</a>     
-    
-    
+   🦌 deerfs:Using it, you can build a simple decentralized file system. Project address:<a href="https://github.com/xssed/deerfs" target="_blank"> deerfs</a>
+
 
 ## How to compile
 <details>
