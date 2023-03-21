@@ -36,6 +36,12 @@
 - 📝[中文简体](zh/0.directory.md)
 - 📝[English](en/0.directory.md)
 
+## 子项目     
+
+    🦌 deerfs:使用它，您可以构建一个简单的无中心分布式文件系统。项目地址:<a href="https://github.com/xssed/deerfs" target="_blank"> deerfs</a>     
+    
+    
+
 ## 如何编译
 <details>
 <summary>Show</summary>  
