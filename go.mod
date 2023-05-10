@@ -22,9 +22,9 @@ require (
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/parnurzeal/gorequest v0.2.16
 	github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
+	github.com/smartystreets/goconvey v1.7.2 // indirect
 	github.com/togettoyou/wsc v1.3.1
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/net v0.0.0-20211013171255-e13a2654a71e // indirect
-	golang.org/x/sys v0.0.0-20211013075003-97ac67df715c // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	moul.io/http2curl v1.0.0 // indirect
 )
