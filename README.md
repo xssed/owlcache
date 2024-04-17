@@ -263,6 +263,11 @@ The result is the information about which node in the cluster owns this Key.
 
 </details>
 
+## FAQ 
+
+#### 1.owlcache does not have master-slave mode. If a key is written to a node and the node crashes, then the key cannot be accessed?？  
+> The author believes that the master-slave mode will occupy a lot of server resources and cause excessive data redundancy. It is recommended that important keys can be written to more than two nodes at the same time when setting, so that the access to keys is almost unaffected in the relative case. If all nodes in the cluster are down, it is really impossible to access the key.
+
 ## Development and discussion(not involved in business cooperation)
 - Email📪:xsser@xsser.cc
 - Homepage🛀:https://www.xsser.cc
