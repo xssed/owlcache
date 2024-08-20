@@ -266,7 +266,13 @@ The result is the information about which node in the cluster owns this Key.
 ## FAQ 
 
 #### 1.owlcache does not have master-slave mode. If a key is written to a node and the node crashes, then the key cannot be accessed?？  
-> The author believes that the master-slave mode will occupy a lot of server resources and cause excessive data redundancy. It is recommended that important keys can be written to more than two nodes at the same time when setting, so that the access to keys is almost unaffected in the relative case. If all nodes in the cluster are down, it is really impossible to access the key.
+> The author believes that the master-slave mode will occupy a lot of server resources and cause excessive data redundancy. It is recommended that important keys can be written to more than two nodes at the same time when setting, so that the access to keys is almost unaffected in the relative case. If all nodes in the cluster are down, it is really impossible to access the key.   
+
+#### 2.How to choose the cluster mode of owlcache?  
+> There are three clustering modes of owlcache, namely "Http" (short link), "Websocket" (long link) and "Gossip" (data is eventually consistent).  
+> ★If your business volume is small, you can choose the "Http" (short link) cluster method.  
+> ★If your business volume is large, you can choose the "Websocket" (long link) cluster method.   
+> ★The "Gossip" (data eventually consistent) clustering method does not conflict with the previous two clustering methods, and they can coexist. However, you need to pay attention to the configuration items and debug the complex server network environment. You can understand that the previous two methods are active clustering, and the latter is passive clustering.    
 
 ## Development and discussion(not involved in business cooperation)
 - Email📪:xsser@xsser.cc
