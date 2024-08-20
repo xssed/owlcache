@@ -13,7 +13,7 @@ import (
 )
 
 //发起请求获取URL数据并进行缓存处理
-func (owlhandler *OwlHandler) GeUrlCacheData(w http.ResponseWriter, r *http.Request) (http.ResponseWriter, []byte) {
+func (owlhandler *OwlHandler) GetUrlCacheData(w http.ResponseWriter, r *http.Request) (http.ResponseWriter, []byte) {
 
 	//先去查询内存数据库中是否存在这个值
 	//设置Key值,定位到Uri
@@ -35,78 +35,83 @@ func (owlhandler *OwlHandler) GeUrlCacheData(w http.ResponseWriter, r *http.Requ
 		return w, print
 	} else {
 		//未查询到数据后去请求URL数据缓存到本地
+		return owlhandler.GetUrlCacheExe(w, r, print)
+	}
 
-		//站点索引值
-		var site_index *int
-		//处理查找的站点索引值
-		//未设置初始值，错误参数，超出索引边界都将设置为默认值0
-		if (r.FormValue("uc_site")) != "" {
-			temp_index, cerr := strconv.Atoi(r.FormValue("uc_site"))
-			//参数错误,超出索引边界
-			if cerr != nil || temp_index+1 > len(owlconfig.OwlUCConfigModel.SiteList) {
-				temp_index = 0
-			}
-			site_index = &temp_index
-		} else {
-			var temp_index int = 0
-			site_index = &temp_index
+}
+
+//未查询到数据后去请求URL数据缓存到本地
+func (owlhandler *OwlHandler) GetUrlCacheExe(w http.ResponseWriter, r *http.Request, print []byte) (http.ResponseWriter, []byte) {
+
+	//站点索引值
+	var site_index *int
+	//处理查找的站点索引值
+	//未设置初始值，错误参数，超出索引边界都将设置为默认值0
+	if (r.FormValue("uc_site")) != "" {
+		temp_index, cerr := strconv.Atoi(r.FormValue("uc_site"))
+		//参数错误,超出索引边界
+		if cerr != nil || temp_index+1 > len(owlconfig.OwlUCConfigModel.SiteList) {
+			temp_index = 0
 		}
-		//使用gorequest类库发起http client请求获取数据
-		resp, _, errs := owlhandler.getUrlData(site_index, key, r)
-		if errs != nil || resp.StatusCode >= 300 {
-			errstr := owltools.ErrorSliceJoinToString(errs)
-			if errstr != "" {
-				owllog.OwlLogUC.Info(owltools.JoinString("GeUrlCacheData method getUrlData error:", errstr)) //日志记录
-				//http client请求获取数据，请求异常
-				w.WriteHeader(500)
-				print = []byte(errstr)
+		site_index = &temp_index
+	} else {
+		var temp_index int = 0
+		site_index = &temp_index
+	}
+	//使用gorequest类库发起http client请求获取数据
+	resp, _, errs := owlhandler.getUrlData(site_index, owlhandler.owlrequest.Key, r)
+	if errs != nil || resp.StatusCode >= 300 {
+		errstr := owltools.ErrorSliceJoinToString(errs)
+		if errstr != "" {
+			owllog.OwlLogUC.Info(owltools.JoinString("GetUrlCacheData method getUrlData error:", errstr)) //日志记录
+			//http client请求获取数据，请求异常
+			w.WriteHeader(500)
+			print = []byte(errstr)
+			return w, print
+		}
+	}
+
+	defer resp.Body.Close() //资源释放
+	body, ioerr := ioutil.ReadAll(resp.Body)
+	if ioerr != nil {
+		owllog.OwlLogUC.Info(owltools.JoinString("GetUrlCacheData method getUrlData ioutil.ReadAll error:", ioerr.Error())) //日志记录
+		//响应数据读取异常
+		w.WriteHeader(500)
+		print = []byte(ioerr.Error())
+		return w, print
+	}
+	// out, _ := os.Create("io.jpg")
+	// io.Copy(out, bytes.NewReader(body))
+
+	//数据处理成功，内容赋值部分
+	owlhandler.Transmit(SUCCESS)
+	owlhandler.owlresponse.Key = owlhandler.owlrequest.Key
+	owlhandler.owlresponse.Data = body
+
+	if owlhandler.owlresponse.Data != nil {
+		w.WriteHeader(200)
+		print = owlhandler.owlresponse.Data
+		//将数据存储到内存数据库
+		//设置站点配置信息
+		site := owlconfig.OwlUCConfigModel.SiteList[*site_index]
+		//先判断是否要验证tonken
+		if site.CheckToken == 1 {
+			if !owlhandler.CheckAuth(r) {
+				owllog.OwlLogUC.Info(owltools.JoinString("Key:", owlhandler.owlrequest.Key, " Token verification is not pass, no write in database.")) //日志记录
+				//验证未通过，不存储数据，直接返回数据信息
 				return w, print
 			}
 		}
-
-		defer resp.Body.Close() //资源释放
-		body, ioerr := ioutil.ReadAll(resp.Body)
-		if ioerr != nil {
-			owllog.OwlLogUC.Info(owltools.JoinString("GeUrlCacheData method getUrlData ioutil.ReadAll error:", ioerr.Error())) //日志记录
-			//响应数据读取异常
-			w.WriteHeader(500)
-			print = []byte(ioerr.Error())
-			return w, print
-		}
-		// out, _ := os.Create("io.jpg")
-		// io.Copy(out, bytes.NewReader(body))
-
-		//数据处理成功，内容赋值部分
-		owlhandler.Transmit(SUCCESS)
-		owlhandler.owlresponse.Key = key
-		owlhandler.owlresponse.Data = body
-
-		if owlhandler.owlresponse.Data != nil {
-			w.WriteHeader(200)
-			print = owlhandler.owlresponse.Data
-			//将数据存储到内存数据库
-			//设置站点配置信息
-			site := owlconfig.OwlUCConfigModel.SiteList[*site_index]
-			//先判断是否要验证tonken
-			if site.CheckToken == 1 {
-				if !owlhandler.CheckAuth(r) {
-					owllog.OwlLogUC.Info(owltools.JoinString("Key:", key, " Token verification is not pass, no write in database.")) //日志记录
-					//验证未通过，不存储数据，直接返回数据信息
-					return w, print
-				}
-			}
-			//存储信息
-			owlhandler.owlrequest.Value = print
-			exptime := time.Duration(site.KeyExpire) * time.Second
-			owlhandler.owlrequest.Expires = exptime
-			owlhandler.Set()
-			//返回数据信息
-			return w, print
-		} else {
-			print = []byte("GeUrlCacheData method getUrlData Data is empty!")
-			return w, print
-		}
-
+		//存储信息
+		owlhandler.owlrequest.Value = print
+		exptime := time.Duration(site.KeyExpire) * time.Second
+		owlhandler.owlrequest.Expires = exptime
+		owlhandler.Set()
+		//返回数据信息
+		return w, print
+	} else {
+		print = []byte("GetUrlCacheData method getUrlData Data is empty!")
+		return w, print
 	}
 
 }

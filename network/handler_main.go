@@ -109,7 +109,7 @@ func (owlhandler *OwlHandler) HTTPGroupDataHandle(w http.ResponseWriter, r *http
 //UrlCache数据执行信息
 func (owlhandler *OwlHandler) UCDataHandle(w http.ResponseWriter, r *http.Request) (http.ResponseWriter, []byte) {
 
-	w, print := owlhandler.GeUrlCacheData(w, r)
+	w, print := owlhandler.GetUrlCacheData(w, r)
 	return w, print
 
 }
