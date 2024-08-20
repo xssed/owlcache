@@ -272,7 +272,7 @@ The result is the information about which node in the cluster owns this Key.
 > There are three clustering modes of owlcache, namely "Http" (short link), "Websocket" (long link) and "Gossip" (data is eventually consistent).  
 > ★If your business volume is small, you can choose the "Http" (short link) cluster method.  
 > ★If your business volume is large, you can choose the "Websocket" (long link) cluster method.   
-> ★The "Gossip" (data eventually consistent) clustering method does not conflict with the previous two clustering methods, and they can coexist. However, you need to pay attention to the configuration items and debug the complex server network environment. You can understand that the previous two methods are active clustering, and the latter is passive clustering.    
+> ★The "Gossip" (data eventually consistent) clustering method does not conflict with the previous two clustering methods, and they can coexist. However, you need to pay attention to the configuration items and debug the complex server network environment. You can understand that the previous two methods are active clustering, and the latter is passive clustering,Used to synchronize data in the cluster.    
 
 ## Development and discussion(not involved in business cooperation)
 - Email📪:xsser@xsser.cc
