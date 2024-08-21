@@ -11,7 +11,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 
 </div>
 
- 🦉owlcache is a lightweight, high-performance, non-centralized, distributed Key/Value in-memory Cache written in Go.It is an independent process and high-performance data middleware, and provides a variety of data get and import methods.You can query a node's key to get all the content with the same key in the node cluster. After operating the Key of a node, the data will be automatically synchronized to all node clusters.       
+ 🦉owlcache is a lightweight, high-performance, non-centralized, distributed Key/Value in-memory Cache written in Go.It is an independent process and high-performance data middleware, and provides a variety of data get and import methods.You can query a node's key to get all the content with the same key in the node cluster(One Key to Many Values). After operating the Key of a node, the data will be automatically synchronized to all node clusters.       
 
 
 ## Highlights and features
@@ -19,6 +19,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 * 💡Cross-platform operation
 * 🚀Single node ultra high performance
 * ⛓Non-centralized, distributed
+* 🎯One Key to Many Values
 * 🌈Data concurrency security
 * 🔍Support data expiration
 * 🖥Key/Value Data storage
@@ -266,7 +267,7 @@ The result is the information about which node in the cluster owns this Key.
 ## FAQ 
 
 #### 1.owlcache does not have master-slave mode. If a key is written to a node and the node crashes, then the key cannot be accessed?？  
-> The author believes that the master-slave mode will occupy a lot of server resources and cause excessive data redundancy. It is recommended that important keys can be written to more than two nodes at the same time when setting, so that the access to keys is almost unaffected in the relative case. If all nodes in the cluster are down, it is really impossible to access the key.   
+> The author believes that the master-slave mode will occupy a lot of server resources and cause excessive data redundancy(Exception: One Key maps multiple values). It is recommended that important keys can be written to more than two nodes at the same time when setting, so that the access to keys is almost unaffected in the relative case. If all nodes in the cluster are down, it is really impossible to access the key.   
 
 #### 2.How to choose the cluster mode of owlcache?  
 > There are three clustering modes of owlcache, namely "Http" (short link), "Websocket" (long link) and "Gossip" (data is eventually consistent).  
