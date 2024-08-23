@@ -10,6 +10,7 @@ import (
 	owllog "github.com/xssed/owlcache/log"
 	"github.com/xssed/owlcache/network/memcacheclient"
 	"github.com/xssed/owlcache/network/redisclient"
+	"golang.org/x/sync/singleflight"
 )
 
 //创建一个全局的缓存DB
@@ -35,6 +36,9 @@ var MemcacheClientRequestErrorCounter *counter.Counter
 
 //创建一个全局的RedisClient错误请求控制计数器
 var RedisClientRequestErrorCounter *counter.Counter
+
+//创建一个全局的singleflight控制器-urlcache专用
+var SingleFlightGroupUC singleflight.Group
 
 func BaseCacheDBInit() {
 

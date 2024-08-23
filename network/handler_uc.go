@@ -1,6 +1,7 @@
 package network
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -58,68 +59,87 @@ func (owlhandler *OwlHandler) GetUrlCacheExe(w http.ResponseWriter, r *http.Requ
 		var temp_index int = 0
 		site_index = &temp_index
 	}
-	//使用gorequest类库发起http client请求获取数据
-	resp, _, errs := owlhandler.getUrlData(site_index, owlhandler.owlrequest.Key, r)
-	if errs != nil || resp.StatusCode >= 300 {
-		errstr := owltools.ErrorSliceJoinToString(errs)
-		if errstr != "" {
-			owllog.OwlLogUC.Info(owltools.JoinString("GetUrlCacheData method getUrlData error:", errstr)) //日志记录
-			//http client请求获取数据，请求异常
-			w.WriteHeader(500)
-			print = []byte(errstr)
-			return w, print
-		}
-	}
 
-	defer resp.Body.Close() //资源释放
-	body, ioerr := ioutil.ReadAll(resp.Body)
-	if ioerr != nil {
-		owllog.OwlLogUC.Info(owltools.JoinString("GetUrlCacheData method getUrlData ioutil.ReadAll error:", ioerr.Error())) //日志记录
-		//响应数据读取异常
+	//使用gorequest类库发起http client请求获取数据
+	resp, errs := owlhandler.getUrlDataExe(site_index, owlhandler.owlrequest.Key, r)
+	//有错误,报出异常
+	if errs != nil {
 		w.WriteHeader(500)
-		print = []byte(ioerr.Error())
+		print = []byte(errs.Error())
 		return w, print
 	}
-	// out, _ := os.Create("io.jpg")
-	// io.Copy(out, bytes.NewReader(body))
 
 	//数据处理成功，内容赋值部分
 	owlhandler.Transmit(SUCCESS)
 	owlhandler.owlresponse.Key = owlhandler.owlrequest.Key
-	owlhandler.owlresponse.Data = body
+	owlhandler.owlresponse.Data = resp.Byte_slices
+	print = owlhandler.owlresponse.Data
+	w.WriteHeader(200)
+	return w, print
 
-	if owlhandler.owlresponse.Data != nil {
-		w.WriteHeader(200)
-		print = owlhandler.owlresponse.Data
-		//将数据存储到内存数据库
-		//设置站点配置信息
-		site := owlconfig.OwlUCConfigModel.SiteList[*site_index]
-		//先判断是否要验证tonken
-		if site.CheckToken == 1 {
-			if !owlhandler.CheckAuth(r) {
-				owllog.OwlLogUC.Info(owltools.JoinString("Key:", owlhandler.owlrequest.Key, " Token verification is not pass, no write in database.")) //日志记录
-				//验证未通过，不存储数据，直接返回数据信息
-				return w, print
+}
+
+func (owlhandler *OwlHandler) getUrlDataExe(index *int, key string, r *http.Request) (UCtext, error) {
+
+	//使用SingleFlight来限制高并发场景下对同一个后端接口的并发量，减缓后端接口压力
+	value, _, _ := SingleFlightGroupUC.Do(key, func() (ret interface{}, err error) {
+
+		uct := owlhandler.getUrlData(index, key, r)
+
+		defer uct.Res.Body.Close() //资源释放
+
+		//判断http client请求获取数据是否请求异常
+		if uct.Err_slices != nil || uct.Res.StatusCode >= 300 {
+			errstr := owltools.ErrorSliceJoinToString(uct.Err_slices)
+			if errstr != "" {
+				errlog := owltools.JoinString("getUrlDataExe method getUrlData error:", errstr)
+				owllog.OwlLogUC.Info(errlog) //日志记录
+				return uct, errors.New(errlog)
 			}
 		}
-		//存储信息
-		owlhandler.owlrequest.Value = print
-		exptime := time.Duration(site.KeyExpire) * time.Second
-		owlhandler.owlrequest.Expires = exptime
-		owlhandler.Set()
-		//返回数据信息
-		return w, print
-	} else {
-		print = []byte("GetUrlCacheData method getUrlData Data is empty!")
-		return w, print
-	}
+		//读取获取到的数据
+		body, ioerr := ioutil.ReadAll(uct.Res.Body)
+		//判断响应数据读取异常
+		if ioerr != nil {
+			ioutil_errlog := owltools.JoinString("getUrlDataExe method getUrlData ioutil.ReadAll error:", ioerr.Error())
+			owllog.OwlLogUC.Info(ioutil_errlog) //日志记录
+			return uct, errors.New(ioutil_errlog)
+		}
+		//判断是否获取到有效数据
+		if uint64(len(body)) > 1 {
+			//将数据存储到内存数据库
+			//设置站点配置信息
+			site := owlconfig.OwlUCConfigModel.SiteList[*index]
+			//先判断是否要验证tonken
+			if site.CheckToken == 1 {
+				//验证未通过，不存储数据
+				if !owlhandler.CheckAuth(r) {
+					un_auth_log := owltools.JoinString("Key:", owlhandler.owlrequest.Key, " Token verification is not pass, no write in database.")
+					owllog.OwlLogUC.Info(un_auth_log) //日志记录
+					return uct, errors.New(un_auth_log)
+				}
+			}
+			//存储信息
+			owlhandler.owlrequest.Key = key
+			owlhandler.owlrequest.Value = body
+			exptime := time.Duration(site.KeyExpire) * time.Second
+			owlhandler.owlrequest.Expires = exptime
+			owlhandler.Set()
+			//返回数据信息
+			return uct, nil
+		}
+		return uct, errors.New("getUrlDataExe method getUrlData Data is empty!")
+	})
+
+	return_uct, _ := value.(UCtext)
+	return return_uct, nil
 
 }
 
 //使用gorequest类库发起http client请求获取数据
 //请求 站点的索引值:index,需要查找的key值或者Uri:key,*http.Request
 //返回 gorequest.Response，http响应的byte数据，http请求的错误信息
-func (owlhandler *OwlHandler) getUrlData(index *int, key string, r *http.Request) (gorequest.Response, []byte, []error) {
+func (owlhandler *OwlHandler) getUrlData(index *int, key string, r *http.Request) UCtext {
 
 	//设置站点配置
 	site := owlconfig.OwlUCConfigModel.SiteList[*index]
@@ -178,6 +198,12 @@ func (owlhandler *OwlHandler) getUrlData(index *int, key string, r *http.Request
 	//清理资源
 	grsa.ClearSuperAgent()
 
-	return r_res, r_byte_slices, r_err_slices
+	return UCtext{Res: r_res, Byte_slices: r_byte_slices, Err_slices: r_err_slices}
 
+}
+
+type UCtext struct {
+	Res         gorequest.Response
+	Byte_slices []byte
+	Err_slices  []error
 }
