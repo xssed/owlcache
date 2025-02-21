@@ -227,27 +227,48 @@ http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info
         "Address": "127.0.0.1:7721",
         "Data": "d29ybGQ=",
         "Key": "hello",
-        "KeyCreateTime": "2021-11-26T18:12:45.1932019+08:00",
+        "KeyCreateTime": "2025-02-21T13:02:35.5876031+08:00",
         "Status": 200
     },
     {
         "Address": "127.0.0.1:7723",
         "Data": "d29ybGQ=",
         "Key": "hello",
-        "KeyCreateTime": "2021-11-12T11:34:53.0952566+08:00",
+        "KeyCreateTime": "2025-02-20T13:02:35.5876031+08:00",
         "Status": 200
     },
     {
         "Address": "127.0.0.1:7725",
         "Data": "d29ybGQ=",
         "Key": "hello",
-        "KeyCreateTime": "2021-11-11T11:34:53.0952522+08:00",
+        "KeyCreateTime": "2025-02-18T13:02:35.5876031+08:00",
         "Status": 200
     }
 ]
 
 ~~~
-结果是有关集群中哪个节点拥有此Key的信息。
+结果是有关集群中哪个节点拥有此Key的信息。  
+
+### 查询集群时，可以指定查询对象节点，以提高查询效率
+~~~shell
+http://127.0.0.1:7721/group_data/?cmd=get&key=hello&target=127.0.0.1:7723&valuedata=info
+~~~
+<br>
+
+响应结果例子:   
+~~~shell
+[
+    {
+        "Address": "127.0.0.1:7723",
+        "Data": "d29ybGQ=",
+        "Key": "hello",
+        "KeyCreateTime": "2025-02-20T13:02:35.5876031+08:00",
+        "Status": 200
+    }
+]
+
+~~~
+结果是有关集群中指定的节点拥有此Key的信息。
   
 
 
