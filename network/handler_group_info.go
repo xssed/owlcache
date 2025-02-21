@@ -6,10 +6,11 @@ import (
 
 	"github.com/xssed/owlcache/group"
 	owllog "github.com/xssed/owlcache/log"
-	tools "github.com/xssed/owlcache/tools"
+	owltools "github.com/xssed/owlcache/tools"
+	owltoken "github.com/xssed/owlcache/tools/token"
 )
 
-//一个请求只产生一个 OwlServerGroupHandler
+// 一个请求只产生一个 OwlServerGroupHandler
 type OwlServerGroupHandler struct {
 	owlservergrouprequest  *group.OwlServerGroupRequest
 	owlserveggroupresponse *group.OwlServerGroupResponse
@@ -19,7 +20,7 @@ func NewOwlServerGroupHandler() *OwlServerGroupHandler {
 	return &OwlServerGroupHandler{&group.OwlServerGroupRequest{}, &group.OwlServerGroupResponse{}}
 }
 
-//http服务器组执行数据操作
+// http服务器组执行数据操作
 func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerHandle(w http.ResponseWriter, r *http.Request) {
 
 	//验证身份
@@ -47,7 +48,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerHandle(w http.Resp
 
 }
 
-//http服务器组执行数据操作,集群
+// http服务器组执行数据操作,集群
 func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerGroupHandle(w http.ResponseWriter, r *http.Request) {
 
 	//验证身份
@@ -75,7 +76,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) HTTPServerGroupHandle(w http
 
 }
 
-//解析response
+// 解析response
 func (owlservergrouphandler *OwlServerGroupHandler) Transmit(resstatus group.ResStatus) {
 
 	switch resstatus {
@@ -101,12 +102,26 @@ func (owlservergrouphandler *OwlServerGroupHandler) Transmit(resstatus group.Res
 
 }
 
-//验证权限
+// 验证权限
 func (owlservergrouphandler *OwlServerGroupHandler) CheckAuth(r *http.Request) bool {
 
-	token := string(tools.Base64Decode(owlservergrouphandler.owlservergrouprequest.Token, "url"))
-	ip := tools.RemoteAddr2IPAddr(r.RemoteAddr)
-	v, found := BaseAuth.Get(token)
+	//先判断字符串是不是Base64编码如果是就解析
+	if owltools.IsBase64(owlservergrouphandler.owlservergrouprequest.Token) {
+		decode_token := string(owltools.Base64Decode(owlservergrouphandler.owlservergrouprequest.Token, "url"))
+		if string(decode_token) == "" {
+			return false
+		}
+		owlservergrouphandler.owlservergrouprequest.Token = decode_token //重新赋值
+	}
+
+	token, parse_err := owltoken.ParseToken(owlservergrouphandler.owlservergrouprequest.Token)
+	//解析出错或者token过期
+	if parse_err != nil || token == nil {
+		return false
+	}
+	token_id := token.TokenId
+	ip := owltools.RemoteAddr2IPAddr(r.RemoteAddr)
+	v, found := BaseAuth.Get(token_id)
 	if found == true {
 		if string(v) == ip {
 			return true
@@ -117,10 +132,11 @@ func (owlservergrouphandler *OwlServerGroupHandler) CheckAuth(r *http.Request) b
 
 }
 
-//添加一个服务器信息
+// 添加一个服务器信息
 func (owlservergrouphandler *OwlServerGroupHandler) Oadd() {
 
 	//数据清理
+	//这里为什么清理?因为暂时不需要存储其他信息,如果未来的版本get操作需要获取token时这边的清空操作将去除
 	owlservergrouphandler.owlservergrouprequest.Cmd = ""
 	owlservergrouphandler.owlservergrouprequest.Pass = ""
 	owlservergrouphandler.owlservergrouprequest.Token = ""
@@ -162,7 +178,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Oadd() {
 
 }
 
-//内部查找一个服务器信息
+// 内部查找一个服务器信息
 func (owlservergrouphandler *OwlServerGroupHandler) Ofind(address string) (int32, bool) {
 	var resat int32 = 0
 	resbool := false
@@ -187,7 +203,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Ofind(address string) (int32
 	return resat, resbool
 }
 
-//删除一个服务器信息
+// 删除一个服务器信息
 func (owlservergrouphandler *OwlServerGroupHandler) Odelete() {
 	at, exits := owlservergrouphandler.Ofind(owlservergrouphandler.owlservergrouprequest.Address)
 	if exits {
@@ -203,14 +219,14 @@ func (owlservergrouphandler *OwlServerGroupHandler) Odelete() {
 	}
 }
 
-//获取所有服务器列表信息
+// 获取所有服务器列表信息
 func (owlservergrouphandler *OwlServerGroupHandler) OgetAll() {
 	list := ServerGroupList.Values()
 	owlservergrouphandler.owlserveggroupresponse.Data = list
 	owlservergrouphandler.Transmit(group.SUCCESS)
 }
 
-//获取一个服务器信息
+// 获取一个服务器信息
 func (owlservergrouphandler *OwlServerGroupHandler) Oget() {
 
 	at, exits := owlservergrouphandler.Ofind(owlservergrouphandler.owlservergrouprequest.Address)
@@ -229,10 +245,11 @@ func (owlservergrouphandler *OwlServerGroupHandler) Oget() {
 
 }
 
-//添加一个服务器信息,gossip配置
+// 添加一个服务器信息,gossip配置
 func (owlservergrouphandler *OwlServerGroupHandler) Gadd() {
 
 	//数据清理
+	//这里为什么清理?因为暂时不需要存储其他信息,如果未来的版本get操作需要获取token时这边的清空操作将去除
 	owlservergrouphandler.owlservergrouprequest.Cmd = ""
 	owlservergrouphandler.owlservergrouprequest.Pass = ""
 	owlservergrouphandler.owlservergrouprequest.Token = ""
@@ -274,7 +291,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Gadd() {
 
 }
 
-//内部查找一个服务器信息,gossip配置
+// 内部查找一个服务器信息,gossip配置
 func (owlservergrouphandler *OwlServerGroupHandler) Gfind(address string) (int32, bool) {
 	var resat int32 = 0
 	resbool := false
@@ -299,7 +316,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Gfind(address string) (int32
 	return resat, resbool
 }
 
-//删除一个服务器信息,gossip配置
+// 删除一个服务器信息,gossip配置
 func (owlservergrouphandler *OwlServerGroupHandler) Gdelete() {
 	at, exits := owlservergrouphandler.Gfind(owlservergrouphandler.owlservergrouprequest.Address)
 	if exits {
@@ -315,14 +332,14 @@ func (owlservergrouphandler *OwlServerGroupHandler) Gdelete() {
 	}
 }
 
-//获取所有服务器列表信息,gossip配置
+// 获取所有服务器列表信息,gossip配置
 func (owlservergrouphandler *OwlServerGroupHandler) GgetAll() {
 	list := ServerGroupGossipList.Values()
 	owlservergrouphandler.owlserveggroupresponse.Data = list
 	owlservergrouphandler.Transmit(group.SUCCESS)
 }
 
-//获取一个服务器信息,gossip配置
+// 获取一个服务器信息,gossip配置
 func (owlservergrouphandler *OwlServerGroupHandler) Gget() {
 
 	at, exits := owlservergrouphandler.Gfind(owlservergrouphandler.owlservergrouprequest.Address)
@@ -341,7 +358,7 @@ func (owlservergrouphandler *OwlServerGroupHandler) Gget() {
 
 }
 
-//将数据转换成json
+// 将数据转换成json
 func (owlservergrouphandler *OwlServerGroupHandler) HttpGroupGetKeyInfoToString(w http.ResponseWriter) (http.ResponseWriter, []byte) {
 	data, _ := json.Marshal(owlservergrouphandler.owlserveggroupresponse)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
