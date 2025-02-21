@@ -2,6 +2,7 @@ package network
 
 import (
 	"encoding/json"
+	//"fmt"
 	"net/http"
 	"strings"
 	"sync"
@@ -15,7 +16,7 @@ import (
 	owltools "github.com/xssed/owlcache/tools"
 )
 
-//发起请求获取集合数据
+// 发起请求获取集合数据
 func (owlhandler *OwlHandler) GetGroupData(w http.ResponseWriter, r *http.Request) {
 
 	//如果valuedata不是字符串info则输出集群第一个
@@ -50,7 +51,7 @@ func (owlhandler *OwlHandler) GetGroupData(w http.ResponseWriter, r *http.Reques
 
 }
 
-//发起请求获取数据
+// 发起请求获取数据
 func (owlhandler *OwlHandler) getHttpData() []OwlResponse {
 
 	list := ServerGroupList.Values()
@@ -64,15 +65,33 @@ func (owlhandler *OwlHandler) getHttpData() []OwlResponse {
 
 	var wg sync.WaitGroup
 
-	for k := range list {
-		val, ok := list[k].(group.OwlServerGroupRequest)
-		if ok {
-			//fmt.Println(val)
-			wg.Add(1)
-			go owlhandler.parseContent(val.Address, owlhandler.owlrequest.Key, groupKVlist, &wg)
+	//判断是否要取指定节点的数据
+	if len(owlhandler.owlrequest.Target) > 3 {
+		//取指定节点的数据
+		for k := range list {
+			val, ok := list[k].(group.OwlServerGroupRequest)
+			if ok {
+				//校验输入的目标服务器是否与配置的服务器一直再进行查询
+				if owlhandler.owlrequest.Target == val.Address {
+					wg.Add(1)
+					go owlhandler.parseContent(val.Address, owlhandler.owlrequest.Key, groupKVlist, &wg)
+					wg.Wait()
+				}
+			}
 		}
+
+	} else {
+		//遍历服务器集群来取数据
+		for k := range list {
+			val, ok := list[k].(group.OwlServerGroupRequest)
+			if ok {
+				//fmt.Println(val)
+				wg.Add(1)
+				go owlhandler.parseContent(val.Address, owlhandler.owlrequest.Key, groupKVlist, &wg)
+			}
+		}
+		wg.Wait()
 	}
-	wg.Wait()
 
 	//fmt.Println(groupKVlist.Values())
 	//排序数据
@@ -83,7 +102,7 @@ func (owlhandler *OwlHandler) getHttpData() []OwlResponse {
 
 }
 
-//解析内容
+// 解析内容
 func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Servergroup, wg *sync.WaitGroup) {
 
 	defer wg.Done()
@@ -178,7 +197,7 @@ func (owlhandler *OwlHandler) parseContent(address, key string, kvlist *group.Se
 
 }
 
-//排序
+// 排序
 func (owlhandler *OwlHandler) bubbleSortContent(kvlist *group.Servergroup) []OwlResponse {
 
 	var array []OwlResponse
@@ -206,7 +225,7 @@ func (owlhandler *OwlHandler) bubbleSortContent(kvlist *group.Servergroup) []Owl
 
 }
 
-//封装返回key集合信息
+// 封装返回key集合信息
 func (owlhandler *OwlHandler) conversionContentInfo(res_slice []OwlResponse) []map[string]interface{} {
 
 	var response_list []map[string]interface{}
@@ -232,7 +251,7 @@ func (owlhandler *OwlHandler) conversionContentInfo(res_slice []OwlResponse) []m
 
 }
 
-//封装返回key集合数据
+// 封装返回key集合数据
 func (owlhandler *OwlHandler) conversionContent(res_slice []OwlResponse) []map[string]interface{} {
 
 	var response_list []map[string]interface{}

@@ -25,15 +25,17 @@ type OwlRequest struct {
 	Pass string
 	//token
 	Token string
+	//target
+	Target string
 }
 
-//request to string
+// request to string
 func (req *OwlRequest) String() string {
 	return fmt.Sprintf("{OwlRequest cmd=%s , key='%s' , value='%v' , length='%d' , expires='%v' , pass='%s' , token='%s' ,bodylen=%d }",
 		req.Cmd, req.Key, req.Value, req.Length, req.Expires, req.Pass, req.Token, int64(len(req.Value)))
 }
 
-//过滤接收数据中的\r\n
+// 过滤接收数据中的\r\n
 func (req *OwlRequest) TrimSpace(str string) string {
 	if str != "" {
 		return strings.TrimSpace(str)
@@ -41,14 +43,14 @@ func (req *OwlRequest) TrimSpace(str string) string {
 	return ""
 }
 
-//将字符串切片转换成字符串
+// 将字符串切片转换成字符串
 func (req *OwlRequest) Slicetostring(slice []string) string {
 
 	return strings.Join(slice, " ")
 
 }
 
-//将socket请求内容 解析为一个OwlRequest对象
+// 将socket请求内容 解析为一个OwlRequest对象
 func (req *OwlRequest) TCPReceive(connstr string) {
 
 	params := []string{}
@@ -104,7 +106,7 @@ func (req *OwlRequest) TCPReceive(connstr string) {
 
 }
 
-//将http请求内容 解析为一个OwlRequest对象
+// 将http请求内容 解析为一个OwlRequest对象
 func (req *OwlRequest) HTTPReceive(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm() //解析参数
@@ -134,11 +136,12 @@ func (req *OwlRequest) HTTPReceive(w http.ResponseWriter, r *http.Request) {
 	} else {
 		req.Token = r.FormValue("token")
 	}
+	req.Target = r.FormValue("target")
 
 	//fmt.Println(req.String())
 }
 
-//将Websocket请求内容 解析为一个OwlRequest对象
+// 将Websocket请求内容 解析为一个OwlRequest对象
 func (req *OwlRequest) WebsocketReceive(w http.ResponseWriter, r *http.Request, connstr string) {
 
 	params := []string{}

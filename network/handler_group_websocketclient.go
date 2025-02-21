@@ -10,8 +10,8 @@ import (
 	"time"
 
 	//"github.com/xssed/owlcache/cache"
-	//owlconfig "github.com/xssed/owlcache/config"
 	"github.com/togettoyou/wsc"
+	owlconfig "github.com/xssed/owlcache/config"
 	"github.com/xssed/owlcache/group"
 	owllog "github.com/xssed/owlcache/log"
 	"github.com/xssed/owlcache/network/websocketclient"
@@ -19,10 +19,10 @@ import (
 	"github.com/xssed/owlcache/tools/timeout"
 )
 
-//存储存活状态的websocketclient列表
+// 存储存活状态的websocketclient列表
 var WSClist *websocketclient.WSCList
 
-//开启Web Socket Client服务，连接到集群
+// 开启Web Socket Client服务，连接到集群
 func startWebSocketClient() {
 
 	WSClist = websocketclient.NewWSCList() //WSClist初始化
@@ -38,7 +38,7 @@ func startWebSocketClient() {
 
 }
 
-//客户端连接到ws服务
+// 客户端连接到ws服务
 func WebSocketClientConnToServer(address string) {
 
 	done := make(chan bool)
@@ -129,7 +129,7 @@ func test() {
 	}()
 }
 
-//发起请求获取集合数据
+// 发起请求获取集合数据
 func (owlhandler *OwlHandler) GetWCGroupData(w http.ResponseWriter, r *http.Request) {
 
 	//查询info类型
@@ -163,7 +163,7 @@ func (owlhandler *OwlHandler) GetWCGroupData(w http.ResponseWriter, r *http.Requ
 
 }
 
-//发起WebSocketClient请求获取数据
+// 发起WebSocketClient请求获取数据
 func (owlhandler *OwlHandler) getWSCData() []OwlResponse {
 
 	list := WSClist.GetList()
@@ -173,15 +173,35 @@ func (owlhandler *OwlHandler) getWSCData() []OwlResponse {
 
 	var wg sync.WaitGroup
 
-	for _, ws := range list {
-		wg.Add(1)
+	//判断是否要取指定节点的数据
+	if len(owlhandler.owlrequest.Target) > 3 {
+		//取指定节点的数据
+		var prefix string
+		if owlconfig.OwlConfigModel.Open_Https == "1" {
+			prefix = "wss://"
+		} else {
+			prefix = "ws://"
+		}
+		for _, ws := range list {
+			//校验输入的目标服务器是否与配置的服务器一直再进行查询
+			//fmt.Println(ws.WebSocket)
+			if owltools.JoinString(prefix, owlhandler.owlrequest.Target, "/ws") == ws.WebSocket.Url {
+				wg.Add(1)
+				wsccontent := NewWSCContent(owlhandler.owlrequest.Key, ws.WebSocket.Url) //定义客户端传输模型
+				go owlhandler.parseWSCContent(ws, wsccontent, groupKVlist, &wg)
+				wg.Wait()
+			}
+		}
 
-		wsccontent := NewWSCContent(owlhandler.owlrequest.Key, ws.WebSocket.Url) //定义客户端传输模型
-
-		go owlhandler.parseWSCContent(ws, wsccontent, groupKVlist, &wg)
+	} else {
+		//遍历服务器集群来取数据
+		for _, ws := range list {
+			wg.Add(1)
+			wsccontent := NewWSCContent(owlhandler.owlrequest.Key, ws.WebSocket.Url) //定义客户端传输模型
+			go owlhandler.parseWSCContent(ws, wsccontent, groupKVlist, &wg)
+		}
+		wg.Wait()
 	}
-
-	wg.Wait()
 
 	//fmt.Println(groupKVlist.Values())
 	//排序数据
@@ -192,7 +212,7 @@ func (owlhandler *OwlHandler) getWSCData() []OwlResponse {
 
 }
 
-//解析内容
+// 解析内容
 func (owlhandler *OwlHandler) parseWSCContent(ws *websocketclient.OwlWebSocketClient, wsccontent WSCContent, kvlist *group.Servergroup, wg *sync.WaitGroup) {
 
 	//执行完毕自动解除锁定
