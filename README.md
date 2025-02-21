@@ -136,7 +136,7 @@ Note: HTTP access data is not verified by password, only other operations that c
 | key           |  key name        | 
 
 ~~~shell
-http://127.0.0.1:7721/data/?cmd=get&key=hello
+curl "http://127.0.0.1:7721/data/?cmd=get&key=hello"
 ~~~
 
 * Websocket
@@ -205,7 +205,7 @@ Response result example:
 
 
 ~~~shell
-http://127.0.0.1:7721/group_data/?cmd=get&key=hello
+curl "http://127.0.0.1:7721/group_data/?cmd=get&key=hello"
 ~~~
 <br>
 
@@ -218,7 +218,7 @@ The result obtained is the latest value of the update time in the cluster query.
 
 ### The cluster obtains the key value information
 ~~~shell
-http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info
+curl "http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info"
 ~~~
 <br>
 
@@ -253,7 +253,7 @@ The result is the information about which node in the cluster owns this Key.
 
 ### When querying a cluster, you can specify a target node to improve query efficiency
 ~~~shell
-http://127.0.0.1:7721/group_data/?cmd=get&key=hello&target=127.0.0.1:7723&valuedata=info
+curl "http://127.0.0.1:7721/group_data/?cmd=get&key=hello&target=127.0.0.1:7723&valuedata=info"
 ~~~
 <br>
 

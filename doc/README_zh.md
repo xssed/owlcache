@@ -134,7 +134,7 @@ get hello\n
 | key           |  key名称        | 
 
 ~~~shell
-http://127.0.0.1:7721/data/?cmd=get&key=hello
+curl "http://127.0.0.1:7721/data/?cmd=get&key=hello"
 ~~~
 
 * Websocket
@@ -203,7 +203,7 @@ get hello info 5c9eff00-3bed-4113-a095-2f3c771683d9
 
 
 ~~~shell
-http://127.0.0.1:7721/group_data/?cmd=get&key=hello
+curl "http://127.0.0.1:7721/group_data/?cmd=get&key=hello"
 ~~~
 <br>
 
@@ -216,7 +216,7 @@ world
 
 ### 集群获取Key值的信息
 ~~~shell
-http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info
+curl "http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info"
 ~~~
 <br>
 
@@ -251,7 +251,7 @@ http://127.0.0.1:7721/group_data/?cmd=get&key=hello&valuedata=info
 
 ### 查询集群时，可以指定查询对象节点，以提高查询效率
 ~~~shell
-http://127.0.0.1:7721/group_data/?cmd=get&key=hello&target=127.0.0.1:7723&valuedata=info
+curl "http://127.0.0.1:7721/group_data/?cmd=get&key=hello&target=127.0.0.1:7723&valuedata=info"
 ~~~
 <br>
 
