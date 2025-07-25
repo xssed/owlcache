@@ -3,21 +3,20 @@ package config
 import (
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/xssed/owlcache/tools"
 )
 
-//创建一个全局URL缓存配置变量
+// 创建一个全局URL缓存配置变量
 var OwlUCConfigModel *Sites
 
-//结构体-站点集合信息
+// 结构体-站点集合信息
 type Sites struct {
 	SiteList []Site `xml:"site"`
 }
 
-//结构体-站点信息
+// 结构体-站点信息
 type Site struct {
 	Host            string   `xml:"host"`              //需要映射的URL基础网址。必填项。默认为空。例:127.0.0.1:3306
 	Headers         []Header `xml:"header"`            //向映射网址发送GET访问请求时，将会把当前HTTP请求Request headers的子项附带转发到映射网址。默认为空。
@@ -28,17 +27,17 @@ type Site struct {
 	Proxy           string   `xml:"proxy"`             //映射请求的代理服务器。默认为空
 }
 
-//结构体-用于指定Request Headers转发
+// 结构体-用于指定Request Headers转发
 type Header struct {
 	Value []string `xml:"value"`
 }
 
-//创建一个默认配置文件的实体
+// 创建一个默认配置文件的实体
 func NewDefaultOwlUCConfig() *Sites {
 	return &Sites{}
 }
 
-//URL缓存初始化加载配置
+// URL缓存初始化加载配置
 func OwlUCConfigInit() {
 
 	//创建一个默认URL缓存初始化配置模型
@@ -48,7 +47,7 @@ func OwlUCConfigInit() {
 	var cpath string = tools.JoinString(OwlConfigModel.DBfile, OwlConfigModel.Urlcache_Filename)
 
 	//打开URL缓存文件载入数据
-	ucconfig_content, err := ioutil.ReadFile(cpath)
+	ucconfig_content, err := os.ReadFile(cpath)
 	//监控错误
 	if err != nil {
 		fmt.Println(err.Error())
@@ -78,7 +77,7 @@ func OwlUCConfigInit() {
 
 }
 
-//管理配置默认值
+// 管理配置默认值
 func OwlUCConfigCheckDefaultValue(sites *Sites) *Sites {
 
 	temp_sites := NewDefaultOwlUCConfig()

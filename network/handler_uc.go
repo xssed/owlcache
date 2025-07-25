@@ -2,7 +2,7 @@ package network
 
 import (
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -13,7 +13,7 @@ import (
 	owltools "github.com/xssed/owlcache/tools"
 )
 
-//发起请求获取URL数据并进行缓存处理
+// 发起请求获取URL数据并进行缓存处理
 func (owlhandler *OwlHandler) GetUrlCacheData(w http.ResponseWriter, r *http.Request) (http.ResponseWriter, []byte) {
 
 	//先去查询内存数据库中是否存在这个值
@@ -41,7 +41,7 @@ func (owlhandler *OwlHandler) GetUrlCacheData(w http.ResponseWriter, r *http.Req
 
 }
 
-//未查询到数据后去请求URL数据缓存到本地
+// 未查询到数据后去请求URL数据缓存到本地
 func (owlhandler *OwlHandler) GetUrlCacheExe(w http.ResponseWriter, r *http.Request, print []byte) (http.ResponseWriter, []byte) {
 
 	//站点索引值
@@ -98,10 +98,10 @@ func (owlhandler *OwlHandler) getUrlDataExe(index *int, key string, r *http.Requ
 			}
 		}
 		//读取获取到的数据
-		body, ioerr := ioutil.ReadAll(uct.Res.Body)
+		body, ioerr := io.ReadAll(uct.Res.Body)
 		//判断响应数据读取异常
 		if ioerr != nil {
-			ioutil_errlog := owltools.JoinString("getUrlDataExe method getUrlData ioutil.ReadAll error:", ioerr.Error())
+			ioutil_errlog := owltools.JoinString("getUrlDataExe method getUrlData io.ReadAll error:", ioerr.Error())
 			owllog.OwlLogUC.Info(ioutil_errlog) //日志记录
 			return uct, errors.New(ioutil_errlog)
 		}
@@ -136,9 +136,9 @@ func (owlhandler *OwlHandler) getUrlDataExe(index *int, key string, r *http.Requ
 
 }
 
-//使用gorequest类库发起http client请求获取数据
-//请求 站点的索引值:index,需要查找的key值或者Uri:key,*http.Request
-//返回 gorequest.Response，http响应的byte数据，http请求的错误信息
+// 使用gorequest类库发起http client请求获取数据
+// 请求 站点的索引值:index,需要查找的key值或者Uri:key,*http.Request
+// 返回 gorequest.Response，http响应的byte数据，http请求的错误信息
 func (owlhandler *OwlHandler) getUrlData(index *int, key string, r *http.Request) UCtext {
 
 	//设置站点配置

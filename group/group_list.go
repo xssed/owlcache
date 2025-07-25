@@ -3,8 +3,8 @@ package group
 import (
 	"bytes"
 	"encoding/json"
+	"os"
 
-	"io/ioutil"
 	"log"
 	"sync"
 
@@ -230,7 +230,7 @@ func (servergroup *Servergroup) LoadFromFile(folder, filename string) error {
 	servergroup.lock.Lock()
 	defer servergroup.lock.Unlock()
 
-	b, err := ioutil.ReadFile(folder + filename)
+	b, err := os.ReadFile(folder + filename)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -306,7 +306,9 @@ func (servergroup *Servergroup) SaveToFile(folder, filename string) error {
 		log.Fatalf("Write File failed：%s\n", err)
 	}
 	//释放资源
-	servergroup_dbfile.Close()
+	if err := servergroup_dbfile.Close(); err != nil {
+		log.Printf("Failed to close file: %v", err)
+	}
 
 	//err := ioutil.WriteFile(filename, data, 0777)
 

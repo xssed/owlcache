@@ -2,7 +2,7 @@ package network
 
 import (
 	"errors"
-	"io/ioutil"
+	"io"
 	"strconv"
 	"time"
 
@@ -12,7 +12,7 @@ import (
 	owltools "github.com/xssed/owlcache/tools"
 )
 
-//处理gossip集群发来的更新命令
+// 处理gossip集群发来的更新命令
 func gossip_set(key, val, expire string) {
 
 	data, err := gossip_getUrlData(key, val)
@@ -31,7 +31,7 @@ func gossip_set(key, val, expire string) {
 
 }
 
-//处理gossip集群发来的删除命令
+// 处理gossip集群发来的删除命令
 func gossip_del(key string) {
 	ok := BaseCacheDB.Delete(key)
 	if !ok {
@@ -39,7 +39,7 @@ func gossip_del(key string) {
 	}
 }
 
-//处理gossip集群发来的设置key过期命令
+// 处理gossip集群发来的设置key过期命令
 func gossip_expire(key, expire string) {
 	exptime, _ := time.ParseDuration(owltools.JoinString(expire, "s"))
 	ok := BaseCacheDB.Expire(key, exptime)
@@ -48,7 +48,7 @@ func gossip_expire(key, expire string) {
 	}
 }
 
-//在接收到gossip集群发来的更新命令之后，根据value(存放的目标服务IP地址)发起一个HTTP请求，取出数据，存放到本地数据库
+// 在接收到gossip集群发来的更新命令之后，根据value(存放的目标服务IP地址)发起一个HTTP请求，取出数据，存放到本地数据库
 func gossip_getUrlData(key string, val string) ([]byte, error) {
 
 	//创建http client
@@ -73,9 +73,9 @@ func gossip_getUrlData(key string, val string) ([]byte, error) {
 		return []byte(""), ErrorGossipGetUrlData
 	}
 	defer resp.Body.Close() //资源释放
-	body, ioerr := ioutil.ReadAll(resp.Body)
+	body, ioerr := io.ReadAll(resp.Body)
 	if ioerr != nil {
-		return []byte(""), errors.New(owltools.JoinString("Gossip get url data ioutil.ReadAll error:", ioerr.Error()))
+		return []byte(""), errors.New(owltools.JoinString("Gossip get url data io.ReadAll error:", ioerr.Error()))
 	}
 
 	//清理资源

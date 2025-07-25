@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -24,7 +23,7 @@ type OwlHttp struct {
 	Param            url.Values //PostFromParams。url.Values结构是map[string][]string非并发安全
 }
 
-//创建HttpClient实体
+// 创建HttpClient实体
 func NewOwlHttpClient() *OwlHttp {
 
 	//从配置中取出集群互相通信时的请求超时时间
@@ -38,12 +37,12 @@ func NewOwlHttpClient() *OwlHttp {
 
 }
 
-//设置Request的Body
+// 设置Request的Body
 func (h *OwlHttp) Body(body io.Reader) {
 
 	rc, ok := body.(io.ReadCloser)
 	if !ok && body != nil {
-		rc = ioutil.NopCloser(body)
+		rc = io.NopCloser(body)
 	}
 	if body != nil {
 		switch v := body.(type) {
@@ -59,38 +58,38 @@ func (h *OwlHttp) Body(body io.Reader) {
 
 }
 
-//设置Request的Cookie
+// 设置Request的Cookie
 func (h *OwlHttp) AddCookie(key, value string) {
 	h.Request.AddCookie(&http.Cookie{Name: key, Value: value})
 }
 
-//设置Request的User-Agent
+// 设置Request的User-Agent
 func (h *OwlHttp) UserAgent(useragent string) {
 	h.Request.Header.Set("User-Agent", useragent)
 }
 
-//设置Request的header的Host
+// 设置Request的header的Host
 func (h *OwlHttp) Host(hostname string) {
 	h.Request.Host = hostname
 }
 
-//返回Header
+// 返回Header
 func (h *OwlHttp) Header() http.Header {
 	return h.Request.Header
 }
 
-//设置BasicAuth
+// 设置BasicAuth
 func (h *OwlHttp) BasicAuth(username, password string) {
 	auth := username + ":" + password
 	h.Request.Header.Set("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(auth)))
 }
 
-//设置Request的timeout
+// 设置Request的timeout
 func (h *OwlHttp) SetTimeout(t time.Duration) {
 	h.Client.Timeout = t
 }
 
-//创建Request实体
+// 创建Request实体
 func newRequest(method, Url string) *http.Request {
 
 	if !strings.HasPrefix(Url, "//") {
@@ -120,12 +119,12 @@ func newRequest(method, Url string) *http.Request {
 
 }
 
-//设置GET请求
+// 设置GET请求
 func (h *OwlHttp) Get(Url string) {
 	h.Request = newRequest(http.MethodGet, Url)
 }
 
-//设置POST请求
+// 设置POST请求
 func (h *OwlHttp) Post(Url, bodyType string, body io.Reader) {
 	r := newRequest(http.MethodPost, Url)
 	r.Header.Set("Content-Type", bodyType)
@@ -133,7 +132,7 @@ func (h *OwlHttp) Post(Url, bodyType string, body io.Reader) {
 	h.Body(body)
 }
 
-//设置POST请求(表单形式)
+// 设置POST请求(表单形式)
 func (h *OwlHttp) PostForm(Url string) {
 	h.Request = newRequest(http.MethodPost, Url)
 	h.Request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -142,7 +141,7 @@ func (h *OwlHttp) PostForm(Url string) {
 	}
 }
 
-//清空数据
+// 清空数据
 func (h *OwlHttp) Claer() *OwlHttp {
 	h.Request = &http.Request{}
 	h.Client = &http.Client{}
@@ -151,7 +150,7 @@ func (h *OwlHttp) Claer() *OwlHttp {
 	return h
 }
 
-//打印数据，测试用
+// 打印数据，测试用
 func (h *OwlHttp) EchoInfo() {
 	fmt.Println(*h.Request)
 	fmt.Println(*h.Client)
@@ -159,7 +158,7 @@ func (h *OwlHttp) EchoInfo() {
 	fmt.Println(h.Param)
 }
 
-//Do  return Response and err
+// Do  return Response and err
 func (h *OwlHttp) Do() (*Response, error) {
 	rawquery := h.Query.Encode()
 	if rawquery != "" && h.Request.URL.RawQuery != "" {

@@ -49,7 +49,7 @@ English | <a href="https://github.com/xssed/owlcache/blob/master/doc/README_zh.m
 
 ### How to compile
 Compilation environment requirements
-* golang >= 1.9
+* golang >= 1.16
 
 Source download  
 * Go command download (will automatically download the dependent library, if you directly download the source code will prompt the class library is missing)  
