@@ -1,6 +1,7 @@
 package aegis
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
@@ -8,58 +9,70 @@ import (
 	owllog "github.com/xssed/owlcache/log"
 )
 
-//检查客户端请求优化参数
+// 配置项结构体
+type clientConfig struct {
+	name         string
+	value        string
+	minValue     int
+	configKey    string
+	needMinCheck bool
+}
+
+// 检查整数类型配置
+func checkIntConfig(config clientConfig) int {
+	value, err := strconv.Atoi(config.value)
+	if err != nil {
+		owllog.OwlLogRun.Println(fmt.Sprintf("The value of %s is not an integer. Set the <%s> option in the configuration file %s.", config.name, config.name, owlconfig.OwlConfigModel.Configfile))
+		os.Exit(0)
+	}
+
+	if config.needMinCheck && value < config.minValue {
+		owllog.OwlLogRun.Println(fmt.Sprintf("The value of %s cannot be less than %d. Set the <%s> option in the configuration file %s.", config.name, config.minValue, config.name, owlconfig.OwlConfigModel.Configfile))
+		os.Exit(0)
+	}
+
+	return value
+}
+
+// 检查客户端配置
+func checkClientConfig(name, value, configKey string, needMinCheck bool, minValue int) int {
+	config := clientConfig{
+		name:         name,
+		value:        value,
+		minValue:     minValue,
+		configKey:    configKey,
+		needMinCheck: needMinCheck,
+	}
+	return checkIntConfig(config)
+}
+
+// 检查HTTP客户端请求配置
+func checkClientRequestConfig() {
+	checkClientConfig("HttpClientRequestLocalCacheLifeTime", owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime, "", false, 0)
+	checkClientConfig("HttpClientRequestTimeout", owlconfig.OwlConfigModel.HttpClientRequestTimeout, "", false, 0)
+}
+
+// 检查Memcache客户端配置
+func checkMemcacheClientConfig() {
+	timeoutSleepTime := checkClientConfig("MemcacheClient_Request_Timeout_Sleeptime", owlconfig.OwlConfigModel.MemcacheClient_Request_Timeout_Sleeptime, "", true, 2)
+	maxErrorNumber := checkClientConfig("MemcacheClient_Request_Max_Error_Number", owlconfig.OwlConfigModel.MemcacheClient_Request_Max_Error_Number, "", true, 2)
+
+	_ = timeoutSleepTime
+	_ = maxErrorNumber
+}
+
+// 检查Redis客户端配置
+func checkRedisClientConfig() {
+	timeoutSleepTime := checkClientConfig("RedisClient_Request_Timeout_Sleeptime", owlconfig.OwlConfigModel.RedisClient_Request_Timeout_Sleeptime, "", true, 2)
+	maxErrorNumber := checkClientConfig("RedisClient_Request_Max_Error_Number", owlconfig.OwlConfigModel.RedisClient_Request_Max_Error_Number, "", true, 2)
+
+	_ = timeoutSleepTime
+	_ = maxErrorNumber
+}
+
+// 检查客户端请求优化参数
 func CheckClientRequest() {
-
-	_, hrts_err := strconv.Atoi(owlconfig.OwlConfigModel.HttpClientRequestLocalCacheLifeTime)
-	if hrts_err != nil {
-		owllog.OwlLogRun.Println("The value of HttpClientRequestLocalCacheLifeTime is not an integer.Set the <HttpClientRequestLocalCacheLifeTime> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-	_, hqto_err := strconv.Atoi(owlconfig.OwlConfigModel.HttpClientRequestTimeout)
-	if hqto_err != nil {
-		owllog.OwlLogRun.Println("The value of HttpClientRequestTimeout is not an integer.Set the <HttpClientRequestTimeout> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-
-	mrts, mrts_err := strconv.Atoi(owlconfig.OwlConfigModel.MemcacheClient_Request_Timeout_Sleeptime)
-	if mrts_err != nil {
-		owllog.OwlLogRun.Println("The value of MemcacheClient_Request_Timeout_Sleeptime is not an integer.Set the <MemcacheClient_Request_Timeout_Sleeptime> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-	if mrts < 2 {
-		owllog.OwlLogRun.Println("The value of MemcacheClient_Request_Timeout_Sleeptime cannot be less than 2.Set the <MemcacheClient_Request_Timeout_Sleeptime> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-
-	mrmen, mrmen_err := strconv.Atoi(owlconfig.OwlConfigModel.MemcacheClient_Request_Max_Error_Number)
-	if mrmen_err != nil {
-		owllog.OwlLogRun.Println("The value of MemcacheClient_Request_Max_Error_Number is not an integer.Set the <MemcacheClient_Request_Max_Error_Number> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-	if mrmen < 2 {
-		owllog.OwlLogRun.Println("The value of MemcacheClient_Request_Max_Error_Number cannot be less than 2.Set the <MemcacheClient_Request_Max_Error_Number> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-
-	rrts, rrts_err := strconv.Atoi(owlconfig.OwlConfigModel.RedisClient_Request_Timeout_Sleeptime)
-	if rrts_err != nil {
-		owllog.OwlLogRun.Println("The value of RedisClient_Request_Timeout_Sleeptime is not an integer.Set the <RedisClient_Request_Timeout_Sleeptime> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-	if rrts < 2 {
-		owllog.OwlLogRun.Println("The value of RedisClient_Request_Timeout_Sleeptime cannot be less than 2.Set the <RedisClient_Request_Timeout_Sleeptime> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-
-	rrmen, rrmen_err := strconv.Atoi(owlconfig.OwlConfigModel.RedisClient_Request_Max_Error_Number)
-	if rrmen_err != nil {
-		owllog.OwlLogRun.Println("The value of RedisClient_Request_Max_Error_Number is not an integer.Set the <RedisClient_Request_Max_Error_Number> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-	if rrmen < 2 {
-		owllog.OwlLogRun.Println("The value of RedisClient_Request_Max_Error_Number cannot be less than 2.Set the <RedisClient_Request_Max_Error_Number> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
-		os.Exit(0)
-	}
-
+	checkClientRequestConfig()
+	checkMemcacheClientConfig()
+	checkRedisClientConfig()
 }

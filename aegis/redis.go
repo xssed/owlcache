@@ -8,7 +8,7 @@ import (
 	owllog "github.com/xssed/owlcache/log"
 )
 
-//检查Redis客户端设置
+// 检查Redis客户端设置
 func CheckRedisConfig() {
 
 	//如果开启从Redis中获取数据
@@ -24,8 +24,8 @@ func CheckRedisConfig() {
 			os.Exit(0)
 		}
 		//检查数据库设置是否正确
-		_, db_err := strconv.Atoi(owlconfig.OwlConfigModel.Redis_DB)
-		if db_err != nil {
+		_, dbErr := strconv.Atoi(owlconfig.OwlConfigModel.Redis_DB)
+		if dbErr != nil {
 			owllog.OwlLogRun.Println("Redis DB is not a number.Set the <Redis_DB> option in the configuration file " + owlconfig.OwlConfigModel.Configfile + ".")
 			os.Exit(0)
 		}
